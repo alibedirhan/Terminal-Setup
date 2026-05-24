@@ -2,7 +2,7 @@
 
 # ============================================================================
 # Terminal Setup - CLI Araçları Kurulumu
-# v3.2.9 - Tools Module
+# v5.0.2 - Tools Module
 # ============================================================================
 
 install_fzf() {
@@ -74,14 +74,12 @@ install_fzf() {
 
 install_zoxide() {
     log_info "Zoxide kuruluyor..."
-    
-    # Zaten kurulu mu?
+
     if command -v zoxide &> /dev/null; then
         log_warning "Zoxide zaten kurulu, atlanıyor..."
         return 0
     fi
-    
-    # İnternet kontrolü + recovery
+
     if ! check_internet; then
         if ! handle_network_error "Zoxide kurulumu"; then
             return 1
@@ -90,23 +88,33 @@ install_zoxide() {
             return 1
         fi
     fi
-    
-    # Kurulum scripti - DÜZELTME: Direkt bash -c ile çalıştır (retry yok, pipe sorunlu)
-    log_info "Zoxide indiriliyor ve kuruluyor..."
-    if curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash 2>&1 | tee -a "$LOG_FILE" | grep -q "zoxide"; then
-        log_success "Zoxide kurulum scripti başarılı"
-    else
-        log_error "Zoxide kurulumu başarısız!"
-        log_info "Manuel kurulum: curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash"
+
+    local installer
+    installer=$(mktemp -t zoxide-install.XXXXXXXXXX.sh) || {
+        log_error "Geçici dosya oluşturulamadı"
+        return 1
+    }
+
+    log_info "Zoxide install script indiriliyor..."
+    if ! safe_download "https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh" "$installer" "Zoxide install script indiriliyor"; then
+        rm -f -- "$installer"
+        log_error "Zoxide install script indirilemedi"
         return 1
     fi
-    
-    # PATH'i .zshrc'ye ekle
+
+    if ! bash "$installer" >> "$LOG_FILE" 2>&1; then
+        rm -f -- "$installer"
+        log_error "Zoxide kurulumu başarısız!"
+        log_info "Manuel kurulum: https://github.com/ajeetdsouza/zoxide"
+        return 1
+    fi
+    rm -f -- "$installer"
+
     if [[ -f ~/.zshrc ]]; then
         if ! grep -q 'export PATH="$HOME/.local/bin:$PATH"' ~/.zshrc; then
             sed -i '/# Enable Powerlevel10k instant prompt/i export PATH="$HOME/.local/bin:$PATH"\n' ~/.zshrc
         fi
-        
+
         if ! grep -q "zoxide init zsh" ~/.zshrc; then
             {
                 echo ''
@@ -115,23 +123,21 @@ install_zoxide() {
             } >> ~/.zshrc
         fi
     fi
-    
-    # PATH'e ekle
+
     export PATH="$HOME/.local/bin:$PATH"
-    
-    # Doğrulama
+    hash -r
+
     if ! verify_command_installed "zoxide" "Zoxide"; then
         log_error "Zoxide kuruldu ancak PATH'te bulunamıyor!"
         log_warning 'Manuel çözüm: export PATH="$HOME/.local/bin:$PATH"'
         return 1
     fi
-    
-    # Çalışma testi
+
     if ! zoxide --version &>/dev/null; then
         log_error "Zoxide kuruldu ancak çalıştırılamıyor!"
         return 1
     fi
-    
+
     log_success "Zoxide kuruldu ve doğrulandı ($(zoxide --version))"
     return 0
 }
@@ -366,11 +372,23 @@ install_delta() {
             log_info "Cargo (Rust) kuruluyor (Delta için gerekli)..."
             echo -e "${YELLOW}Bu işlem 2-3 dakika sürebilir, lütfen bekleyin...${NC}"
             
-            # Rustup kurulum (retry ile)
-            if ! retry_command 2 180 bash -c 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y'; then
+            # Rustup kurulum (geçici dosya ile)
+            local rustup_installer
+            rustup_installer=$(mktemp -t rustup-init.XXXXXXXXXX.sh) || {
+                log_error "Geçici rustup dosyası oluşturulamadı"
+                return 1
+            }
+            if ! safe_download "https://sh.rustup.rs" "$rustup_installer" "Rustup install script indiriliyor"; then
+                rm -f -- "$rustup_installer"
+                log_error "Cargo kurulumu için rustup indirilemedi!"
+                return 1
+            fi
+            if ! retry_command 2 180 sh "$rustup_installer" -y; then
+                rm -f -- "$rustup_installer"
                 log_error "Cargo kurulumu başarısız!"
                 return 1
             fi
+            rm -f -- "$rustup_installer"
             
             # Cargo env yükle
             if [[ -f "$HOME/.cargo/env" ]]; then
@@ -746,20 +764,25 @@ install_atuin() {
     
     log_info "Atuin install script indiriliyor..."
     
-    # Geçici script dosyasına indir
-    if ! curl -fsSL https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh -o /tmp/atuin-install.sh 2>&1; then
+    local atuin_installer
+    atuin_installer=$(mktemp -t atuin-install.XXXXXXXXXX.sh) || {
+        log_error "Geçici Atuin dosyası oluşturulamadı"
+        return 1
+    }
+
+    if ! safe_download "https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh" "$atuin_installer" "Atuin install script indiriliyor"; then
+        rm -f -- "$atuin_installer"
         log_error "Atuin install script indirilemedi!"
         return 1
     fi
-    
-    # Script'i çalıştır
-    if ! bash /tmp/atuin-install.sh 2>&1 | tee -a "$LOG_FILE"; then
+
+    if ! bash "$atuin_installer" >> "$LOG_FILE" 2>&1; then
         log_error "Atuin kurulumu başarısız!"
-        rm -f /tmp/atuin-install.sh
+        rm -f -- "$atuin_installer"
         return 1
     fi
-    
-    rm -f /tmp/atuin-install.sh
+
+    rm -f -- "$atuin_installer"
     
 
 # PATH'e ekle (kurulum sonrası doğrulama için)

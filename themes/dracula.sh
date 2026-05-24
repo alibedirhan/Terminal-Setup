@@ -2,7 +2,7 @@
 
 # ============================================================================
 # Dracula Theme
-# v3.2.9 - Dark theme with purple/pink accents
+# v5.0.2 - Dark theme with purple/pink accents
 # ============================================================================
 
 # GNOME Terminal

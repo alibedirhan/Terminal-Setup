@@ -1,0 +1,28 @@
+# Runtime / user data
+.terminal-setup/
+logs/
+backups/
+*.log
+*.tmp
+*.bak
+*.backup
+*.swp
+*.swo
+
+# Release artifacts
+release/
+dist/
+*.zip
+*.tar.gz
+*.sha256
+
+# Local/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Test/cache
+.cache/
+tmp/
+node_modules/

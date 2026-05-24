@@ -2,7 +2,7 @@
 
 # ============================================================================
 # Terminal Setup - Kurulum Fonksiyonları
-# v3.2.9 - Core Module (Enhanced & Cross-Platform)
+# v5.0.2 - Core Module (backup/restore hardened)
 # ============================================================================
 
 # Sudo refresh PID - Global değişken
@@ -239,29 +239,164 @@ setup_sudo() {
 # ============================================================================
 
 create_backup() {
+    local reason="${1:-manual}"
+    local cleanup_mode="${2:-cleanup}"
+    local timestamp
+    timestamp=$(date +%Y%m%d_%H%M%S)
+    local backup_path="$BACKUP_DIR/backup_${timestamp}_${reason}"
+
     log_info "Mevcut ayarlar yedekleniyor..."
-    
-    if ! mkdir -p "$BACKUP_DIR"; then
-        log_error "Yedek dizini oluşturulamadı: $BACKUP_DIR"
+
+    if ! mkdir -p "$backup_path"; then
+        log_error "Yedek dizini oluşturulamadı: $backup_path"
         return 1
     fi
-    
-    local TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-    
-    [[ -f ~/.bashrc ]] && cp ~/.bashrc "$BACKUP_DIR/bashrc_$TIMESTAMP"
-    [[ -f ~/.zshrc ]] && cp ~/.zshrc "$BACKUP_DIR/zshrc_$TIMESTAMP"
-    [[ -f ~/.p10k.zsh ]] && cp ~/.p10k.zsh "$BACKUP_DIR/p10k_$TIMESTAMP"
-    [[ -f ~/.tmux.conf ]] && cp ~/.tmux.conf "$BACKUP_DIR/tmux_$TIMESTAMP"
-    
-    echo "$SHELL" > "$BACKUP_DIR/original_shell_$TIMESTAMP"
-    
-    if command -v gsettings &> /dev/null; then
-        gsettings get org.gnome.Terminal.ProfilesList default > "$BACKUP_DIR/gnome_profile_$TIMESTAMP" 2>/dev/null || true
+
+    [[ -f "$HOME/.bashrc" ]] && cp "$HOME/.bashrc" "$backup_path/bashrc"
+    [[ -f "$HOME/.zshrc" ]] && cp "$HOME/.zshrc" "$backup_path/zshrc"
+    [[ -f "$HOME/.p10k.zsh" ]] && cp "$HOME/.p10k.zsh" "$backup_path/p10k.zsh"
+    [[ -f "$HOME/.tmux.conf" ]] && cp "$HOME/.tmux.conf" "$backup_path/tmux.conf"
+    [[ -f "$HOME/.aliases" ]] && cp "$HOME/.aliases" "$backup_path/aliases"
+    [[ -f "$HOME/.bash_aliases" ]] && cp "$HOME/.bash_aliases" "$backup_path/bash_aliases"
+
+    printf '%s\n' "$SHELL" > "$backup_path/original_shell"
+    backup_gnome_terminal_profile "$backup_path" || true
+
+    cat > "$backup_path/manifest.txt" <<EOF
+created_at=${timestamp}
+reason=${reason}
+home=${HOME}
+shell=${SHELL}
+version=${VERSION:-unknown}
+EOF
+
+    log_success "Yedek oluşturuldu: $backup_path"
+    if [[ "$cleanup_mode" != "no_cleanup" ]]; then
+        cleanup_old_backups
     fi
-    
-    log_success "Yedek oluşturuldu: $BACKUP_DIR"
-    cleanup_old_backups
     return 0
+}
+
+backup_gnome_terminal_profile() {
+    local backup_path="$1"
+    command -v gsettings >/dev/null 2>&1 || return 0
+
+    local profile
+    profile=$(gsettings get org.gnome.Terminal.ProfilesList default 2>/dev/null | tr -d "'")
+    [[ -n "$profile" ]] || return 0
+
+    local profile_path="org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$profile/"
+    printf '%s\n' "$profile_path" > "$backup_path/gnome_terminal_profile_path"
+
+    local keys=(
+        visible-name foreground-color background-color bold-color bold-color-same-as-fg
+        cursor-colors-set cursor-background-color cursor-foreground-color
+        highlight-colors-set highlight-background-color highlight-foreground-color
+        palette use-theme-colors use-transparent-background use-theme-transparency
+        background-transparency-percent font use-system-font login-shell
+    )
+
+    : > "$backup_path/gnome_terminal_profile_settings"
+    local key value
+    for key in "${keys[@]}"; do
+        if value=$(gsettings get "$profile_path" "$key" 2>/dev/null); then
+            printf '%s|%s\n' "$key" "$value" >> "$backup_path/gnome_terminal_profile_settings"
+        fi
+    done
+}
+
+restore_gnome_terminal_profile() {
+    local backup_path="$1"
+    local profile_path_file="$backup_path/gnome_terminal_profile_path"
+    local settings_file="$backup_path/gnome_terminal_profile_settings"
+
+    command -v gsettings >/dev/null 2>&1 || return 0
+    [[ -f "$profile_path_file" && -f "$settings_file" ]] || return 0
+
+    local profile_path
+    profile_path=$(cat "$profile_path_file")
+    [[ -n "$profile_path" ]] || return 0
+
+    local key value
+    while IFS='|' read -r key value; do
+        [[ -n "$key" && -n "$value" ]] || continue
+        gsettings set "$profile_path" "$key" "$value" 2>/dev/null || true
+    done < "$settings_file"
+
+    log_success "GNOME Terminal profil ayarları geri yüklendi"
+}
+
+cleanup_old_backups() {
+    mkdir -p "$BACKUP_DIR"
+    local keep="${BACKUP_COUNT:-5}"
+    if ! [[ "$keep" =~ ^[0-9]+$ ]] || [[ "$keep" -lt 1 ]]; then
+        keep=5
+    fi
+
+    local old
+    while IFS= read -r old; do
+        [[ -n "$old" ]] || continue
+        rm -rf -- "$old" 2>/dev/null || true
+        log_debug "Eski yedek temizlendi: $old"
+    done < <(find "$BACKUP_DIR" -mindepth 1 -maxdepth 1 -type d -name 'backup_*' | sort -r | tail -n +$((keep + 1)))
+}
+
+list_backup_snapshots() {
+    find "$BACKUP_DIR" -mindepth 1 -maxdepth 1 -type d -name 'backup_*' 2>/dev/null | sort -r
+}
+
+get_latest_backup_snapshot() {
+    list_backup_snapshots | head -1
+}
+
+restore_backup_snapshot() {
+    local backup_path="$1"
+    if [[ -z "$backup_path" || ! -d "$backup_path" ]]; then
+        log_error "Yedek bulunamadı: $backup_path"
+        return 1
+    fi
+
+    log_info "Yedek geri yükleniyor: $(basename "$backup_path")"
+    create_backup "before_restore" "no_cleanup" >/dev/null 2>&1 || true
+
+    [[ -f "$backup_path/bashrc" ]] && cp "$backup_path/bashrc" "$HOME/.bashrc"
+    [[ -f "$backup_path/zshrc" ]] && cp "$backup_path/zshrc" "$HOME/.zshrc"
+    [[ -f "$backup_path/p10k.zsh" ]] && cp "$backup_path/p10k.zsh" "$HOME/.p10k.zsh"
+    [[ -f "$backup_path/tmux.conf" ]] && cp "$backup_path/tmux.conf" "$HOME/.tmux.conf"
+    [[ -f "$backup_path/aliases" ]] && cp "$backup_path/aliases" "$HOME/.aliases"
+    [[ -f "$backup_path/bash_aliases" ]] && cp "$backup_path/bash_aliases" "$HOME/.bash_aliases"
+
+    restore_gnome_terminal_profile "$backup_path" || true
+
+    if [[ -f "$backup_path/original_shell" ]]; then
+        local original_shell
+        original_shell=$(cat "$backup_path/original_shell" 2>/dev/null | tr -d '[:space:]')
+        if [[ -n "$original_shell" && -x "$original_shell" && "$SHELL" != "$original_shell" ]]; then
+            echo
+            echo -e "${YELLOW}Yedekteki shell: ${CYAN}${original_shell}${NC}"
+            if ask_yes_no "Shell'i yedekteki değere döndürmek ister misiniz?" "n"; then
+                if sudo chsh -s "$original_shell" "$USER"; then
+                    log_success "Shell geri yüklendi: $original_shell"
+                else
+                    log_warning "Shell değiştirilemedi; elle kontrol edin: chsh -s $original_shell"
+                fi
+            fi
+        fi
+    fi
+
+    command -v fc-cache >/dev/null 2>&1 && fc-cache -f "$HOME/.local/share/fonts" >/dev/null 2>&1 || true
+    log_success "Yedek geri yükleme tamamlandı"
+    echo -e "${YELLOW}Not:${NC} Değişiklikleri görmek için terminali kapatıp yeniden açın."
+    return 0
+}
+
+create_snapshot() {
+    create_backup "transaction" >/dev/null 2>&1 || return 1
+    get_latest_backup_snapshot
+}
+
+restore_snapshot() {
+    restore_backup_snapshot "$1"
 }
 
 # ============================================================================
@@ -330,40 +465,32 @@ _install_oh_my_zsh_impl() {
         fi
     fi
     
-    # Oh My Zsh install script'ini indir ve çalıştır (retry ile)
+    # Oh My Zsh install script'ini indir ve kontrollü çalıştır.
     local install_script_url="https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
-    local max_attempts=3
-    local attempt=1
-    local delay=2
-    
-    while [ $attempt -le $max_attempts ]; do
-        log_debug "Oh My Zsh kurulum denemesi: $attempt/$max_attempts"
-        
-        if curl -fsSL "$install_script_url" | RUNZSH=no CHSH=no sh -s -- --unattended &>> "$LOG_FILE"; then
-            # Başarılı
-            log_debug "Oh My Zsh kurulumu başarılı (Deneme: $attempt)"
-            break
-        else
-            # Başarısız
-            if [ $attempt -lt $max_attempts ]; then
-                log_warning "Deneme $attempt başarısız, $delay saniye sonra tekrar..."
-                sleep $delay
-                delay=$((delay * 2))  # Exponential backoff (2, 4, 8...)
-            else
-                log_error "Oh My Zsh kurulumu başarısız! Tüm denemeler tükendi."
-                
-                # Network hatası olabilir
-                if ! check_internet; then
-                    handle_network_error "Oh My Zsh kurulumu"
-                fi
-                
-                return 1
-            fi
+    local installer
+    installer=$(mktemp -t omz-install.XXXXXXXXXX.sh) || {
+        log_error "Geçici Oh My Zsh kurulum dosyası oluşturulamadı"
+        return 1
+    }
+
+    if ! safe_download "$install_script_url" "$installer" "Oh My Zsh install script indiriliyor"; then
+        rm -f -- "$installer"
+        log_error "Oh My Zsh install script indirilemedi"
+        return 1
+    fi
+
+    if ! RUNZSH=no CHSH=no sh "$installer" --unattended >> "$LOG_FILE" 2>&1; then
+        rm -f -- "$installer"
+        log_error "Oh My Zsh kurulumu başarısız!"
+        if ! check_internet; then
+            handle_network_error "Oh My Zsh kurulumu"
         fi
-        
-        ((attempt++))
-    done
-    
+        return 1
+    fi
+
+    rm -f -- "$installer"
+    log_debug "Oh My Zsh install script başarıyla çalıştı"
+
     # Kurulumu doğrula
     if ! verify_file_exists "$HOME/.oh-my-zsh/oh-my-zsh.sh" "Oh My Zsh"; then
         log_error "Oh My Zsh kuruldu ancak doğrulanamadı!"

@@ -2,7 +2,7 @@
 
 # ============================================================================
 # Terminal Setup - Yardımcı Fonksiyonlar (Helpers)
-# v3.2.9 - Helpers Module
+# v5.0.2 - Helpers Module
 # ============================================================================
 # Bu modül: Logging, Error Handling, Retry, Timeout, Validation
 # ============================================================================
@@ -10,6 +10,26 @@
 # ============================================================================
 # LOGGING SİSTEMİ
 # ============================================================================
+
+# Hata kodları varsayılanları. Bazı modüller bu değişkenleri kullanır;
+# burada tek kaynaktan tanımlı tutmak runtime sürprizlerini önler.
+ERR_SUCCESS=${ERR_SUCCESS:-0}
+ERR_COMMAND_FAILED=${ERR_COMMAND_FAILED:-1}
+ERR_TIMEOUT=${ERR_TIMEOUT:-124}
+ERR_DISK_SPACE=${ERR_DISK_SPACE:-20}
+
+if ! declare -p ERROR_MESSAGES >/dev/null 2>&1; then
+    declare -A ERROR_MESSAGES=(
+        [$ERR_SUCCESS]="Başarılı"
+        [$ERR_COMMAND_FAILED]="Komut başarısız"
+        [$ERR_TIMEOUT]="Zaman aşımı"
+        [$ERR_DISK_SPACE]="Disk alanı yetersiz"
+    )
+fi
+
+TRANSACTION_ACTIVE=${TRANSACTION_ACTIVE:-false}
+TRANSACTION_SNAPSHOT=${TRANSACTION_SNAPSHOT:-}
+
 
 # Log dosyasını başlat
 init_log() {
@@ -199,55 +219,51 @@ retry_command() {
     local timeout_seconds="${2:-60}"
     shift 2
     local command=("$@")
-    
+
     if [[ ${#command[@]} -eq 0 ]]; then
         log_error "retry_command: Komut belirtilmedi"
         return 1
     fi
-    
+
     local attempt=1
     local delay=2
-    
+    local exit_code=1
+
     log_debug "Retry: ${command[*]} (Max: $max_attempts, Timeout: ${timeout_seconds}s)"
-    
-    while [ $attempt -le $max_attempts ]; do
-        log_debug "Deneme $attempt/$max_attempts..."
-        
-        # Timeout ile komutu çalıştır
+
+    while [[ $attempt -le $max_attempts ]]; do
+        log_debug "Deneme $attempt/$max_attempts: ${command[*]}"
+
         if command -v timeout &>/dev/null; then
-            if timeout "$timeout_seconds" "${command[@]}" 2>&1 | tee -a "$LOG_FILE" | grep -q .; then
-                local exit_code=${PIPESTATUS[0]}
-                if [ $exit_code -eq 0 ]; then
-                    log_debug "Başarılı (Deneme: $attempt)"
-                    return 0
-                fi
-            else
-                local exit_code=${PIPESTATUS[0]}
-                if [ $exit_code -eq 0 ]; then
-                    log_debug "Başarılı (Deneme: $attempt)"
-                    return 0
-                fi
-            fi
+            timeout "$timeout_seconds" "${command[@]}" >> "$LOG_FILE" 2>&1
+            exit_code=$?
         else
-            # timeout komutu yoksa direkt çalıştır
-            if "${command[@]}" &>> "$LOG_FILE"; then
-                log_debug "Başarılı (Deneme: $attempt)"
-                return 0
-            fi
+            "${command[@]}" >> "$LOG_FILE" 2>&1
+            exit_code=$?
         fi
-        
-        # Başarısız, tekrar dene
-        if [ $attempt -lt $max_attempts ]; then
-            log_warning "Deneme $attempt başarısız, $delay saniye sonra tekrar..."
-            sleep $delay
-            delay=$((delay * 2))  # Exponential backoff (2, 4, 8...)
+
+        if [[ $exit_code -eq 0 ]]; then
+            log_debug "Başarılı (Deneme: $attempt)"
+            return 0
         fi
-        
-        ((attempt++))
+
+        if [[ $exit_code -eq 124 ]]; then
+            log_warning "Deneme $attempt zaman aşımına uğradı (${timeout_seconds}s)"
+        else
+            log_warning "Deneme $attempt başarısız oldu (Exit: $exit_code)"
+        fi
+
+        if [[ $attempt -lt $max_attempts ]]; then
+            log_warning "$delay saniye sonra tekrar denenecek..."
+            sleep "$delay"
+            delay=$((delay * 2))
+        fi
+
+        attempt=$((attempt + 1))
     done
-    
+
     log_error "Tüm denemeler başarısız oldu: ${command[*]}"
-    return 1
+    return "$exit_code"
 }
 
 # Güvenli download fonksiyonu (retry ile)
@@ -285,23 +301,26 @@ safe_git_clone() {
     local repo_url="$1"
     local target_dir="$2"
     local depth="${3:-1}"
-    
+
     log_info "Git repository klonlanıyor..."
     log_debug "Repo: $repo_url"
     log_debug "Target: $target_dir"
-    
-    # Hedef dizin varsa temizle
-    if [[ -d "$target_dir" ]]; then
-        log_debug "Mevcut dizin temizleniyor: $target_dir"
-        rm -rf "$target_dir"
+
+    if [[ -z "$target_dir" || "$target_dir" == "/" || "$target_dir" == "$HOME" || "$target_dir" == "$HOME/" || "$target_dir" == "." ]]; then
+        log_error "Güvensiz hedef dizin: $target_dir"
+        return 1
     fi
-    
-    # Retry ile clone
+
+    if [[ -d "$target_dir" ]]; then
+        log_debug "Mevcut hedef dizin temizleniyor: $target_dir"
+        rm -rf -- "$target_dir"
+    fi
+
     if retry_command 3 120 git clone --depth "$depth" "$repo_url" "$target_dir"; then
         log_success "Repository klonlandı: $target_dir"
         return 0
     fi
-    
+
     log_error "Git clone başarısız: $repo_url"
     return 1
 }

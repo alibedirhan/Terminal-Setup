@@ -18,7 +18,7 @@ DIM='\033[2m'
 NC='\033[0m'
 
 # Config
-REPO="alibedirhan/Terminal-Theme-format-after"
+REPO="alibedirhan/Terminal-Setup"
 VERSION_FILE="VERSION"
 
 # Güncellenecek dosyalar
@@ -49,15 +49,15 @@ KULLANIM:
 
 ÖRNEKLER:
   # Direkt versiyon belirt
-  ./smart-version-manager.sh 3.3.0
+  ./smart-version-manager.sh 4.4.0
   
   # Otomatik artır
-  ./smart-version-manager.sh --patch      # 3.2.9 → 3.2.10 (küçük düzeltmeler)
-  ./smart-version-manager.sh --minor      # 3.2.9 → 3.3.0  (yeni özellikler)
-  ./smart-version-manager.sh --major      # 3.2.9 → 4.0.0  (büyük değişiklikler)
+  ./smart-version-manager.sh --patch      # 4.3.1 → 4.3.2 (küçük düzeltmeler)
+  ./smart-version-manager.sh --minor      # 4.3.1 → 4.4.0  (yeni özellikler)
+  ./smart-version-manager.sh --major      # 4.3.1 → 4.0.0  (büyük değişiklikler)
   
   # GitHub release ile birlikte
-  ./smart-version-manager.sh 3.3.0 --release
+  ./smart-version-manager.sh 4.4.0 --release
   ./smart-version-manager.sh --minor --release
 
   # İnteraktif mod (eski usul)
@@ -126,7 +126,7 @@ validate_version() {
     local version=$1
     if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         log_error "Geçersiz versiyon formatı: $version"
-        log_error "Beklenen: MAJOR.MINOR.PATCH (örn: 3.3.0)"
+        log_error "Beklenen: MAJOR.MINOR.PATCH (örn: 4.4.0)"
         return 1
     fi
     return 0
@@ -392,11 +392,11 @@ show_help_interactive() {
     echo "  Tüm dosyalardaki versiyon numaralarını tek seferde günceller."
     echo
     echo -e "${BOLD}Komut satırı kullanımı:${NC}"
-    echo "  ${CYAN}./smart-version-manager.sh 3.3.0${NC}           → Direkt versiyon"
-    echo "  ${CYAN}./smart-version-manager.sh --patch${NC}         → 3.2.9 → 3.2.10"
-    echo "  ${CYAN}./smart-version-manager.sh --minor${NC}         → 3.2.9 → 3.3.0"
-    echo "  ${CYAN}./smart-version-manager.sh --major${NC}         → 3.2.9 → 4.0.0"
-    echo "  ${CYAN}./smart-version-manager.sh 3.3.0 --release${NC} → Versiyon + GitHub release"
+    echo "  ${CYAN}./smart-version-manager.sh 4.4.0${NC}           → Direkt versiyon"
+    echo "  ${CYAN}./smart-version-manager.sh --patch${NC}         → 4.3.1 → 4.3.2"
+    echo "  ${CYAN}./smart-version-manager.sh --minor${NC}         → 4.3.1 → 4.4.0"
+    echo "  ${CYAN}./smart-version-manager.sh --major${NC}         → 4.3.1 → 4.0.0"
+    echo "  ${CYAN}./smart-version-manager.sh 4.4.0 --release${NC} → Versiyon + GitHub release"
     echo
     echo -e "${BOLD}Hangi dosyaları günceller?${NC}"
     echo "  • VERSION, install.sh, README.md"
@@ -406,9 +406,9 @@ show_help_interactive() {
     echo "  • themes/*.sh (tüm tema dosyaları)"
     echo
     echo -e "${BOLD}Semantic Versioning:${NC}"
-    echo "  ${GREEN}Patch${NC} (3.2.9 → 3.2.10) = Bug fix, küçük düzeltme"
-    echo "  ${YELLOW}Minor${NC} (3.2.9 → 3.3.0)  = Yeni özellik, geriye uyumlu"
-    echo "  ${RED}Major${NC} (3.2.9 → 4.0.0)  = Breaking change, büyük değişiklik"
+    echo "  ${GREEN}Patch${NC} (4.3.1 → 4.3.2) = Bug fix, küçük düzeltme"
+    echo "  ${YELLOW}Minor${NC} (4.3.1 → 4.4.0)  = Yeni özellik, geriye uyumlu"
+    echo "  ${RED}Major${NC} (4.3.1 → 4.0.0)  = Breaking change, büyük değişiklik"
     echo
     echo -e "${BOLD}İpuçları:${NC}"
     echo "  • CHANGELOG.md'yi önce güncelle (release notes için)"
@@ -467,7 +467,7 @@ interactive_mode() {
                 ;;
             4)
                 echo
-                echo -ne "Versiyon (örn: 3.3.0): "
+                echo -ne "Versiyon (örn: 4.4.0): "
                 read -r new_version
                 
                 if ! validate_version "$new_version"; then

@@ -2,7 +2,7 @@
 
 # ============================================================================
 # Terminal Setup - Otomatik Teşhis ve Çözüm Asistanı
-# v3.2.9 - Assistant Module
+# v5.0.2 - Assistant Module
 # ============================================================================
 # Bu modül sistem sorunlarını tespit eder ve otomatik çözümler önerir.
 # Bağımlılıklar: terminal-utils.sh (logging), terminal-ui.sh (renkler)
@@ -985,4 +985,4 @@ if ! check_assistant_dependencies; then
 fi
 
 # Modül başarıyla yüklendi
-log_debug "terminal-assistant.sh modülü yüklendi (v3.2.9)"
+log_debug "terminal-assistant.sh modülü yüklendi (v5.0.2)"

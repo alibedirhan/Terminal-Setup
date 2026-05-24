@@ -19,7 +19,7 @@ DIM='\033[2m'
 NC='\033[0m'
 
 # Config
-REPO="alibedirhan/Terminal-Theme-format-after"
+REPO="alibedirhan/Terminal-Setup"
 
 # ============================================================================
 # YARDIM
@@ -41,10 +41,10 @@ KOMUTLAR:
 
 ÖRNEKLER:
   # Yeni release oluştur (CHANGELOG'dan notes alır)
-  ./smart-release-manager.sh create v3.3.0
+  ./smart-release-manager.sh create v4.3.1
   
   # Release notes güncelle
-  ./smart-release-manager.sh update v3.3.0
+  ./smart-release-manager.sh update v4.3.1
   
   # Release'leri listele
   ./smart-release-manager.sh list
@@ -116,7 +116,7 @@ check_auth() {
 
 extract_changelog_notes() {
     local version=$1
-    version=${version#v}  # v3.3.0 → 3.3.0
+    version=${version#v}  # v4.3.1 → 4.4.0
     
     if [[ ! -f "CHANGELOG.md" ]]; then
         log_warning "CHANGELOG.md bulunamadı"
@@ -361,9 +361,9 @@ show_help_interactive() {
     echo
     echo -e "${BOLD}Komut satırı kullanımı:${NC}"
     echo -e "  ${CYAN}./smart-release-manager.sh list${NC}           → Release'leri listele"
-    echo -e "  ${CYAN}./smart-release-manager.sh create v3.3.0${NC}  → Yeni release oluştur"
-    echo -e "  ${CYAN}./smart-release-manager.sh update v3.3.0${NC}  → Release'i güncelle"
-    echo -e "  ${CYAN}./smart-release-manager.sh view v3.3.0${NC}    → Release detayları"
+    echo -e "  ${CYAN}./smart-release-manager.sh create v4.3.1${NC}  → Yeni release oluştur"
+    echo -e "  ${CYAN}./smart-release-manager.sh update v4.3.1${NC}  → Release'i güncelle"
+    echo -e "  ${CYAN}./smart-release-manager.sh view v4.3.1${NC}    → Release detayları"
     echo -e "  ${CYAN}./smart-release-manager.sh delete v3.2.5${NC}  → Release sil"
     echo
     echo -e "${BOLD}Gereksinimler:${NC}"
@@ -377,7 +377,7 @@ show_help_interactive() {
     echo -e "  Diğer:         ${DIM}https://cli.github.com/${NC}"
     echo
     echo -e "${BOLD}İpuçları:${NC}"
-    echo "  • CHANGELOG.md'de versiyon başlığı olmalı: ## [3.3.0]"
+    echo "  • CHANGELOG.md'de versiyon başlığı olmalı: ## [4.4.0]"
     echo "  • Release oluşturmadan önce git tag oluşturun"
     echo "  • Release notes önizleme yapılır, onaylamanız gerekir"
     echo
@@ -440,7 +440,7 @@ interactive_mode() {
                 read -p "Devam için Enter'a basın..."
                 ;;
             2)
-                echo -ne "Versiyon (örn: v3.3.0): "
+                echo -ne "Versiyon (örn: v4.3.1): "
                 read -r version
                 echo
                 cmd_create "$version"
