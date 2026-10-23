@@ -22,7 +22,10 @@ status_show() {
     printf '  %s%s\n' "$(ui_pad "Giriş kabuğu" 22)" "$(sys_login_shell)"
     theme=$(settings_get theme)
     printf '  %s%s\n' "$(ui_pad "Tema" 22)" "${theme:-yok}"
-    for id in $(renderers_available); do terms+=("${RENDERER_NAME[$id]}"); done
+    for id in $(renderers_available); do
+        [[ "$id" == tmux ]] && continue
+        terms+=("${RENDERER_NAME[$id]}")
+    done
     printf '  %s%s\n' "$(ui_pad "Terminaller" 22)" "${terms[*]:-bulunamadı}"
     if baseline_exists; then
         printf '  %s%s\n' "$(ui_pad "Başlangıç fotoğrafı" 22)" "$(baseline_created_at)"
