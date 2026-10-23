@@ -1,0 +1,22 @@
+# Açıklama: Her şey: geliştirici + sistem araçları, atuin, tldr ve tmux
+zsh
+ohmyzsh
+fonts
+p10k
+zsh-plugins
+aliases
+fzf
+zoxide
+eza
+bat
+ripgrep
+fd
+delta
+lazygit
+btop
+dust
+duf
+procs
+atuin
+tldr
+tmux
