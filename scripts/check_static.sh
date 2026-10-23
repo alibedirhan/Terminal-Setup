@@ -31,31 +31,7 @@ fail() {
 
 # Geçiş süresince kurallardan muaf tutulan eski (v5) dosyalar.
 # Yeni mimariye taşındıkça bu liste boşalır; boş olması hedeftir.
-LEGACY_FILES=(
-    "core/terminal-base.sh"
-    "core/terminal-config.sh"
-    "core/terminal-tools.sh"
-    "install.sh"
-    "scripts/check_repo_links.sh"
-    "scripts/collect_logs.sh"
-    "scripts/package_release.sh"
-    "smart-release-manager.sh"
-    "smart-version-manager.sh"
-    "terminal-assistant.sh"
-    "terminal-router.sh"
-    "terminal-setup.sh"
-    "terminal-ui.sh"
-    "themes/catppuccin.sh"
-    "themes/dracula.sh"
-    "themes/gruvbox.sh"
-    "themes/nord.sh"
-    "themes/one-dark.sh"
-    "themes/solarized.sh"
-    "themes/tokyo-night.sh"
-    "utils/config.sh"
-    "utils/helpers.sh"
-    "utils/system.sh"
-)
+LEGACY_FILES=()
 
 is_legacy() {
     local file="$1" legacy
@@ -101,23 +77,20 @@ for file in "${SH_FILES[@]}" "${BATS_FILES[@]}"; do
 done
 
 echo "[4/5] Yan etki kuralı (yalnızca lib/actions/)"
-# Sistemi değiştiren komut kalıpları. Okuma amaçlı kullanımlar (dconf read,
-# git config --get) kurala takılmaz.
-side_effect_pattern='(^|[;&|[:space:]])(sudo|apt-get|apt|snap|chsh|gsettings[[:space:]]+set|dconf[[:space:]]+(write|reset|load)|git[[:space:]]+config[[:space:]]+--global[[:space:]]+[^-]|fc-cache)([[:space:]]|$)'
+# Sistemi değiştiren komut kalıpları: komut konumunda (satır başı ya da
+# ; & | ( sonrası) sudo/apt/snap/chsh, ya da herhangi bir yerde ayar yazan
+# alt komutlar. Okuma amaçlı kullanımlar (dconf read, git config --get)
+# kurala takılmaz.
+cmd_pattern='(^|[;&|(])[[:space:]]*(sudo|apt-get|apt|snap|chsh)[[:space:]]'
+write_pattern='gsettings[[:space:]]+set|dconf[[:space:]]+(write|reset|load)|git[[:space:]]+config[[:space:]]+--global[[:space:]]+[^-[:space:]]|fc-cache[[:space:]]'
 for file in "${SH_FILES[@]}"; do
     case "$file" in
         lib/actions/*|lib/sudo.sh|tests/*|scripts/*|install.sh) continue ;;
     esac
     is_legacy "$file" && continue
-    # Yorum satırlarını ve echo/printf ile yazılan yönergeleri atla.
-    if grep -nE "$side_effect_pattern" "$file" \
-        | grep -vE '^[0-9]+:[[:space:]]*#' \
-        | grep -vE '(echo|printf|ui_[a-z_]+|log_[a-z]+)[[:space:]]' \
-        | grep -q .; then
-        grep -nE "$side_effect_pattern" "$file" \
-            | grep -vE '^[0-9]+:[[:space:]]*#' \
-            | grep -vE '(echo|printf|ui_[a-z_]+|log_[a-z]+)[[:space:]]' \
-            | sed "s|^|  $file:|" >&2
+    hits=$(grep -nE "$cmd_pattern|$write_pattern" "$file" | grep -vE '^[0-9]+:[[:space:]]*#')
+    if [[ -n "$hits" ]]; then
+        printf '%s\n' "$hits" | sed "s|^|  $file:|" >&2
         fail "$file: lib/actions/ dışında sisteme dokunan komut"
     fi
 done

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Test taklidi: getent passwd KULLANICI
+echo "$2:x:1000:1000::$HOME:$(cat "$FAKE_ROOT/shell")"

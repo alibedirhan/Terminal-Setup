@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# Test taklidi: $FAKE_ROOT/dpkg.txt üzerinde çalışan apt-get.
+# Bağımlılıklar: $FAKE_ROOT/deps satırları "paket: bağ1 bağ2"
+# Paketlerin sağladığı komutlar: $FAKE_ROOT/provides "paket: komut1 komut2"
+set -u
+db="$FAKE_ROOT/dpkg.txt"
+deps_of() { awk -F': *' -v p="$1" '$1 == p { print $2 }' "$FAKE_ROOT/deps" 2>/dev/null; }
+rdeps_of() { awk -F': *' -v p="$1" '{ n = split($2, a, " "); for (i = 1; i <= n; i++) if (a[i] == p) print $1 }' "$FAKE_ROOT/deps" 2>/dev/null; }
+is_installed() { grep -qxF "$1" "$db"; }
+provides_of() { awk -F': *' -v p="$1" '$1 == p { print $2 }' "$FAKE_ROOT/provides" 2>/dev/null; }
+echo "apt-get $*" >> "$FAKE_ROOT/apt.log"
+
+simulate=0 action="" pkgs=()
+for a in "$@"; do
+    case "$a" in
+        -s) simulate=1 ;;
+        -o|DPkg::*) ;;
+        -*) ;;
+        install|purge|remove|update|autoremove) action="$a" ;;
+        *) pkgs+=("$a") ;;
+    esac
+done
+
+case "$action" in
+    update) exit 0 ;;
+    install)
+        [[ -f "$FAKE_ROOT/apt-fail" ]] && { echo "E: taklit hata" >&2; exit 100; }
+        install_one() {
+            local p="$1" d c
+            is_installed "$p" && return
+            for d in $(deps_of "$p"); do install_one "$d"; done
+            echo "$p" >> "$db"
+            for c in $(provides_of "$p"); do
+                if [[ -f "$FAKE_ROOT/impl-$c" ]]; then
+                    cp "$FAKE_ROOT/impl-$c" "$FAKE_ROOT/pkgbin/$c"
+                else
+                    printf '#!/bin/sh\necho "%s (taklit)"\n' "$c" > "$FAKE_ROOT/pkgbin/$c"
+                fi
+                chmod +x "$FAKE_ROOT/pkgbin/$c"
+            done
+        }
+        for p in "${pkgs[@]}"; do install_one "$p"; done
+        ;;
+    purge|remove)
+        declare -A rm=()
+        collect() {
+            local p="$1" r
+            [[ -n "${rm[$p]:-}" ]] && return
+            is_installed "$p" || return
+            rm[$p]=1
+            for r in $(rdeps_of "$p"); do collect "$r"; done
+        }
+        for p in "${pkgs[@]}"; do collect "$p"; done
+        if ((simulate)); then
+            for p in "${!rm[@]}"; do echo "Purg $p [1.0]"; done
+            exit 0
+        fi
+        for p in "${!rm[@]}"; do
+            grep -vxF "$p" "$db" > "$db.tmp"; mv "$db.tmp" "$db"
+            for c in $(provides_of "$p"); do rm -f "$FAKE_ROOT/pkgbin/$c"; done
+        done
+        ;;
+esac

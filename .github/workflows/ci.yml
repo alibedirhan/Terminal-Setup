@@ -21,7 +21,7 @@ jobs:
         run: bash scripts/check_static.sh
 
   unit:
-    name: Birim testleri (bats)
+    name: Birim ve entegrasyon testleri (bats)
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -29,11 +29,7 @@ jobs:
         run: git clone --depth 1 --branch v1.11.0 https://github.com/bats-core/bats-core.git "$RUNNER_TEMP/bats"
       - name: Testleri çalıştır
         run: |
-          if [ -d tests/unit ]; then
-            "$RUNNER_TEMP/bats/bin/bats" --print-output-on-failure tests/unit
-          else
-            echo "tests/unit henüz yok"
-          fi
+          "$RUNNER_TEMP/bats/bin/bats" --print-output-on-failure tests/unit tests/integration
 
   e2e:
     name: Gidiş-dönüş testi (${{ matrix.image }})
@@ -46,9 +42,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Temiz konteynerde kur, kaldır, karşılaştır
-        run: |
-          if [ -f tests/e2e/container.sh ]; then
-            docker run --rm -v "$PWD:/src:ro" "${{ matrix.image }}" bash /src/tests/e2e/container.sh
-          else
-            echo "tests/e2e/container.sh henüz yok"
-          fi
+        run: docker run --rm -v "$PWD:/src:ro" "${{ matrix.image }}" bash /src/tests/e2e/container.sh

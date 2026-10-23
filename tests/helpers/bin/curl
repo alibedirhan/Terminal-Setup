@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Test taklidi: -o HEDEF verilmişse taklit içerik yazar; ağa çıkmaz
+out=""
+while (($#)); do
+    case "$1" in
+        -o) out="$2"; shift ;;
+    esac
+    shift
+done
+[[ -f "$FAKE_ROOT/net-fail" ]] && exit 7
+[[ -n "$out" ]] && printf 'taklit indirme içeriği\n' > "$out"
+exit 0
