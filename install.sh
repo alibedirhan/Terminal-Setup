@@ -49,7 +49,8 @@ work=$(mktemp -d "${TMPDIR:-/tmp}/terminal-setup-install.XXXXXXXX")
 trap 'rm -rf -- "$work"' EXIT
 
 info "Terminal Setup $tag indiriliyor"
-base="https://github.com/$REPO/releases/download/$tag"
+# TS_RELEASE_BASE yalnızca testler içindir (ör. file:///yol/release)
+base="${TS_RELEASE_BASE:-https://github.com/$REPO/releases/download/$tag}"
 fetch "$base/$asset" "$work/$asset" || die "İndirilemedi: $base/$asset"
 fetch "$base/$asset.sha256" "$work/$asset.sha256" || die "Sağlama dosyası indirilemedi"
 

@@ -12,11 +12,12 @@ TS_SHELLS_FILE="${TS_SHELLS_FILE:-/etc/shells}"
 # act_gitcfg anahtar değer
 act_gitcfg() {
     local key="$1" value="$2" prev
-    has_cmd git || { log_err "git bulunamadı"; return 1; }
+    # Prova modunda git henüz kurulmamış olabilir (temel paketlerle gelir)
     if is_dry_run; then
         log_plan "git config --global $key '$value'"
         return 0
     fi
+    has_cmd git || { log_err "git bulunamadı"; return 1; }
     act_snapshot "$TS_GITCONFIG" || return 1
     if prev=$(git config --global --get "$key" 2>/dev/null); then
         ledger_add gitcfg "$key" "$(ledger_encode "$prev")"
@@ -29,11 +30,11 @@ act_gitcfg() {
 # act_dconf_key /yol/anahtar "GVariant-değeri"
 act_dconf_key() {
     local key="$1" value="$2" prev
-    has_cmd dconf || return 1
     if is_dry_run; then
         log_plan "dconf write $key $value"
         return 0
     fi
+    has_cmd dconf || return 1
     prev=$(dconf read "$key" 2>/dev/null)
     if [[ -n "$prev" ]]; then
         ledger_add dconf "$key" "$(ledger_encode "$prev")"

@@ -33,6 +33,16 @@ setup() {
     [ "$(ledger_decode "$(ledger_find gitcfg core.pager | cut -f4)")" = "less" ]
 }
 
+@test "prova modunda git kurulu olmasa da plan gösterilir" {
+    rm -f "$FAKE_ROOT/sysbin/git"
+    export PATH="${PATH//$REPO_ROOT\/tests\/helpers\/bin:/}"
+    ! has_cmd git
+    TS_DRY_RUN=1
+    run act_gitcfg core.pager delta
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"[plan] git config --global core.pager"* ]]
+}
+
 @test "dconf: önceden olmayan anahtar sıfırlanır" {
     act_dconf_key /org/test/key "'x'"
     [ "$(dconf read /org/test/key)" = "'x'" ]
