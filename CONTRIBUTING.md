@@ -1,31 +1,64 @@
 # Katkıda Bulunma
 
-Katkı göndermeden önce lütfen statik kontrolleri çalıştırın.
+Önce [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)'yi okuyun: katmanlar, defter kayıt türleri ve mimari kurallar orada.
+
+## Geliştirme ortamı
 
 ```bash
 git clone https://github.com/alibedirhan/Terminal-Setup.git
 cd Terminal-Setup
-
-bash scripts/check_static.sh
-bash scripts/check_repo_links.sh
+sudo apt install shellcheck
+git clone --depth 1 --branch v1.11.0 https://github.com/bats-core/bats-core.git ~/bats
 ```
 
-## Basit akış
+## Kontroller
 
 ```bash
-git checkout -b fix/kisa-aciklama
-# değişiklikleri yap
-git add .
-git commit -m "fix: kisa aciklama"
-git push origin fix/kisa-aciklama
+bash scripts/check_static.sh             # sözdizimi, ShellCheck, 600 satır, yan etki kuralı
+~/bats/bin/bats tests/unit tests/integration
 ```
 
-Sonra GitHub üzerinden Pull Request açın.
+Birim ve entegrasyon testleri sahte bir sistemde çalışır; gerçek sisteminize dokunmaz ve ağa çıkmaz. Gerçek gidiş-dönüş testi (Docker gerekir):
 
-## Dikkat edilmesi gerekenler
+```bash
+docker run --rm -v "$PWD:/src:ro" ubuntu:24.04 bash /src/tests/e2e/container.sh
+```
 
-- Kullanıcının shell/config dosyalarına dokunan her işlem yedekli olmalı.
-- Yeni indirme URL'leri açık ve okunabilir olmalı.
-- `curl | bash` tarzı doğrudan pipe kullanımı mümkün olduğunca tercih edilmemeli.
-- Ubuntu dışı sistemler için garanti vermeyin; destek durumunu açık yazın.
-- Kişisel isim, yerel dosya yolu veya özel bilgi commit etmeyin.
+CI bunların hepsini her push'ta çalıştırır.
+
+## Kurallar
+
+1. Sisteme dokunan her işlem `lib/actions/` içindeki bir `act_*` fonksiyonu üzerinden yapılır ve deftere yazılır. Doğrudan `apt-get`, `sudo`, `gsettings set`, `git config --global` kullanmayın.
+2. Script'ten önce var olan bir şey kaydedilmez ve kaldırmada silinmez.
+3. Yeni bileşen için kaldırma kodu yazmayın; defter geri almayı yapar. `verify` fonksiyonu doğru olsun.
+4. Hiçbir dosya 600 satırı geçmez. Büyüyen dosyayı sorumluluğa göre bölün.
+5. Yeni davranış için test ekleyin (`tests/unit` ya da `tests/integration`).
+6. `curl | sh` yok: harici betik önce dosyaya indirilir; mümkünse GitHub release'inden doğrudan ikili kullanılır.
+7. Kullanıcıya görünen metinler Türkçe, kısa ve somut.
+
+## Bileşen, tema ve terminal eklemek
+
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#bileşen-eklemek) içinde örneklerle anlatılıyor. Kısaca:
+
+- Bileşen: `components/<kategori>/<ad>.sh` — `component_register`, `comp_<ad>_install`, `comp_<ad>_verify`
+- Tema: `themes/<ad>.theme` — 16 renk + ön/arka plan
+- Terminal: `renderers/<ad>.sh` — `rend_<ad>_available`, `rend_<ad>_apply`
+
+## Akış
+
+```bash
+git checkout -b feat/kisa-aciklama
+# değişiklik + test
+git commit -m "feat: kısa açıklama"
+git push origin feat/kisa-aciklama
+```
+
+Sonra Pull Request açın. Commit mesajları [Conventional Commits](https://www.conventionalcommits.org/) biçiminde: `feat:`, `fix:`, `docs:`, `test:`, `chore:`.
+
+## Sürüm yayınlama (bakımcılar)
+
+```bash
+# CHANGELOG.md'ye "## [X.Y.Z] - TARİH" başlığı ekleyin, sonra:
+bash scripts/release.sh X.Y.Z            # taslak release
+bash scripts/release.sh X.Y.Z --publish  # doğrudan yayın
+```
