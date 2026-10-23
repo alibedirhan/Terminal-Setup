@@ -1,18 +1,17 @@
 # Destek
 
-Sorun yaşarsanız önce şu komutları çalıştırın:
+Sorun yaşarsanız önce:
 
 ```bash
-bash scripts/check_static.sh
-bash scripts/collect_logs.sh
+./terminal-setup.sh doctor        # sağlık kontrolü (düzeltme önerir)
+./terminal-setup.sh status        # neyin kurulu olduğu
+bash scripts/collect_logs.sh      # log paketi: terminal-setup-log-TARİH.tar.gz
 ```
 
-Issue açarken şunları paylaşın:
+Issue açarken şunları ekleyin:
 
-- Ubuntu sürümü
-- Terminal uygulaması
-- Hangi menü seçeneğinde sorun yaşandı?
-- Hata çıktısı
-- `logs/terminal_setup_logs_*.zip` dosyası
+- Ubuntu sürümü ve terminal uygulaması (GNOME Terminal, Ptyxis, Kitty, Alacritty)
+- Hangi adımda sorun yaşandığı ve hata çıktısı
+- Log paketi (paylaşmadan önce içine göz atın)
 
 GitHub Issues: https://github.com/alibedirhan/Terminal-Setup/issues

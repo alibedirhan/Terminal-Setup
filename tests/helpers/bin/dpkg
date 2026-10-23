@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Test taklidi: dpkg --audit her zaman temiz
+exit 0

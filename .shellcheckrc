@@ -1,0 +1,4 @@
+# Modüller ortak değişkenleri birbirinden okur (lib/core.sh tanımlar, diğerleri
+# kullanır). Dosyalar tek tek denetlendiği için "kullanılmıyor" uyarısı yanıltıcı.
+disable=SC2034
+external-sources=true

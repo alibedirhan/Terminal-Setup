@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Test taklidi: anahtarlar $FAKE_ROOT/dconf altında dosya olarak tutulur
+store="$FAKE_ROOT/dconf"
+enc() { printf '%s' "$1" | sed 's#/#%#g'; }
+case "$1" in
+    read) cat "$store/$(enc "$2")" 2>/dev/null; exit 0 ;;
+    write) printf '%s\n' "$3" > "$store/$(enc "$2")" ;;
+    reset) rm -f "$store/$(enc "$2")" ;;
+    dump)
+        prefix=$(enc "$2")
+        for f in "$store"/"$prefix"*; do
+            [[ -f "$f" ]] && printf '%s=%s\n' "$(basename "$f")" "$(cat "$f")"
+        done | sort ;;
+esac

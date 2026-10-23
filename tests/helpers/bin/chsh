@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Test taklidi: chsh -s KABUK [kullanıcı]
+[[ "$1" == "-s" ]] && echo "$2" > "$FAKE_ROOT/shell"

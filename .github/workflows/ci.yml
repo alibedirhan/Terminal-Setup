@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    name: Statik kontroller
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: ShellCheck kur
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+      - name: scripts/check_static.sh
+        run: bash scripts/check_static.sh
+
+  unit:
+    name: Birim ve entegrasyon testleri (bats)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: bats-core kur
+        run: git clone --depth 1 --branch v1.11.0 https://github.com/bats-core/bats-core.git "$RUNNER_TEMP/bats"
+      - name: Testleri çalıştır
+        run: |
+          "$RUNNER_TEMP/bats/bin/bats" --print-output-on-failure tests/unit tests/integration
+
+  e2e:
+    name: Gidiş-dönüş testi (${{ matrix.image }})
+    runs-on: ubuntu-24.04
+    needs: [static, unit]
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ["ubuntu:22.04", "ubuntu:24.04"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Temiz konteynerde kur, kaldır, karşılaştır
+        run: docker run --rm -v "$PWD:/src:ro" "${{ matrix.image }}" bash /src/tests/e2e/container.sh

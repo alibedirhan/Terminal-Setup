@@ -1,126 +1,75 @@
-# Terminal Setup Kurulum Rehberi
-
-Bu rehber Terminal Setup'ı güvenli şekilde denemek, kurmak, kontrol etmek ve kaldırmak için hazırlanmıştır.
-
-## En güvenli deneme yöntemi
-
-İlk denemeyi mümkünse sanal makinede, test kullanıcısında veya yeni kurulmuş Ubuntu oturumunda yapın. Script `.zshrc`, `.tmux.conf`, GNOME Terminal renk ayarları ve bazı CLI araçlarını değiştirebilir.
+# Kurulum Rehberi
 
 ## Gereksinimler
 
-```bash
-sudo apt update
-sudo apt install -y git curl wget
-```
+- Ubuntu 22.04, 24.04 veya 26.04 (x86_64 ya da ARM64)
+- Normal kullanıcı hesabı (root olarak çalıştırmayın) ve `sudo` yetkisi
+- İnternet bağlantısı (paketler apt'den, araçlar GitHub release'lerinden indirilir)
 
-## Repo üzerinden kurulum
+## Yöntem 1: Depoyu klonlayarak
 
 ```bash
+sudo apt install git        # git yoksa
 git clone https://github.com/alibedirhan/Terminal-Setup.git
 cd Terminal-Setup
-chmod +x terminal-setup.sh
 ./terminal-setup.sh
 ```
 
-## Hızlı installer ile kurulum
+## Yöntem 2: Hızlı başlatıcı (klonlamadan)
+
+`install.sh`, yayınlanmış son sürümü indirir, SHA-256 sağlamasını doğrular ve programı geçici bir dizinden çalıştırır. Programın kendisi diske kurulmaz.
 
 ```bash
 wget https://raw.githubusercontent.com/alibedirhan/Terminal-Setup/main/install.sh
-chmod +x install.sh
-./install.sh
+less install.sh             # çalıştırmadan önce okuyun
+bash install.sh             # menüyü aç
+bash install.sh uninstall   # sonradan her şeyi geri al
 ```
 
-`curl` kullanmak isterseniz:
+Belirli bir sürüm için: `TS_RELEASE=v6.0.0 bash install.sh`
+
+Güvenlik nedeniyle `curl ... | bash` biçimi önerilmez; betiği önce indirip okuyun.
+
+## İlk kurulum
+
+1. Menüden **Kurulum sihirbazı**'nı seçin.
+2. Profil seçin: `minimal`, `developer` (önerilen) ya da `full`. "özel" ile bileşenleri tek tek seçebilirsiniz.
+3. Tema seçin (sonradan "Tema dene" ile değiştirilebilir).
+4. Özeti onaylayın. İlk kurulumdan önce başlangıç fotoğrafı alınır.
+5. Kurulum bitince Powerlevel10k görünüm sihirbazını şimdi açmayı seçebilirsiniz.
+6. Terminali kapatıp yeniden açın.
+
+Etkileşimsiz kurulum:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/alibedirhan/Terminal-Setup/main/install.sh -o install.sh
-chmod +x install.sh
-./install.sh
+./terminal-setup.sh --yes install --profile developer --theme tokyo-night
+./terminal-setup.sh --yes install --components zsh,p10k,fzf,bat
 ```
 
-## Video/demodan önce kontrol
+Ne yapılacağını önceden görmek için başına `--dry-run` ekleyin.
 
-```bash
-bash scripts/check_static.sh
-bash scripts/check_repo_links.sh
-```
+## Kurulumdan sonra
 
-## Kurulum sonrası öneriler
+| Sorun | Çözüm |
+|---|---|
+| İkonlar kare görünüyor | Terminal tercihlerinden yazı tipini **MesloLGS NF** yapın (GNOME Terminal ve Ptyxis'te otomatik ayarlanır) |
+| Hâlâ bash açılıyor | Oturumu kapatıp açın; ya da `./terminal-setup.sh doctor` |
+| Renkler değişmedi | Yeni bir terminal penceresi açın; Ptyxis'te bir kez açıp temayı yeniden uygulayın |
+| Prompt görünümünü değiştirmek | zsh içinde `p10k configure` |
+| Bir araç çalışmıyor | `./terminal-setup.sh doctor --fix` |
 
-Terminali kapatıp açın. Zsh aktif değilse oturumu yeniden açmanız gerekebilir.
-
-```bash
-echo $SHELL
-zsh --version
-```
-
-Powerlevel10k ayarını tekrar açmak için:
-
-```bash
-p10k configure
-```
-
-## Sorun giderme
-
-Log dosyası:
-
-```text
-~/.terminal-setup/logs/terminal-setup.log
-```
-
-Log paketi toplamak için:
-
-```bash
-bash scripts/collect_logs.sh
-```
-
-Sağlık kontrolü:
-
-```bash
-./terminal-setup.sh --health
-```
-
-## Yedekten geri yükleme
-
-Kurulumdan önce ve geri yükleme öncesinde yedek alınır. Yedekleri menüden yönetebilirsiniz:
-
-```bash
-./terminal-setup.sh
-# Menü 7: Yedekler
-# 1: En son yedeği geri yükle
-# 2: Numara seçerek geri yükle
-# 3: Yedek klasörünü aç / göster
-```
-
-Yedek klasörü:
-
-```text
-~/.terminal-setup/backups
-```
+Sorun devam ederse: `bash scripts/collect_logs.sh` ile log paketi oluşturup [issue açın](https://github.com/alibedirhan/Terminal-Setup/issues).
 
 ## Kaldırma
 
 ```bash
-./terminal-setup.sh
-# Menü 9: Kaldır
+./terminal-setup.sh --dry-run uninstall   # önce planı görün
+./terminal-setup.sh uninstall             # geri al
+./terminal-setup.sh theme reset           # yalnızca renkleri geri al
 ```
 
-Yedek klasörü:
+Ayrıntılar için [README.md](README.md#kaldırma).
 
-```text
-~/.terminal-setup/backups
-```
+## v5'ten geçiş
 
-## Destek
-
-Sorun bildirirken şunları ekleyin:
-
-```bash
-lsb_release -a
-bash --version
-zsh --version
-bash scripts/check_static.sh
-bash scripts/collect_logs.sh
-```
-
-GitHub Issues: https://github.com/alibedirhan/Terminal-Setup/issues
+v5 değişiklik defteri tutmuyordu. v6 ile kurulum yapmadan önce v5'in bıraktıklarını temizlemek isterseniz menüde **Kaldır > v5 kurulumunu temizle** seçeneğini kullanın. Her kategori (dosyalar, `/usr/local/bin` araçları, git ayarları, giriş kabuğu, paketler) ayrıca sorulur; paketler varsayılan olarak kaldırılmaz çünkü v5'ten önce sizin kurmuş olabileceğiniz bilinemez.
