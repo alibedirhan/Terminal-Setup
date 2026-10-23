@@ -110,7 +110,7 @@ install_theme_gnome() {
     fi
     
     # Tema dosyasını yükle (ÖNCELİKLE!)
-    local theme_file="themes/${theme}.sh"
+    local theme_file="$SCRIPT_DIR/themes/${theme}.sh"
     if [[ -f "$theme_file" ]]; then
         # shellcheck source=/dev/null
         source "$theme_file"
@@ -152,7 +152,7 @@ install_theme_kitty() {
     fi
     
     # Tema dosyasını yükle (ÖNCELİKLE!)
-    local theme_file="themes/${theme}.sh"
+    local theme_file="$SCRIPT_DIR/themes/${theme}.sh"
     if [[ -f "$theme_file" ]]; then
         # shellcheck source=/dev/null
         source "$theme_file"
@@ -225,7 +225,7 @@ install_theme_alacritty() {
     fi
     
     # Tema dosyasını yükle (ÖNCELİKLE!)
-    local theme_file="themes/${theme}.sh"
+    local theme_file="$SCRIPT_DIR/themes/${theme}.sh"
     if [[ -f "$theme_file" ]]; then
         # shellcheck source=/dev/null
         source "$theme_file"

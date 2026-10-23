@@ -104,7 +104,8 @@ cleanup() {
     log_debug "Cleanup tamamlandı"
 }
 
-trap cleanup EXIT INT TERM
+trap cleanup EXIT
+trap 'echo; log_warning "İptal edildi"; exit 130' INT TERM
 
 # ============================================================================
 # ARGÜMAN İŞLEME

@@ -20,7 +20,7 @@ cleanup_sudo() {
 }
 
 # Trap ekle
-trap cleanup_sudo EXIT ERR INT TERM
+# Temizlik ana script'teki cleanup() tarafından yapılır (terminal-setup.sh).
 
 # ============================================================================
 # CLEAN OUTPUT HELPERS
@@ -414,13 +414,13 @@ _install_zsh_impl() {
     fi
     
     # apt update (retry ile)
-    if ! retry_command 3 30 sudo apt update; then
+    if ! retry_command 3 0 sudo apt update; then
         log_error "apt update başarısız!"
         return 1
     fi
     
     # Zsh kurulumu (retry ile)
-    if ! retry_command 3 30 sudo -E apt install -y -qq zsh; then
+    if ! retry_command 3 0 sudo -E apt install -y -qq zsh; then
         log_error "Zsh kurulumu başarısız!"
         return 1
     fi

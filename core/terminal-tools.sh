@@ -159,7 +159,7 @@ install_exa() {
     local cmd=""
     
     # Önce eza paketini dene (Ubuntu 24.04+)
-    if retry_command 3 30 sudo -E apt install -y -qq eza; then
+    if retry_command 3 0 sudo -E apt install -y -qq eza; then
         cmd="eza"
     else
         # Apt'den kurulamadı, GitHub'dan indir
@@ -226,7 +226,7 @@ install_bat() {
     fi
     
     # Kurulum (retry ile)
-    if ! retry_command 3 30 sudo -E apt install -y -qq bat; then
+    if ! retry_command 3 0 sudo -E apt install -y -qq bat; then
         log_error "Bat kurulumu başarısız!"
         return 1
     fi
@@ -264,7 +264,7 @@ install_ripgrep() {
     fi
     
     # Kurulum (retry ile)
-    if ! retry_command 3 30 sudo -E apt install -y -qq ripgrep; then
+    if ! retry_command 3 0 sudo -E apt install -y -qq ripgrep; then
         log_error "Ripgrep kurulumu başarısız!"
         return 1
     fi
@@ -306,7 +306,7 @@ install_fd() {
     fi
     
     # Kurulum (retry ile)
-    if ! retry_command 3 30 sudo -E apt install -y -qq fd-find; then
+    if ! retry_command 3 0 sudo -E apt install -y -qq fd-find; then
         log_error "Fd kurulumu başarısız!"
         return 1
     fi
@@ -354,7 +354,7 @@ install_delta() {
     fi
     
     # Önce apt'den dene (retry ile)
-    if retry_command 3 30 sudo -E apt install -y -qq git-delta; then
+    if retry_command 3 0 sudo -E apt install -y -qq git-delta; then
         log_success "Delta apt'den kuruldu"
     else
         # Apt başarısız, cargo ile dene
@@ -543,7 +543,7 @@ install_tldr() {
     # Kurulum (retry ile)
     export DEBIAN_FRONTEND=noninteractive
     
-    if ! retry_command 3 30 sudo -E apt install -y -qq tldr; then
+    if ! retry_command 3 0 sudo -E apt install -y -qq tldr; then
         log_error "TLDR kurulumu başarısız!"
         unset DEBIAN_FRONTEND
         return 1
@@ -582,7 +582,7 @@ install_btop() {
     export DEBIAN_FRONTEND=noninteractive
     
     # Kurulum (retry ile) - sudo'ya -E ekle, -qq ekle
-    if ! retry_command 3 30 sudo -E apt install -y -qq btop; then
+    if ! retry_command 3 0 sudo -E apt install -y -qq btop; then
         log_error "Btop kurulumu başarısız!"
         unset DEBIAN_FRONTEND  # ← EKLE BURAYA
         return 1
@@ -612,7 +612,7 @@ install_dust() {
     # Önce apt'den dene (retry ile)
     export DEBIAN_FRONTEND=noninteractive
     
-    if retry_command 3 30 sudo -E apt install -y -qq du-dust; then
+    if retry_command 3 0 sudo -E apt install -y -qq du-dust; then
         unset DEBIAN_FRONTEND
         if verify_command_installed "dust" "Dust"; then
             log_success "Dust apt'den kuruldu ve doğrulandı"
@@ -695,7 +695,7 @@ install_duf() {
     # Kurulum (retry ile)
     export DEBIAN_FRONTEND=noninteractive
     
-    if ! retry_command 3 30 sudo -E apt install -y -qq duf; then
+    if ! retry_command 3 0 sudo -E apt install -y -qq duf; then
         log_error "Duf kurulumu başarısız!"
         unset DEBIAN_FRONTEND
         return 1
@@ -730,7 +730,7 @@ install_procs() {
     fi
     
     # Kurulum (retry ile)
-    if ! retry_command 3 30 sudo snap install procs; then
+    if ! retry_command 3 0 sudo snap install procs; then
         log_error "Procs kurulumu başarısız!"
         return 1
     fi
