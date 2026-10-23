@@ -1,2 +1,10 @@
 #!/usr/bin/env bash
+# Test taklidi: gerçek fc-cache gibi kullanıcı önbelleği oluşturur ve
+# (fontconfig 2.13 gibi) taranan dizine .uuid bırakır
 echo "fc-cache $*" >> "$FAKE_ROOT/fc.log"
+mkdir -p "$HOME/.cache/fontconfig"
+touch "$HOME/.cache/fontconfig/CACHEDIR.TAG"
+for a in "$@"; do
+    [[ -d "$a" ]] && touch "$a/.uuid"
+done
+exit 0

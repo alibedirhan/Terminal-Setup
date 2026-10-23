@@ -42,6 +42,11 @@ undo_lines() {
     for ((i = ${#lines[@]} - 1; i >= 0; i--)); do
         line="${lines[i]}"
         IFS=$'\t' read -r comp type a1 a2 <<< "$line"
+        # Yazı tipi dosyaları bitince önbelleği hemen yenile; böylece önbellek
+        # dizinini silen kayıt (glob) bundan SONRA işlenir ve kalıntı kalmaz.
+        if ((FS_FONTS_CHANGED)) && ! [[ "$type" == "path" && "$a1" == "$TS_FONT_DIR"/* ]]; then
+            _undo_flush_font_cache
+        fi
         if [[ "$type" == "pkg" ]]; then
             pkgs+=("$a1")
             pkg_lines+=("$line")
@@ -58,10 +63,7 @@ undo_lines() {
             UNDO_FAILED=$((UNDO_FAILED + 1))
         fi
     done
-    if ((FS_FONTS_CHANGED)); then
-        act_font_cache
-        FS_FONTS_CHANGED=0
-    fi
+    ((FS_FONTS_CHANGED)) && _undo_flush_font_cache
     ((${#pkgs[@]} == 0)) && return 0
 
     pkg_purge_owned "${pkgs[@]}" || UNDO_FAILED=$((UNDO_FAILED + 1))
@@ -70,6 +72,13 @@ undo_lines() {
         IFS=$'\t' read -r comp type a1 a2 <<< "$line"
         pkg_installed "$a1" || ledger_remove_line "$line"
     done
+}
+
+# Yazı tipi dizini hâlâ yazı tipi içeriyorsa önbelleği yenile
+_undo_flush_font_cache() {
+    FS_FONTS_CHANGED=0
+    compgen -G "$TS_FONT_DIR/*" >/dev/null || return 0
+    act_font_cache
 }
 
 # Bir dosyaya hâlâ bağlı kayıt var mı? (blok ya da .gitconfig için git ayarı)

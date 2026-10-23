@@ -8,6 +8,10 @@ FONT_FILES=("MesloLGS NF Regular.ttf" "MesloLGS NF Bold.ttf" "MesloLGS NF Italic
 
 comp_fonts_install() {
     local f
+    # fc-cache kullanıcı önbelleği oluşturur; önceden yoksa kaldırmada silinir
+    act_glob "$HOME/.cache/fontconfig"
+    # fontconfig 2.13 (Ubuntu 22.04) yazı tipi dizinine .uuid dosyası bırakır
+    act_glob "$TS_FONT_DIR/.uuid"
     act_pkg fontconfig || return 1
     for f in "${FONT_FILES[@]}"; do
         act_download "$FONT_BASE_URL/${f// /%20}" "$TS_FONT_DIR/$f" || return 1
