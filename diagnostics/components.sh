@@ -15,10 +15,10 @@ diag_components_check() {
     local broken
     broken=$(_diag_broken_components | tr '\n' ' ')
     if [[ -n "$broken" ]]; then
-        echo "Bozuk: $broken(yeniden kurulabilir)"
+        diag_say "Bozuk: %s(yeniden kurulabilir)" "$broken"
         return 1
     fi
-    echo "$(ledger_components | grep -vcE '^(core|theme)$') bileşen sağlam"
+    diag_say "%s bileşen sağlam" "$(ledger_components | grep -vcE '^(core|theme)$')"
 }
 
 diag_components_fix() {

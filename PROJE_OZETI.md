@@ -19,7 +19,8 @@ Ubuntu'yu formatladıktan sonra terminali tek seferde kurar: Zsh, Oh My Zsh, Pow
 
 | Dizin | İçerik | Dosya |
 |---|---|---|
-| `lib/` | motor | 14 |
+| `lib/` | motor (dil desteği dahil) | 15 |
+| `locale/` | İngilizce çeviri katalogu | 1 |
 | `lib/ui/` | arayüz: renk, ölçü, terminal, çizim, sorular, menü | 6 |
 | `lib/actions/` | sisteme dokunan tek katman (yap + geri al + güncelle) | 6 |
 | `components/` | kabuk (5), araçlar (14), ekstra (2) | 21 |
@@ -28,7 +29,7 @@ Ubuntu'yu formatladıktan sonra terminali tek seferde kurar: Zsh, Oh My Zsh, Pow
 | `frontends/` | komut satırı, durum ekranı, menü ekranları | 9 |
 | `diagnostics/` | sağlık kontrolleri | 8 |
 | `profiles/` | minimal, developer, full | 3 |
-| `tests/` | 131 bats testi (13 dosya) + Docker gidiş-dönüş ve GNOME betikleri | 15 |
+| `tests/` | 144 bats testi (15 dosya) + Docker gidiş-dönüş ve GNOME betikleri | 17 |
 
 En büyük dosya 400 satırın altında; kural 600.
 

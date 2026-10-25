@@ -101,6 +101,19 @@ tui_ornek() {
 
 Özel çizim gereken ekranlar (tema tarayıcı gibi) bir çizim ve bir tuş fonksiyonu yazıp `ui_loop` ile birleştirir.
 
+## Dil desteği
+
+Arayüz Türkçe ve İngilizcedir (`lib/i18n.sh`). Kaynak dil Türkçedir: metinler kodda Türkçe yazılır ve çeviri anahtarı olarak kullanılır; İngilizce karşılıklar `locale/en.sh` içindeki `I18N_EN` dizisindedir.
+
+- Dil sırası: `--lang`, `TS_LANG`, `language` ayarı (`tr|en|auto`), sistem dili (`LC_ALL`, `LC_MESSAGES`, `LANG`; `tr*` ise Türkçe, değilse İngilizce).
+- `_t "Biçim %s" ARG...` çevirip `TR` değişkenine yazar; alt kabuk açmaz, `REPLY`'yi bozmaz. Zaten çevrilmiş bir metne uygulanırsa ona dokunmaz.
+- **Değişkenler metnin içine yazılmaz**, printf argümanı olur: `log_err "Bilinmeyen bileşen: %s" "$id"`. Böylece anahtar sabit kalır.
+- Metin alan arayüz fonksiyonları çeviriyi kendisi yapar: `log_*`, `ui_title`, `ui_section`, `ui_card_top`, `ui_confirm`, `ui_type_confirm`, `ui_menu`, `ui_checklist`, `ui_keys`, `diag_say`, `_verify_*`. Hazır satır alanlar (`ui_line`, `ui_center`, `ui_badge`, `ui_card_row`) ham metin alır; çeviriyi çağıran yapar.
+- Bileşen, tema ve profil adları/açıklamaları kayıtta Türkçe tutulur, gösterilirken çevrilir (`comp_label`). Dil menüden değişince ekran hemen yeni dilde çizilir.
+- Kullanıcının dosyalarına yazılan içerik (zsh parçalarındaki yorumlar) dile bağlı değildir; dil değişince dosyalar değişmez.
+
+Testler: `tests/unit/i18n.bats` katalogdaki her çevirinin `%s` sayısını denetler. `tests/integration/english.bats` tüm akışı İngilizce çalıştırır; `TS_I18N_MISSING` dosyasına düşen eksik çeviri ya da çıktıda kalan Türkçe metin (Türkçe harf veya katalogdaki bir cümle) testi düşürür. `tests/unit/tui_layout.bats` her ekranı İngilizce de her boyutta çizer.
+
 ## Güncelleme
 
 `update` komutu (`lib/upgrade.sh`) yalnızca script'in kurduğu parçaları yükseltir: GitHub'dan indirilen araçları son release'e, klonlanan depoları (Oh My Zsh, Powerlevel10k, eklentiler) son commit'e. apt paketleri sistemin işidir.
@@ -159,6 +172,7 @@ comp_bat_verify() { has_cmd batcat || has_cmd bat; }
 | Etkileşim | `tests/integration/tui_pty.bats` | tmux içinde gerçek terminalde tuşlarla gezinme, pencere boyutu değişimi, hızlı tuşta çöp olmaması, çıkışta ve Ctrl+C'de terminalin geri gelmesi |
 | Entegrasyon | `tests/integration/*.bats` | CLI üzerinden kur → kaldır → fotoğrafla aynı mı |
 | Uçtan uca | `tests/e2e/container.sh` | temiz Ubuntu 22.04/24.04/26.04 konteynerinde gerçek apt ve indirmelerle aynı döngü |
+| Dil | `tests/unit/i18n.bats`, `tests/integration/english.bats` | katalog tutarlılığı, dil seçimi, tüm akışın İngilizce çalışması ve Türkçe metin sızmaması |
 | GNOME | `tests/e2e/gnome.sh` | gerçek dconf + gsettings: yazılan her anahtar şemada var ve doğru tipte mi, kullanıcının ayarları korunuyor mu, kaldırınca `dconf dump /` aynı mı |
 
 Birim ve entegrasyon testleri sahte bir sistemde çalışır (`tests/helpers/`): `apt-get`, `dpkg-query`, `sudo`, `chsh`, `dconf`, `git clone` ve `curl` taklitleri geçici bir dizinde durum tutar; gerçek sisteme dokunulmaz, ağa çıkılmaz.

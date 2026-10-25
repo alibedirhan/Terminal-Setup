@@ -7,6 +7,8 @@ Ubuntu terminalini tek seferde güzel ve kullanışlı hale getiren, **yaptığ�
 ![Platform](https://img.shields.io/badge/Ubuntu-22.04%20%7C%2024.04%20%7C%2026.04-orange.svg)
 ![CI](https://github.com/alibedirhan/Terminal-Setup/actions/workflows/ci.yml/badge.svg)
 
+> **English:** the interface is also available in English — see [README.en.md](README.en.md).
+
 ## Neden farklı?
 
 Çoğu kurulum betiği sisteme bir şeyler ekler ama nasıl geri alınacağını bilmez. Terminal Setup üç şey yapar:
@@ -68,6 +70,10 @@ Menünün yaptığı her şey etkileşimsiz de yapılabilir:
 
 `--dry-run` her komutla çalışır: hiçbir şeyi değiştirmez, yalnızca planı gösterir.
 
+## Dil
+
+Arayüz Türkçe ve İngilizcedir. Sistem diliniz Türkçeyse Türkçe, değilse İngilizce açılır. Menüde **Ayarlar → Dil / Language** ile kalıcı olarak, komut satırında `--lang en` ya da `--lang tr` ile tek seferlik değiştirilebilir.
+
 ## Tema denemek
 
 "Tema dene" ekranında sol/sağ ok tuşlarıyla temalar arasında gezilir; 16 renk ve örnek bir prompt canlı önizlenir. Enter temayı uygular, `r` renkleri kurulum öncesine döndürür. Tema değiştirmek için araçları kaldırıp yeniden kurmak gerekmez.
@@ -109,7 +115,8 @@ Kendi zsh ayarlarınızı `~/.zshrc` içinde, `terminal-setup` bloğunun dışı
 
 ```text
 terminal-setup.sh   giriş noktası
-lib/                motor: defter, fotoğraf, eylemler, geri alma, çalıştırıcı
+lib/                motor: defter, fotoğraf, eylemler, geri alma, çalıştırıcı, dil
+locale/             İngilizce çeviriler (en.sh)
 components/         21 bileşen, her biri 10-40 satırlık tek dosya
 themes/             7 renk paleti (yalnızca veri)
 renderers/          paleti terminale çeviren 5 renderer
@@ -124,8 +131,9 @@ Mimari, kurallar ve yeni bileşen/tema/terminal ekleme: [docs/ARCHITECTURE.md](d
 ## Kalite
 
 - Her push'ta CI: ShellCheck (sıfır uyarı), 600 satır sınırı, "sisteme yalnızca `lib/actions/` dokunur" kuralı.
-- 131 birim, entegrasyon ve etkileşim testi, sahte bir sistem üzerinde (gerçek sisteme dokunmaz, ağa çıkmaz).
+- 144 birim, entegrasyon ve etkileşim testi, sahte bir sistem üzerinde (gerçek sisteme dokunmaz, ağa çıkmaz).
 - Temiz Ubuntu 22.04, 24.04 ve 26.04 konteynerlerinde gerçek gidiş-dönüş testi: tam kurulum → zsh oturumu → kaldırma → paket listesi, ev dizini, kabuk ve `/etc/shells` kurulum öncesiyle aynı mı?
+- İngilizce arayüz testi: tüm akış İngilizce çalıştırılır; çevirisi eksik ya da Türkçe kalan tek bir metin testi düşürür.
 - Aynı üç sürümde gerçek dconf ile GNOME Terminal ve Ptyxis testi: tema ve yazı tipi anahtarları şemaya uyuyor mu, kullanıcının kendi ayarları korunuyor mu, kaldırınca dconf eskisiyle aynı mı?
 
 ## Katkı ve destek

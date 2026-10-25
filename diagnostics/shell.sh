@@ -7,14 +7,14 @@ diag_shell_check() {
     local login
     login=$(sys_login_shell)
     if [[ "$(component_state zsh)" != "ours" ]]; then
-        echo "${login:-?} (Zsh bileşeni kurulu değil)"
+        diag_say "%s (Zsh bileşeni kurulu değil)" "${login:-?}"
         return 0
     fi
     if [[ "$login" == */zsh ]]; then
         echo "$login"
         return 0
     fi
-    echo "Zsh kurulu ama varsayılan kabuk $login"
+    diag_say "Zsh kurulu ama varsayılan kabuk %s" "$login"
     return 1
 }
 

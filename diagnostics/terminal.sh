@@ -10,7 +10,7 @@ diag_terminal_check() {
         found+=("${RENDERER_NAME[$id]}")
     done
     if ((${#found[@]} == 0)); then
-        echo "Desteklenen terminal yok; temalar uygulanamaz"
+        diag_say "Desteklenen terminal yok; temalar uygulanamaz"
         return 1
     fi
     echo "${found[*]}"

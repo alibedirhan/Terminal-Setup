@@ -70,7 +70,7 @@ act_mkdir() {
         p="$(dirname "$p")"
     done
     if is_dry_run; then
-        log_plan "mkdir -p $(ts_pretty_path "$target")"
+        log_plan "mkdir -p %s" "$(ts_pretty_path "$target")"
         return 0
     fi
     for p in "${created[@]}"; do
@@ -85,11 +85,11 @@ act_mkdir() {
 act_write_file() {
     local path="$1" content="$2" mode="${3:-644}"
     if [[ -e "$path" ]] && ! ledger_has path "$path"; then
-        log_err "Dosya kullanıcıya ait, üzerine yazılmadı: $(ts_pretty_path "$path")"
+        log_err "Dosya kullanıcıya ait, üzerine yazılmadı: %s" "$(ts_pretty_path "$path")"
         return 1
     fi
     if is_dry_run; then
-        log_plan "yaz $(ts_pretty_path "$path")"
+        log_plan "yaz %s" "$(ts_pretty_path "$path")"
         return 0
     fi
     act_mkdir "$(dirname "$path")" || return 1
@@ -105,12 +105,12 @@ act_download() {
         return 0
     fi
     if is_dry_run; then
-        log_plan "indir $(ts_pretty_path "$dest")"
+        log_plan "indir %s" "$(ts_pretty_path "$dest")"
         return 0
     fi
     act_mkdir "$(dirname "$dest")" || return 1
     tmp="$TS_TMP/dl.$RANDOM"
-    net_fetch "$url" "$tmp" || { log_err "İndirilemedi: $url"; return 1; }
+    net_fetch "$url" "$tmp" || { log_err "İndirilemedi: %s" "$url"; return 1; }
     act_path "$dest"
     mv -f "$tmp" "$dest"
 }
@@ -121,13 +121,13 @@ act_clone() {
     _act_recipe git "$url" "$dest"
     [[ -d "$dest/.git" ]] && return 0
     if is_dry_run; then
-        log_plan "git clone $url $(ts_pretty_path "$dest")"
+        log_plan "git clone %s %s" "$url" "$(ts_pretty_path "$dest")"
         return 0
     fi
     act_mkdir "$(dirname "$dest")" || return 1
     act_path "$dest"
     run_logged git clone --depth 1 --quiet "$url" "$dest" || {
-        log_err "Klonlanamadı: $url"
+        log_err "Klonlanamadı: %s" "$url"
         return 1
     }
 }
@@ -136,7 +136,7 @@ act_clone() {
 act_install_bin() {
     local src="$1" name="$2" dest="$TS_BIN_DIR/$2"
     if [[ -e "$dest" ]] && ! ledger_has path "$dest"; then
-        log_err "$(ts_pretty_path "$dest") zaten var ve size ait; üzerine yazılmadı"
+        log_err "%s zaten var ve size ait; üzerine yazılmadı" "$(ts_pretty_path "$dest")"
         return 1
     fi
     act_mkdir "$TS_BIN_DIR" || return 1
@@ -152,11 +152,11 @@ act_gh_binary() {
     _act_recipe gh "$repo" "$pat_x86" "$pat_arm" "$bin" "$name"
 
     if is_dry_run; then
-        log_plan "GitHub $repo -> $(ts_pretty_path "$TS_BIN_DIR/$name")"
+        log_plan "GitHub %s -> %s" "$repo" "$(ts_pretty_path "$TS_BIN_DIR/$name")"
         return 0
     fi
 
-    tag=$(gh_latest_tag "$repo") || { log_err "$repo: son sürüm bulunamadı"; return 1; }
+    tag=$(gh_latest_tag "$repo") || { log_err "%s: son sürüm bulunamadı" "$repo"; return 1; }
     _gh_fetch_bin "$repo" "$tag" "$pat_x86" "$pat_arm" "$bin" || return 1
     act_install_bin "$REPLY" "$name" || return 1
     tool_version_set "$name" "$tag"
@@ -169,15 +169,15 @@ _gh_fetch_bin() {
     local arch pattern asset work file
     REPLY=""
 
-    arch=$(sys_arch) || { log_err "Desteklenmeyen işlemci mimarisi: $(uname -m)"; return 1; }
+    arch=$(sys_arch) || { log_err "Desteklenmeyen işlemci mimarisi: %s" "$(uname -m)"; return 1; }
     [[ "$arch" == "x86_64" ]] && pattern="$pat_x86" || pattern="$pat_arm"
     asset=$(gh_find_asset "$repo" "$tag" "$pattern")
-    [[ -n "$asset" ]] || { log_err "$repo $tag: $arch için dosya yok"; return 1; }
+    [[ -n "$asset" ]] || { log_err "%s %s: %s için dosya yok" "$repo" "$tag" "$arch"; return 1; }
 
     work="$TS_TMP/gh.$RANDOM"
     mkdir -p "$work/x"
-    log_step "$repo $tag indiriliyor ($asset)"
-    gh_download "$repo" "$tag" "$asset" "$work/$asset" || { log_err "İndirilemedi: $asset"; return 1; }
+    log_step "%s %s indiriliyor (%s)" "$repo" "$tag" "$asset"
+    gh_download "$repo" "$tag" "$asset" "$work/$asset" || { log_err "İndirilemedi: %s" "$asset"; return 1; }
 
     case "$asset" in
         *.tar.gz|*.tgz) tar -xzf "$work/$asset" -C "$work/x" || return 1 ;;
@@ -189,7 +189,7 @@ _gh_fetch_bin() {
     esac
 
     file=$(find "$work/x" -type f -name "$bin" | head -1)
-    [[ -n "$file" ]] || { log_err "$asset içinde '$bin' bulunamadı"; return 1; }
+    [[ -n "$file" ]] || { log_err "%s içinde '%s' bulunamadı" "$asset" "$bin"; return 1; }
     REPLY="$file"
 }
 
@@ -220,7 +220,11 @@ fs_archive() {
     local src="$1" mode="$2" rel dest
     rel="${src#"$HOME"/}"
     if is_dry_run; then
-        log_plan "arşive $mode: $(ts_pretty_path "$src")"
+        if [[ "$mode" == "taşı" ]]; then
+            log_plan "arşive taşı: %s" "$(ts_pretty_path "$src")"
+        else
+            log_plan "arşive kopyala: %s" "$(ts_pretty_path "$src")"
+        fi
         return 0
     fi
     undo_archive_init
@@ -238,11 +242,11 @@ undo_path() {
     local p="$1"
     [[ -e "$p" || -L "$p" ]] || return 0
     if fs_is_protected "$p"; then
-        log_err "Korunan yol silinmedi: $p"
+        log_err "Korunan yol silinmedi: %s" "$p"
         return 1
     fi
     [[ "$p" == "$TS_FONT_DIR"/* ]] && FS_FONTS_CHANGED=1
-    is_dry_run && { log_plan "sil $(ts_pretty_path "$p")"; return 0; }
+    is_dry_run && { log_plan "sil %s" "$(ts_pretty_path "$p")"; return 0; }
     rm -rf -- "$p"
 }
 
@@ -253,7 +257,7 @@ undo_dir() {
         log_debug "Dizin boş değil, bırakıldı: $d"
         return 0
     fi
-    is_dry_run && { log_plan "rmdir $(ts_pretty_path "$d")"; return 0; }
+    is_dry_run && { log_plan "rmdir %s" "$(ts_pretty_path "$d")"; return 0; }
     rmdir -- "$d"
 }
 

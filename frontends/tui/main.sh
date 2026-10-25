@@ -39,7 +39,7 @@ tui_main_menu() {
         "Durum ve teşhis|Neler kurulu, sorun var mı|◎" \
         "Güncelle|Kurulan araçları son sürüme yükselt|↑" \
         "Kaldır|Görünümü sıfırla ya da tamamen kaldır|↺" \
-        "Ayarlar|Varsayılan profil, güncelleme kontrolü|≡" \
+        "Ayarlar|Dil, varsayılan profil, güncelleme kontrolü|≡" \
         "Çıkış||×"
 }
 
@@ -71,8 +71,10 @@ tui_status() {
 tui_goodbye() {
     ui_term_leave
     ui_gradient_text "Terminal Setup"
-    printf '%s %s\n' "$REPLY" "${U_MUTED}· görüşmek üzere${U_RST}"
+    _t "görüşmek üzere"
+    printf '%s %s\n' "$REPLY" "${U_MUTED}· ${TR}${U_RST}"
     if ((_TUI_ST_COUNT > 0)); then
-        printf '%s\n' "${U_MUTED}Değişiklikleri görmek için yeni bir terminal açın. Geri almak için: ./terminal-setup.sh uninstall${U_RST}"
+        _t "Değişiklikleri görmek için yeni bir terminal açın. Geri almak için: %s" "./terminal-setup.sh uninstall"
+        printf '%s\n' "${U_MUTED}${TR}${U_RST}"
     fi
 }

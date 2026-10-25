@@ -25,7 +25,9 @@ _legacy_existing() {
 }
 
 _legacy_step() {
-    local title="$1"
+    local title
+    _t "$1"
+    title="$TR"
     shift
     (($# == 0)) && return 1
     printf '\n%s\n' "${C_BOLD}$title${C_RESET}"
@@ -59,7 +61,7 @@ legacy_uninstall() {
         for p in "${items[@]}"; do fs_archive "$p" "taşı"; done
         # v5'in kurulum öncesi .zshrc yedeği varsa geri koy
         p=$(find "$LEGACY_DIR/backups" -name zshrc -path '*pre_install*' 2>/dev/null | sort | head -1)
-        [[ -n "$p" ]] && cp -p "$p" "$HOME/.zshrc" && log_ok "$(ts_pretty_path "$HOME/.zshrc") v5 öncesi yedeğinden geri yüklendi"
+        [[ -n "$p" ]] && cp -p "$p" "$HOME/.zshrc" && log_ok "%s v5 öncesi yedeğinden geri yüklendi" "$(ts_pretty_path "$HOME/.zshrc")"
     fi
 
     if has_cmd git && [[ "$(git config --global --get core.pager 2>/dev/null)" == "delta" ]]; then
@@ -78,7 +80,8 @@ legacy_uninstall() {
         pkg_installed "$p" && pkgs+=("$p")
     done
     if ((${#pkgs[@]} > 0)); then
-        printf '\n%s\n  %s\n' "${C_BOLD}v5'in kurmuş olabileceği paketler${C_RESET}" "${pkgs[*]}"
+        _t "v5'in kurmuş olabileceği paketler"
+        printf '\n%s\n  %s\n' "${C_BOLD}${TR}${C_RESET}" "${pkgs[*]}"
         log_warn "Bu paketleri v5'ten önce kendiniz kurmuş olabilirsiniz."
         if ! is_dry_run && ui_confirm "Paketler kaldırılsın mı?" h; then
             sudo_begin && run_logged as_root env DEBIAN_FRONTEND=noninteractive apt-get purge -y -q "${pkgs[@]}"
@@ -88,5 +91,5 @@ legacy_uninstall() {
     if [[ -d "$LEGACY_DIR" ]] && _legacy_step "v5 durum dizini (yedekler arşive taşınır)" "$LEGACY_DIR" && ! is_dry_run; then
         fs_archive "$LEGACY_DIR" "taşı"
     fi
-    is_dry_run || log_ok "v5 temizliği tamamlandı. Arşiv: $(ts_pretty_path "${TS_ARCHIVE_DIR:-yok}")"
+    is_dry_run || log_ok "v5 temizliği tamamlandı. Arşiv: %s" "$(ts_pretty_path "${TS_ARCHIVE_DIR:-yok}")"
 }

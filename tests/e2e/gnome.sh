@@ -124,6 +124,6 @@ echo "$USER_NAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-tester
 cp -r /src "$WORK"
 chown -R "$USER_NAME:$USER_NAME" "$WORK"
 
-su - "$USER_NAME" -c "dbus-run-session -- bash $WORK/tests/e2e/gnome.sh --user"
+su - "$USER_NAME" -c "TS_LANG=tr dbus-run-session -- bash $WORK/tests/e2e/gnome.sh --user"
 
 printf '\n\033[1;32mGNOME TESTİ BAŞARILI: tema gerçek dconf üzerinde uygulandı ve iz bırakmadan geri alındı.\033[0m\n'

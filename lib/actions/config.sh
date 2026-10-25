@@ -14,7 +14,7 @@ act_gitcfg() {
     local key="$1" value="$2" prev
     # Prova modunda git henüz kurulmamış olabilir (temel paketlerle gelir)
     if is_dry_run; then
-        log_plan "git config --global $key '$value'"
+        log_plan "git config --global %s '%s'" "$key" "$value"
         return 0
     fi
     has_cmd git || { log_err "git bulunamadı"; return 1; }
@@ -31,7 +31,7 @@ act_gitcfg() {
 act_dconf_key() {
     local key="$1" value="$2" prev
     if is_dry_run; then
-        log_plan "dconf write $key $value"
+        log_plan "dconf write %s %s" "$key" "$value"
         return 0
     fi
     has_cmd dconf || return 1
@@ -50,11 +50,11 @@ act_login_shell() {
     current=$(sys_login_shell)
     [[ "$current" == "$target" ]] && return 0
     if is_dry_run; then
-        log_plan "chsh -s $target"
+        log_plan "chsh -s %s" "$target"
         return 0
     fi
     if ! grep -qxF "$target" "$TS_SHELLS_FILE" 2>/dev/null; then
-        log_err "$target /etc/shells içinde yok"
+        log_err "%s /etc/shells içinde yok" "$target"
         return 1
     fi
     sudo_begin || return 1
@@ -71,7 +71,7 @@ act_login_shell() {
 undo_gitcfg() {
     local key="$1" prev="$2" section
     has_cmd git || return 0
-    is_dry_run && { log_plan "git config geri al: $key"; return 0; }
+    is_dry_run && { log_plan "git config geri al: %s" "$key"; return 0; }
     if [[ "$prev" == "NONE" ]]; then
         git config --global --unset-all "$key" 2>/dev/null || true
         # Boş kalan bölümü de kaldır ([delta] gibi)
@@ -87,7 +87,7 @@ undo_gitcfg() {
 undo_dconf() {
     local key="$1" prev="$2"
     has_cmd dconf || return 0
-    is_dry_run && { log_plan "dconf geri al: $key"; return 0; }
+    is_dry_run && { log_plan "dconf geri al: %s" "$key"; return 0; }
     if [[ "$prev" == "NONE" ]]; then
         dconf reset "$key"
     else
@@ -98,7 +98,7 @@ undo_dconf() {
 undo_shell() {
     local orig="$1"
     [[ -n "$orig" && "$(sys_login_shell)" != "$orig" ]] || return 0
-    is_dry_run && { log_plan "chsh -s $orig"; return 0; }
+    is_dry_run && { log_plan "chsh -s %s" "$orig"; return 0; }
     sudo_begin || return 1
     run_logged as_root chsh -s "$orig" "$USER"
 }

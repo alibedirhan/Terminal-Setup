@@ -88,5 +88,5 @@ update_check() {
     remote=$(curl -fsSL --max-time 4 -A "$NET_UA" \
         "https://raw.githubusercontent.com/alibedirhan/Terminal-Setup/main/VERSION" 2>/dev/null | tr -d '[:space:]')
     version_newer "$remote" "$TS_VERSION" || return 1
-    log_info "Yeni sürüm mevcut: $remote (kurulu: $TS_VERSION) — https://github.com/alibedirhan/Terminal-Setup"
+    log_info "Yeni sürüm mevcut: %s (kurulu: %s) — https://github.com/alibedirhan/Terminal-Setup" "$remote" "$TS_VERSION"
 }

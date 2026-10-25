@@ -50,22 +50,24 @@ _log_write() {
 }
 
 # Konsol satırları menünün kenar boşluğuna (UI_M) hizalanır; renkler ui.sh
-# yüklüyse onun paletinden, değilse temel renklerden gelir.
-log_info()  { _log_write INFO "$*";  printf '%s%s\n' "${UI_M:-}" "${U_INFO:-$C_BLUE}•${C_RESET} $*"; }
-log_ok()    { _log_write OK "$*";    printf '%s%s\n' "${UI_M:-}" "${U_OK:-$C_GREEN}✓${C_RESET} $*"; }
-log_warn()  { _log_write WARN "$*";  printf '%s%s\n' "${UI_M:-}" "${U_WARN:-$C_YELLOW}▲${C_RESET} $*" >&2; }
-log_err()   { _log_write ERROR "$*"; printf '%s%s\n' "${UI_M:-}" "${U_ERR:-$C_RED}✗${C_RESET} $*" >&2; }
+# yüklüyse onun paletinden, değilse temel renklerden gelir. Mesajlar
+# çevrilir; değişken içerenler printf biçimindedir (lib/i18n.sh):
+#   log_err "Bilinmeyen bileşen: %s" "$id"
+log_info()  { _t "$@"; _log_write INFO "$TR";  printf '%s%s\n' "${UI_M:-}" "${U_INFO:-$C_BLUE}•${C_RESET} $TR"; }
+log_ok()    { _t "$@"; _log_write OK "$TR";    printf '%s%s\n' "${UI_M:-}" "${U_OK:-$C_GREEN}✓${C_RESET} $TR"; }
+log_warn()  { _t "$@"; _log_write WARN "$TR";  printf '%s%s\n' "${UI_M:-}" "${U_WARN:-$C_YELLOW}▲${C_RESET} $TR" >&2; }
+log_err()   { _t "$@"; _log_write ERROR "$TR"; printf '%s%s\n' "${UI_M:-}" "${U_ERR:-$C_RED}✗${C_RESET} $TR" >&2; }
 log_debug() {
     _log_write DEBUG "$*"
     [[ "$TS_DEBUG" == "1" ]] && printf '%s\n' "${C_DIM}[debug] $*${C_RESET}" >&2
     return 0
 }
 
-# Kurulum adımı başlığı: log_step "Bat kuruluyor"
-log_step() { _log_write STEP "$*"; printf '%s%s\n' "${UI_M:-}" "${U_ACC:-$C_CYAN}◆${C_RESET} $*"; }
+# Kurulum adımı başlığı: log_step "%s kuruluyor" "Bat"
+log_step() { _t "$@"; _log_write STEP "$TR"; printf '%s%s\n' "${UI_M:-}" "${U_ACC:-$C_CYAN}◆${C_RESET} $TR"; }
 
-# Prova modunda yapılacak işlemi yazdır
-log_plan() { _log_write PLAN "$*"; printf '%s%s\n' "${UI_M:-}" "  ${U_PINK:-$C_MAGENTA}[plan]${C_RESET} ${U_MUTED:-}$*${C_RESET}"; }
+# Prova modunda yapılacak işlemi yazdır (komutlar çevrilmez; biçim verilirse çevrilir)
+log_plan() { _t "$@"; _log_write PLAN "$TR"; printf '%s%s\n' "${UI_M:-}" "  ${U_PINK:-$C_MAGENTA}[plan]${C_RESET} ${U_MUTED:-}$TR${C_RESET}"; }
 
 # Komutu çalıştır; çıktıyı log dosyasına yaz, çıkış kodunu döndür.
 run_logged() {

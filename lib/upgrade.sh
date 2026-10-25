@@ -42,16 +42,16 @@ upgrade_apply() {
     esac
     case "$UPG_RESULT" in
         updated)
-            log_ok "$label: $UPG_FROM -> $UPG_TO"
+            log_ok "%s: %s -> %s" "$label" "$UPG_FROM" "$UPG_TO"
             UPGRADE_DONE+=("$label") ;;
         planned)
             UPGRADE_DONE+=("$label") ;;
         current)
-            log_info "$label güncel ($UPG_TO)"
+            log_info "%s güncel (%s)" "$label" "$UPG_TO"
             UPGRADE_CURRENT+=("$label") ;;
         skipped) ;;
         *)
-            log_err "$label güncellenemedi"
+            log_err "%s güncellenemedi" "$label"
             UPGRADE_FAILED+=("$label") ;;
     esac
 }
@@ -62,7 +62,7 @@ _upgrade_targets() {
     if (($#)); then
         for id in "$@"; do
             if ! component_exists "$id"; then
-                log_err "Bilinmeyen bileşen: $id"
+                log_err "Bilinmeyen bileşen: %s" "$id"
                 return 1
             fi
         done
@@ -93,7 +93,7 @@ upgrade_run() {
     for id in $ids; do
         component_exists "$id" || continue
         if [[ "$(component_state "$id")" != ours ]]; then
-            (($#)) && log_info "${COMP_NAME[$id]} Terminal Setup ile kurulmadı; güncellenmez"
+            (($#)) && log_info "%s Terminal Setup ile kurulmadı; güncellenmez" "$(comp_label "$id")"
             continue
         fi
         upgrade_recipes "$id"
@@ -110,14 +110,14 @@ upgrade_summary() {
     ui_rule
     if ((${#UPGRADE_DONE[@]})); then
         if is_dry_run; then
-            log_info "Güncellenecek: ${UPGRADE_DONE[*]}"
+            log_info "Güncellenecek: %s" "${UPGRADE_DONE[*]}"
         else
-            log_ok "Güncellenen: ${UPGRADE_DONE[*]}"
+            log_ok "Güncellenen: %s" "${UPGRADE_DONE[*]}"
         fi
     elif ((${#UPGRADE_FAILED[@]} == 0)); then
         log_ok "Her şey güncel."
     fi
-    ((${#UPGRADE_FAILED[@]})) && log_err "Güncellenemeyen: ${UPGRADE_FAILED[*]} (ayrıntı: $TS_LOG_FILE)"
+    ((${#UPGRADE_FAILED[@]})) && log_err "Güncellenemeyen: %s (ayrıntı: %s)" "${UPGRADE_FAILED[*]}" "$TS_LOG_FILE"
     log_info "apt ile kurulan paketler sistemle birlikte güncellenir (Yazılım Güncelleyici ya da 'sudo apt upgrade')."
     return 0
 }

@@ -31,6 +31,12 @@ component_register() {
 
 component_exists() { [[ -n "${COMP_NAME[$1]:-}" ]]; }
 
+# Bileşenin (çevrilmiş) görünen adı: comp_label ID
+comp_label() {
+    _t "${COMP_NAME[$1]:-$1}"
+    printf '%s' "$TR"
+}
+
 # Görüntüleme ve kurulum sırası: profiles/full.profile'daki sıra esas alınır
 # (dosyalar alfabetik yüklendiği için), profilde olmayanlar sona eklenir.
 component_sort() {
@@ -77,7 +83,7 @@ _RESOLVED=()
 _resolve_visit() {
     local id="$1" dep
     in_list "$id" "${_RESOLVED[@]}" && return 0
-    component_exists "$id" || { log_err "Bilinmeyen bileşen: $id"; return 1; }
+    component_exists "$id" || { log_err "Bilinmeyen bileşen: %s" "$id"; return 1; }
     for dep in ${COMP_DEPS[$id]}; do
         _resolve_visit "$dep" || return 1
     done
@@ -109,7 +115,7 @@ profile_description() {
 
 profile_components() {
     local f="$TS_ROOT/profiles/$1.profile"
-    [[ -f "$f" ]] || { log_err "Profil bulunamadı: $1"; return 1; }
+    [[ -f "$f" ]] || { log_err "Profil bulunamadı: %s" "$1"; return 1; }
     grep -vE '^[[:space:]]*(#|$)' "$f" | awk '{ print $1 }'
 }
 
@@ -124,7 +130,7 @@ runner_prepare() {
         return 1
     fi
     if ! sys_is_supported; then
-        log_warn "Desteklenmeyen sistem: $(sys_os). Desteklenen: Ubuntu 22.04, 24.04, 26.04."
+        log_warn "Desteklenmeyen sistem: %s. Desteklenen: Ubuntu 22.04, 24.04, 26.04." "$(sys_os)"
         ui_confirm "Yine de devam edilsin mi?" h || return 1
     fi
     if ! is_dry_run && ! net_online; then
@@ -161,11 +167,11 @@ runner_install_one() {
     state=$(component_state "$id")
     case "$state" in
         ours)
-            log_ok "${COMP_NAME[$id]} zaten kurulu"
+            log_ok "%s zaten kurulu" "$(comp_label "$id")"
             RUN_SKIPPED+=("$id")
             return 0 ;;
         external)
-            log_info "${COMP_NAME[$id]} sistemde zaten var (size ait); dokunulmayacak"
+            log_info "%s sistemde zaten var (size ait); dokunulmayacak" "$(comp_label "$id")"
             TS_CURRENT_COMPONENT="$id"
             ledger_has note "external:$id" || ledger_add note "external:$id"
             RUN_SKIPPED+=("$id")
@@ -173,16 +179,16 @@ runner_install_one() {
     esac
 
     fn=$(_comp_fn "$id" install)
-    log_step "${C_BOLD}${COMP_NAME[$id]}${C_RESET} kuruluyor"
+    log_step "%s kuruluyor" "${C_BOLD}$(comp_label "$id")${C_RESET}"
     TS_CURRENT_COMPONENT="$id"
     if "$fn" && { is_dry_run || component_verify "$id"; }; then
-        is_dry_run || log_ok "${COMP_NAME[$id]} kuruldu"
+        is_dry_run || log_ok "%s kuruldu" "$(comp_label "$id")"
         RUN_INSTALLED+=("$id")
         TS_CURRENT_COMPONENT="core"
         return 0
     fi
     TS_CURRENT_COMPONENT="core"
-    log_err "${COMP_NAME[$id]} kurulamadı; yaptığı değişiklikler geri alınıyor"
+    log_err "%s kurulamadı; yaptığı değişiklikler geri alınıyor" "$(comp_label "$id")"
     is_dry_run || undo_component "$id"
     RUN_FAILED+=("$id")
     return 1
@@ -205,12 +211,12 @@ runner_summary() {
     printf '\n'
     ui_rule
     if is_dry_run; then
-        ((${#RUN_INSTALLED[@]})) && log_info "Kurulacak: ${RUN_INSTALLED[*]}"
+        ((${#RUN_INSTALLED[@]})) && log_info "Kurulacak: %s" "${RUN_INSTALLED[*]}"
     else
-        ((${#RUN_INSTALLED[@]})) && log_ok "Kurulan: ${RUN_INSTALLED[*]}"
+        ((${#RUN_INSTALLED[@]})) && log_ok "Kurulan: %s" "${RUN_INSTALLED[*]}"
     fi
-    ((${#RUN_SKIPPED[@]})) && log_info "Atlanan (zaten var): ${RUN_SKIPPED[*]}"
-    ((${#RUN_FAILED[@]})) && log_err "Kurulamayan: ${RUN_FAILED[*]} (ayrıntı: $TS_LOG_FILE)"
+    ((${#RUN_SKIPPED[@]})) && log_info "Atlanan (zaten var): %s" "${RUN_SKIPPED[*]}"
+    ((${#RUN_FAILED[@]})) && log_err "Kurulamayan: %s (ayrıntı: %s)" "${RUN_FAILED[*]}" "$TS_LOG_FILE"
     return 0
 }
 
@@ -227,11 +233,11 @@ runner_remove_component() {
         component_exists "$other" || continue
         read -ra deps <<< "${COMP_DEPS[$other]}"
         if in_list "$id" "${deps[@]}"; then
-            log_err "${COMP_NAME[$id]} kaldırılamaz: ${COMP_NAME[$other]} ona bağlı"
+            log_err "%s kaldırılamaz: %s ona bağlı" "$(comp_label "$id")" "$(comp_label "$other")"
             return 1
         fi
     done
-    log_step "${COMP_NAME[$id]:-$id} kaldırılıyor"
+    log_step "%s kaldırılıyor" "$(comp_label "$id")"
     UNDO_FAILED=0
     undo_component "$id"
     ((UNDO_FAILED == 0))

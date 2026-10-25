@@ -7,6 +7,10 @@
 # ============================================================================
 
 cli_usage() {
+    if [[ "$TS_LANG" == en ]] && declare -F cli_usage_en >/dev/null; then
+        cli_usage_en
+        return
+    fi
     cat <<EOF
 Terminal Setup $TS_VERSION — Ubuntu terminal özelleştirme aracı
 
@@ -33,6 +37,7 @@ Seçenekler:
   -y, --yes        Onay sorularını otomatik yanıtla
       --debug      Ayrıntılı çıktı
       --no-color   Renkleri kapat
+      --lang DİL   Arayüz dili: tr, en (varsayılan: sistem dili)
   -h, --help       Bu yardım
   -V, --version    Sürüm
 
@@ -45,19 +50,26 @@ EOF
 }
 
 cli_main() {
-    local args=()
+    local args=() lang="" info=""
     while (($#)); do
         case "$1" in
             -n|--dry-run) TS_DRY_RUN=1 ;;
             -y|--yes) TS_ASSUME_YES=1 ;;
             --debug) TS_DEBUG=1 ;;
             --no-color) C_RED="" C_GREEN="" C_YELLOW="" C_BLUE="" C_CYAN="" C_MAGENTA="" C_BOLD="" C_DIM="" C_RESET="" ;;
-            -h|--help) cli_usage; return 0 ;;
-            -V|--version) echo "Terminal Setup $TS_VERSION"; return 0 ;;
+            --lang) lang="${2:-}"; shift ;;
+            --lang=*) lang="${1#--lang=}" ;;
+            -h|--help) info=help ;;
+            -V|--version) info=version ;;
             *) args+=("$1") ;;
         esac
         shift
     done
+    i18n_init "$lang"
+    case "$info" in
+        help) cli_usage; return 0 ;;
+        version) echo "Terminal Setup $TS_VERSION"; return 0 ;;
+    esac
     ts_init || return 1
     is_dry_run && log_info "Prova modu: hiçbir şey değiştirilmeyecek."
 
@@ -77,7 +89,7 @@ cli_main() {
         verify) verify_against_baseline "${args[@]}" ;;
         list) cli_list "${args[@]}" ;;
         help) cli_usage ;;
-        *) log_err "Bilinmeyen komut: $cmd"; cli_usage; return 2 ;;
+        *) log_err "Bilinmeyen komut: %s" "$cmd"; cli_usage; return 2 ;;
     esac
 }
 
@@ -88,12 +100,12 @@ cli_install() {
             --profile) profile="${2:-}"; shift ;;
             --theme) theme="${2:-}"; shift ;;
             --components) components="${2:-}"; shift ;;
-            *) log_err "Bilinmeyen seçenek: $1"; return 2 ;;
+            *) log_err "Bilinmeyen seçenek: %s" "$1"; return 2 ;;
         esac
         shift
     done
     if [[ -n "$theme" ]] && ! theme_exists "$theme"; then
-        log_err "Tema bulunamadı: $theme (seçenekler: $(theme_list | tr '\n' ' '))"
+        log_err "Tema bulunamadı: %s (seçenekler: %s)" "$theme" "$(theme_list | tr '\n' ' ')"
         return 2
     fi
     if [[ -n "$components" ]]; then
@@ -105,7 +117,7 @@ cli_install() {
     fi
     runner_install "${ids[@]}" || rc=1
     if [[ -n "$theme" ]]; then
-        theme_apply "$theme" || log_warn "Tema uygulanamadı; daha sonra 'theme apply $theme' deneyin."
+        theme_apply "$theme" || log_warn "Tema uygulanamadı; daha sonra '%s' deneyin." "theme apply $theme"
     fi
     install_next_steps
     return "$rc"
@@ -114,23 +126,26 @@ cli_install() {
 # Kurulumdan sonra kullanıcıya ne yapacağını söyle
 install_next_steps() {
     is_dry_run && return 0
-    printf '\n%s\n' "${C_BOLD}Sıradaki adımlar${C_RESET}"
-    printf '  • Değişiklikleri görmek için terminali kapatıp yeniden açın (ya da: exec zsh)\n'
+    _t "Sıradaki adımlar"
+    printf '\n%s\n' "${C_BOLD}${TR}${C_RESET}"
+    _next_step "Değişiklikleri görmek için terminali kapatıp yeniden açın (ya da: exec zsh)"
     if [[ "$(component_state p10k)" == "ours" && ! -f "$HOME/.p10k.zsh" ]]; then
-        printf '  • Powerlevel10k sihirbazı ilk açılışta başlar (sonradan: p10k configure)\n'
+        _next_step "Powerlevel10k sihirbazı ilk açılışta başlar (sonradan: p10k configure)"
     fi
     if [[ "$(component_state fonts)" == "ours" ]]; then
-        printf '  • İkonlar kare görünürse terminal yazı tipini "MesloLGS NF" yapın\n'
+        _next_step "İkonlar kare görünürse terminal yazı tipini \"MesloLGS NF\" yapın"
     fi
-    printf '  • Her şeyi geri almak için: ./terminal-setup.sh uninstall\n'
+    _next_step "Her şeyi geri almak için: ./terminal-setup.sh uninstall"
 }
+
+_next_step() { _t "$@"; printf '  • %s\n' "$TR"; }
 
 cli_remove() {
     local id rc=0
     (($#)) || { log_err "Kaldırılacak bileşeni belirtin."; return 2; }
     for id in "$@"; do
         if ! ledger_component_has_entries "$id"; then
-            log_warn "$id: Terminal Setup tarafından kurulmamış; dokunulmadı."
+            log_warn "%s: Terminal Setup tarafından kurulmamış; dokunulmadı." "$id"
             continue
         fi
         runner_remove_component "$id" || rc=1
@@ -146,7 +161,8 @@ cli_theme() {
             for t in $(theme_list); do
                 theme_load "$t" >/dev/null || continue
                 [[ "$t" == "$current" ]] && printf '* ' || printf '  '
-                printf '%-12s %s\n' "$t" "${THEME[DESC]:-}"
+                _t "${THEME[DESC]:-}"
+                printf '%-12s %s\n' "$t" "$TR"
             done ;;
         preview) [[ -n "$name" ]] || { log_err "Tema adı gerekli"; return 2; }; theme_preview "$name" ;;
         apply)
@@ -154,7 +170,7 @@ cli_theme() {
             runner_prepare_light || return 1
             theme_apply "$name" ;;
         reset) appearance_reset ;;
-        *) log_err "Bilinmeyen tema komutu: $sub"; return 2 ;;
+        *) log_err "Bilinmeyen tema komutu: %s" "$sub"; return 2 ;;
     esac
 }
 
@@ -163,14 +179,19 @@ cli_list() {
     case "$what" in
         components)
             for cat in "${COMP_CATEGORIES[@]}"; do
-                printf '%s\n' "${C_BOLD}${COMP_CAT_LABEL[$cat]}${C_RESET}"
+                _t "${COMP_CAT_LABEL[$cat]}"
+                printf '%s\n' "${C_BOLD}${TR}${C_RESET}"
                 for id in $(component_ids_by_cat "$cat"); do
-                    printf '  %-12s %s\n' "$id" "${COMP_DESC[$id]}"
+                    _t "${COMP_DESC[$id]}"
+                    printf '  %-12s %s\n' "$id" "$TR"
                 done
             done ;;
         profiles)
-            for p in $(profile_list); do printf '%-10s %s\n' "$p" "$(profile_description "$p")"; done ;;
+            for p in $(profile_list); do
+                _t "$(profile_description "$p")"
+                printf '%-10s %s\n' "$p" "$TR"
+            done ;;
         themes) cli_theme list ;;
-        *) log_err "Bilinmeyen liste: $what"; return 2 ;;
+        *) log_err "Bilinmeyen liste: %s" "$what"; return 2 ;;
     esac
 }

@@ -90,10 +90,11 @@ ui_rule() {
     ui_line "${U_FAINT}$REPLY"
 }
 
-# Bölüm başlığı: "◆ Başlık" ve altında ince çizgi
+# Bölüm başlığı: "◆ Başlık" ve altında ince çizgi. Çevrilir: ui_title "Biçim %s" ARG...
 ui_title() {
     ((UI_FRAMING)) || { ui_layout; printf '\n'; }
-    ui_line "${U_ACC}◆${U_RST} ${U_BOLD}$*${U_RST}"
+    _t "$@"
+    ui_line "${U_ACC}◆${U_RST} ${U_BOLD}${TR}${U_RST}"
     ui_rule
 }
 
@@ -108,15 +109,20 @@ ui_section_str() {
 
 ui_section() {
     ((UI_FRAMING)) || ui_layout
-    ui_section_str "$1"
+    _t "$1"
+    ui_section_str "$TR"
     ui_line "$REPLY"
 }
 
-# Yuvarlak köşeli kart: ui_card_top "Başlık" ; ui_card_row "içerik" ; ui_card_bottom
+# Yuvarlak köşeli kart: ui_card_top "Başlık" [simge] ; ui_card_row "içerik" ; ui_card_bottom
+# Başlık çevrilir; satırlar ham metindir (çağıran çevirir).
 ui_card_top() {
-    local title="$1"
+    local title=""
     ((UI_FRAMING)) || ui_layout
-    if [[ -n "$title" ]]; then
+    if [[ -n "$1" ]]; then
+        _t "$1"
+        title="$TR"
+        [[ -n "${2:-}" ]] && title="${U_ACC}${2}${U_RST} ${title}"
         ui_vlen "$title"
         ui_repeat "─" $((UI_W - UI_LEN - 5))
         ui_line "${U_FAINT}╭─${U_RST} ${U_BOLD}${title}${U_RST} ${U_FAINT}${REPLY}╮"
@@ -140,10 +146,14 @@ ui_card_bottom() {
 
 # Tuş ipuçları metni -> REPLY: ui_keys_str "enter" "seç" "↑↓" "gez" ...
 # Önem sırasına göre verilir; içerik genişliğine sığmayan sondakiler atlanır.
+# Tuş adı ve açıklaması çevrilir.
 ui_keys_str() {
-    local keys="" item
+    local keys="" item key
     while (($# >= 2)); do
-        item="${U_CAP} $1 ${U_RST} ${U_MUTED}$2${U_RST}   "
+        _t "$1"
+        key="$TR"
+        _t "$2"
+        item="${U_CAP} ${key} ${U_RST} ${U_MUTED}${TR}${U_RST}   "
         ui_vlen "$keys$item"
         ((UI_LEN - 3 > UI_W)) && break
         keys+="$item"

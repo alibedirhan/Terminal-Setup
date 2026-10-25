@@ -3,6 +3,7 @@
 ## [Yayınlanmadı]
 
 ### Eklendi
+- **İngilizce arayüz:** Sistem dili Türkçe değilse arayüz İngilizce açılır. Menüde "Ayarlar → Dil / Language", komut satırında `--lang en|tr`. Çeviriler `locale/en.sh`'de; eksik ya da Türkçe kalan metni testler yakalar.
 - **`update` komutu** ve menüde "Güncelle": GitHub'dan kurulan araçlar son release'e, Oh My Zsh / Powerlevel10k / eklenti depoları son commit'e yükseltilir. Yalnızca Terminal Setup'ın kurduğu parçalar güncellenir; `--dry-run` ile önce plan görülebilir.
 - CI: Ubuntu 26.04 gidiş-dönüş testi; üç sürümde gerçek dconf ile GNOME Terminal ve Ptyxis testi.
 

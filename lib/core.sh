@@ -144,7 +144,7 @@ _ts_on_interrupt() {
 
 ts_init() {
     TS_TMP=$(mktemp -d "${TMPDIR:-/tmp}/terminal-setup.XXXXXXXX") || {
-        echo "Geçici dizin oluşturulamadı" >&2
+        log_err "Geçici dizin oluşturulamadı"
         return 1
     }
     trap _ts_run_exit_hooks EXIT
@@ -161,7 +161,7 @@ ts_load() {
     local engine=(
         log.sh
         ui/style.sh ui/text.sh ui/term.sh ui/draw.sh ui/prompt.sh ui/widgets.sh
-        net.sh sudo.sh settings.sh ledger.sh baseline.sh
+        net.sh sudo.sh settings.sh i18n.sh ledger.sh baseline.sh
         actions/pkg.sh actions/fs.sh actions/rc.sh actions/config.sh actions/legacy.sh
         actions/upgrade.sh undo.sh runner.sh upgrade.sh themes.sh verify.sh uninstall.sh doctor.sh
     )

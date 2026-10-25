@@ -16,6 +16,9 @@ setup_fakesys() {
     export TMPDIR="$BATS_TEST_TMPDIR/tmp"
     export USER="tester"
     export NO_COLOR=1
+    # Testler Türkçe metinleri bekler; İngilizce testler TS_LANG=en verir
+    export TS_LANG=tr
+    unset TS_I18N_MISSING
     unset TS_STATE_DIR TS_CONFIG_DIR TS_BIN_DIR TS_FONT_DIR TS_ARCHIVE_DIR TS_CORE_LOADED
     mkdir -p "$HOME" "$TMPDIR" "$FAKE_ROOT/pkgbin" "$FAKE_ROOT/dconf" "$FAKE_ROOT/releases"
     _make_sysbin

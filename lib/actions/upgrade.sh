@@ -39,15 +39,16 @@ act_upgrade_gh() {
         return 0
     fi
     current=$(tool_version_get "$name")
-    UPG_FROM="${current:-bilinmiyor}"
-    tag=$(gh_latest_tag "$repo") || { log_err "$repo: son sürüm bulunamadı"; return 1; }
+    _t "bilinmiyor"
+    UPG_FROM="${current:-$TR}"
+    tag=$(gh_latest_tag "$repo") || { log_err "%s: son sürüm bulunamadı" "$repo"; return 1; }
     UPG_TO="$tag"
     if [[ "$current" == "$tag" ]]; then
         UPG_RESULT=current
         return 0
     fi
     if is_dry_run; then
-        log_plan "$name $UPG_FROM -> $tag"
+        log_plan "%s %s -> %s" "$name" "$UPG_FROM" "$tag"
         UPG_RESULT=planned
         return 0
     fi
@@ -72,19 +73,19 @@ act_upgrade_git() {
     fi
     local_head=$(git -C "$dest" rev-parse HEAD 2>/dev/null)
     remote_head=$(git ls-remote "$url" HEAD 2>> "$TS_LOG_FILE" | cut -f1)
-    [[ -n "$remote_head" ]] || { log_err "$url: uzak depoya ulaşılamadı"; return 1; }
+    [[ -n "$remote_head" ]] || { log_err "%s: uzak depoya ulaşılamadı" "$url"; return 1; }
     UPG_FROM="${local_head:0:7}" UPG_TO="${remote_head:0:7}"
     if [[ "$local_head" == "$remote_head" ]]; then
         UPG_RESULT=current
         return 0
     fi
     if ! git -C "$dest" diff --quiet HEAD 2>/dev/null; then
-        log_warn "$(ts_pretty_path "$dest") içinde değiştirilmiş dosyalar var; güncellenmedi"
+        log_warn "%s içinde değiştirilmiş dosyalar var; güncellenmedi" "$(ts_pretty_path "$dest")"
         UPG_RESULT=skipped
         return 0
     fi
     if is_dry_run; then
-        log_plan "$(ts_pretty_path "$dest") $UPG_FROM -> $UPG_TO"
+        log_plan "%s %s -> %s" "$(ts_pretty_path "$dest")" "$UPG_FROM" "$UPG_TO"
         UPG_RESULT=planned
         return 0
     fi

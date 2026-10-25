@@ -1,0 +1,94 @@
+# Terminal Setup
+
+A setup tool that makes the Ubuntu terminal beautiful and useful in one go — and **can undo everything it does**. It installs Zsh, Oh My Zsh, Powerlevel10k, 7 color themes, 14 modern command-line tools and tmux from a single menu. If you don't like the result, one command returns the system to its pre-install state; nothing you had before is touched.
+
+![Version](https://img.shields.io/badge/version-6.0.0-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Platform](https://img.shields.io/badge/Ubuntu-22.04%20%7C%2024.04%20%7C%2026.04-orange.svg)
+![CI](https://github.com/alibedirhan/Terminal-Setup/actions/workflows/ci.yml/badge.svg)
+
+> Türkçe: [README.md](README.md)
+
+## Why it's different
+
+Most setup scripts add things to your system but don't know how to take them back. Terminal Setup does three things:
+
+1. **Baseline snapshot:** before the first install, the state of the system (packages, login shell, git and terminal settings) is recorded.
+2. **Change ledger:** every installed package, every created file and every changed setting is written down as one line.
+3. **Verified removal:** uninstall replays the ledger backwards, then compares the system with the snapshot and reports: `Result: no leftovers.`
+
+A package you already had (e.g. tmux) or a file you already had (e.g. your own `.zshrc`) is never removed. Data created by use, such as your command history, is not deleted either; it is moved to an archive folder.
+
+## What gets installed
+
+| Group | Components |
+|---|---|
+| Shell | Zsh (made the default shell), Oh My Zsh, Powerlevel10k, the MesloLGS NF font, autosuggestion and syntax-highlighting plugins |
+| Tools | fzf, zoxide, eza, bat, ripgrep, fd, delta, lazygit, btop, dust, duf, procs, atuin, tldr (tealdeer) |
+| Extras | tmux (themed status bar), handy aliases, and your existing `~/.bash_aliases` loaded in zsh |
+| Themes | Dracula, Nord, Gruvbox, Tokyo Night, Catppuccin, One Dark, Solarized |
+| Terminals | GNOME Terminal, Ptyxis (Ubuntu 25.10+), Kitty, Alacritty |
+
+Three ready-made profiles: **minimal** (shell), **developer** (shell + developer tools, the default) and **full** (everything).
+
+## Quick start
+
+```bash
+git clone https://github.com/alibedirhan/Terminal-Setup.git
+cd Terminal-Setup
+./terminal-setup.sh
+```
+
+The menu is driven with the arrow keys. To run a verified release without cloning (checked with SHA-256), see [INSTALL.md](INSTALL.md).
+
+## Language
+
+The interface is available in Turkish and English. It opens in Turkish when your system language is Turkish and in English otherwise. Change it permanently in **Settings → Dil / Language**, or for a single run with `--lang en` / `--lang tr`.
+
+## Command line
+
+Everything the menu does also works non-interactively:
+
+```bash
+./terminal-setup.sh install --profile full --theme nord   # install
+./terminal-setup.sh theme preview dracula                  # preview a theme in the terminal
+./terminal-setup.sh theme apply dracula                    # apply a theme
+./terminal-setup.sh theme reset                            # restore the original colors
+./terminal-setup.sh remove lazygit                         # remove one component
+./terminal-setup.sh update                                 # upgrade installed tools
+./terminal-setup.sh status                                 # what is installed
+./terminal-setup.sh doctor                                 # health check
+./terminal-setup.sh --dry-run uninstall                    # see what removal would do
+./terminal-setup.sh uninstall                              # undo everything
+```
+
+`--dry-run` works with every command: it changes nothing and only shows the plan.
+
+## Removal
+
+There are two levels:
+
+- **Reset the look:** the theme and terminal colors go back; the tools stay.
+- **Remove everything:** the plan is shown first and you type `remove` to confirm. Then the packages the tool installed are removed (a package another package still needs is skipped), downloaded tools, plugins and fonts are deleted, files such as `.zshrc`, `.gitconfig` and `.tmux.conf` return to their pre-install state, the login shell and terminal profile are restored, and the system is compared with the baseline snapshot.
+
+Only an archive folder, `~/terminal-setup-kaldirilan-DATE/`, is left behind. It contains the removal report, the log, your command history and the latest version of files you edited after installing. Delete it whenever you like.
+
+## Requirements
+
+- Ubuntu 22.04, 24.04 or 26.04 (x86_64 or ARM64)
+- Bash 4.4+
+- `sudo` rights and an internet connection
+
+## Quality
+
+- CI on every push: ShellCheck (zero warnings), a 600-line file limit, and the rule that only `lib/actions/` may change the system.
+- 144 unit, integration and interaction tests on a fake system (they never touch the real system or the network).
+- Real round-trip tests in clean Ubuntu 22.04, 24.04 and 26.04 containers: full install → zsh session → uninstall → are packages, home directory, shell and `/etc/shells` identical to before?
+- Real GNOME Terminal and Ptyxis tests with dconf on the same three releases.
+- An English interface test: the whole flow runs in English; a single untranslated or leftover Turkish string fails it.
+
+Architecture and how to add components, themes or terminals: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) (Turkish).
+
+## License
+
+MIT — see [LICENSE](LICENSE).

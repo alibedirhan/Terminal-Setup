@@ -44,7 +44,7 @@ theme_exists() { [[ -f "$TS_ROOT/themes/$1.theme" ]]; }
 # Tema dosyasını güvenli biçimde oku (source edilmez). THEME dizisini doldurur.
 theme_load() {
     local name="$1" file="$TS_ROOT/themes/$1.theme" key value i
-    theme_exists "$name" || { log_err "Tema bulunamadı: $name"; return 1; }
+    theme_exists "$name" || { log_err "Tema bulunamadı: %s" "$name"; return 1; }
     THEME=([ID]="$name")
     while IFS='=' read -r key value; do
         [[ "$key" =~ ^[A-Z0-9_]+$ ]] || continue
@@ -53,10 +53,10 @@ theme_load() {
         THEME[$key]="$value"
     done < "$file"
     for key in "${THEME_REQUIRED_KEYS[@]}"; do
-        [[ -n "${THEME[$key]:-}" ]] || { log_err "$name: $key eksik"; return 1; }
+        [[ -n "${THEME[$key]:-}" ]] || { log_err "%s: %s eksik" "$name" "$key"; return 1; }
     done
     for ((i = 0; i < 16; i++)); do
-        [[ "${THEME[COLOR$i]:-}" =~ ^#[0-9A-Fa-f]{6}$ ]] || { log_err "$name: COLOR$i geçersiz"; return 1; }
+        [[ "${THEME[COLOR$i]:-}" =~ ^#[0-9A-Fa-f]{6}$ ]] || { log_err "%s: %s geçersiz" "$name" "COLOR$i"; return 1; }
     done
 }
 
@@ -104,7 +104,8 @@ _tp_row() {
 }
 
 theme_preview_title() {
-    ui_line "  ${U_BOLD}${THEME[NAME]}${U_RST}  ${U_MUTED}${THEME[DESC]:-}${U_RST}"
+    _t "${THEME[DESC]:-}"
+    ui_line "  ${U_BOLD}${THEME[NAME]}${U_RST}  ${U_MUTED}${TR}${U_RST}"
 }
 
 # theme_preview_window [GENİŞLİK] — tema yüklü olmalı
@@ -122,13 +123,24 @@ theme_preview_window() {
     ui_padr "${TPB[BORDER]} ${TPF[COLOR1]}●${TPF[COLOR3]} ●${TPF[COLOR2]} ●${edge}${fg}${title}" "$w"
     ui_line "  $REPLY$rst"
     _tp_row "" "$w"
-    _tp_row " ${TPB[ACCENT]}${TPF[BACKGROUND]} ~/projeler ${TPB[COLOR2]} main ✓ ${bg}${fg} ls" "$w"
-    _tp_row " ${TPF[COLOR4]}src/  docs/  ${fg}README.md  ${TPF[COLOR2]}kur.sh  ${dim}.env" "$w"
+    local -a s
+    # shellcheck disable=SC2088  # yol değil, önizlemede görünen metin
+    _t "~/projeler"; s[0]="$TR"
+    _t "kur.sh"; s[1]="$TR"
+    _t "değiştirildi:"; s[2]="$TR"
+    _t "yeni dosya:"; s[3]="$TR"
+    _t "tema.sh"; s[4]="$TR"
+    _t "merhaba dünya"; s[5]="$TR"
+    _t "# yorum"; s[6]="$TR"
+    _tp_row " ${TPB[ACCENT]}${TPF[BACKGROUND]} ${s[0]} ${TPB[COLOR2]} main ✓ ${bg}${fg} ls" "$w"
+    _tp_row " ${TPF[COLOR4]}src/  docs/  ${fg}README.md  ${TPF[COLOR2]}${s[1]}  ${dim}.env" "$w"
     _tp_row " ${acc}❯ ${fg}git status" "$w"
-    _tp_row "   ${TPF[COLOR1]}değiştirildi:  lib/ui.sh" "$w"
-    _tp_row "   ${TPF[COLOR2]}yeni dosya:    tema.sh" "$w"
-    _tp_row " ${acc}❯ ${fg}echo ${TPF[COLOR3]}\"merhaba dünya\" ${dim}# yorum" "$w"
-    _tp_row " ${fg}merhaba dünya" "$w"
+    printf -v REPLY '%-14s' "${s[2]}"
+    _tp_row "   ${TPF[COLOR1]}${REPLY} lib/ui.sh" "$w"
+    printf -v REPLY '%-14s' "${s[3]}"
+    _tp_row "   ${TPF[COLOR2]}${REPLY} ${s[4]}" "$w"
+    _tp_row " ${acc}❯ ${fg}echo ${TPF[COLOR3]}\"${s[5]}\" ${dim}${s[6]}" "$w"
+    _tp_row " ${fg}${s[5]}" "$w"
     _tp_row " ${acc}❯ ${TPB[CURSOR]} ${bg}" "$w"
     ui_repeat "▀" "$w"
     ui_line "  ${TPF[BACKGROUND]}$REPLY$rst"
@@ -142,7 +154,8 @@ theme_preview_palette() {
     for row in 0 8; do
         line=""
         for ((i = row; i < row + 8; i++)); do line+="${TPB[COLOR$i]}$box"$'\033[0m '; done
-        if ((row == 0)); then ui_line "  $line ${U_MUTED}normal"; else ui_line "  $line ${U_MUTED}parlak"; fi
+        if ((row == 0)); then _t "normal"; else _t "parlak"; fi
+        ui_line "  $line ${U_MUTED}${TR}"
     done
 }
 
@@ -166,11 +179,11 @@ theme_apply() {
     theme_load "$name" || return 1
     TS_CURRENT_COMPONENT="theme"
     for id in $(renderers_available); do
-        log_step "${RENDERER_NAME[$id]}: ${THEME[NAME]} uygulanıyor"
+        log_step "%s: %s uygulanıyor" "${RENDERER_NAME[$id]}" "${THEME[NAME]}"
         if "rend_${id}_apply"; then
             applied=$((applied + 1))
         else
-            log_warn "${RENDERER_NAME[$id]} için tema uygulanamadı"
+            log_warn "%s için tema uygulanamadı" "${RENDERER_NAME[$id]}"
         fi
     done
     TS_CURRENT_COMPONENT="$owner"
@@ -179,7 +192,7 @@ theme_apply() {
         return 1
     fi
     settings_set theme "$name"
-    is_dry_run || log_ok "${THEME[NAME]} teması uygulandı. Yeni açılan pencerelerde görünür."
+    is_dry_run || log_ok "%s teması uygulandı. Yeni açılan pencerelerde görünür." "${THEME[NAME]}"
 }
 
 # Yazı tipini uygun terminallere ayarla (fonts bileşeni çağırır)
@@ -187,7 +200,7 @@ theme_apply_font() {
     local id
     for id in $(renderers_available); do
         declare -F "rend_${id}_font" >/dev/null || continue
-        "rend_${id}_font" || log_warn "${RENDERER_NAME[$id]} için yazı tipi ayarlanamadı"
+        "rend_${id}_font" || log_warn "%s için yazı tipi ayarlanamadı" "${RENDERER_NAME[$id]}"
     done
     return 0
 }

@@ -129,3 +129,20 @@ assert_terminal_restored() {
     screen | grep -q "İptal edildi"
     assert_terminal_restored
 }
+
+@test "dil menüden değiştirilir ve hemen uygulanır" {
+    start_menu
+    keys 7
+    wait_for "Dil / Language"
+    keys Enter
+    wait_for "English"
+    keys 3
+    wait_for "Settings"
+    keys q
+    wait_for "What would you like to do?"
+    grep -qx "language=en" "$HOME/.terminal-setup/settings"
+    keys q
+    wait_for "ÇIKIŞ=0"
+    screen | grep -q "see you"
+    assert_terminal_restored
+}
