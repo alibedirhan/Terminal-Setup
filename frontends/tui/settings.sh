@@ -4,7 +4,7 @@
 # ============================================================================
 
 tui_settings() {
-    local profiles=() items=() p upd cur_profile cur_upd cur_lang
+    local profiles=() items=() p upd cur_profile cur_upd cur_lang cur_tips
     while true; do
         upd=$(settings_get update_check on)
         _t "Şu an: %s" "$(settings_get default_profile developer)"
@@ -15,24 +15,37 @@ tui_settings() {
         _tui_language_name "$(settings_get language auto)"
         _t "Şu an: %s" "$TR"
         cur_lang="$TR"
+        _t "$(settings_get shell_tips off)"
+        _t "Her yeni terminalde bir kısayol göster. Şu an: %s" "$TR"
+        cur_tips="$TR"
         ui_menu "Ayarlar" \
             "Dil / Language|$cur_lang|▸" \
+            "Açılış ipucu|$cur_tips|▸" \
             "Varsayılan profil|$cur_profile|▸" \
             "Güncelleme kontrolü|$cur_upd|▸" \
             "Şimdi güncelleme ara||▸" \
             "Dosya konumları|Defter, fotoğraf, log nerede|▸" || return 0
         case "$UI_CHOICE" in
             0) tui_language ;;
-            1)
+            1) tui_run tui_toggle_tips ;;
+            2)
                 mapfile -t profiles < <(profile_list)
                 items=()
                 for p in "${profiles[@]}"; do items+=("$p|$(profile_description "$p")|▸"); done
                 ui_menu "Varsayılan profil" "${items[@]}" && settings_set default_profile "${profiles[UI_CHOICE]}" ;;
-            2) if [[ "$upd" == on ]]; then settings_set update_check off; else settings_set update_check on; fi ;;
-            3) tui_run tui_update_check ;;
-            4) tui_run tui_paths ;;
+            3) if [[ "$upd" == on ]]; then settings_set update_check off; else settings_set update_check on; fi ;;
+            4) tui_run tui_update_check ;;
+            5) tui_run tui_paths ;;
         esac
     done
+}
+
+tui_toggle_tips() {
+    if [[ "$(settings_get shell_tips off)" == on ]]; then
+        tips_shell_disable && log_ok "Açılış ipucu kapatıldı."
+    else
+        tips_shell_enable && log_ok "Açılış ipucu açıldı; yeni terminallerde görünür."
+    fi
 }
 
 tui_update_check() {
@@ -55,6 +68,7 @@ tui_language() {
     ui_menu "Dil / Language" "$TR|LANG=${LANG:-?}|▸" "Türkçe||▸" "English||▸" || return 0
     settings_set language "${LANGUAGE_CHOICES[UI_CHOICE]}"
     i18n_init "${LANGUAGE_CHOICES[UI_CHOICE]}"
+    tips_shell_refresh
     UI_HEADER_STALE=1
 }
 

@@ -4,6 +4,7 @@ ohmyzsh
 fonts
 p10k
 zsh-plugins
+fzf-tab
 aliases
 fzf
 zoxide

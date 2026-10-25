@@ -119,12 +119,12 @@ snap 1500
 for _ in 1 2 3 4 5 6; do keys Down; snap 300; done
 keys q
 wait_for "Ne yapmak istersiniz?"
-keys 5
+keys 6
 wait_for "Her şey güncel."
 snap 2500
 keys Enter
 wait_for "Ne yapmak istersiniz?"
-keys 7
+keys 8
 wait_for "Dil / Language"
 snap 1200
 keys Enter

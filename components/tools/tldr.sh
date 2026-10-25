@@ -3,6 +3,8 @@
 
 component_register tldr "tldr" tools "Kısa komut örnekleri" ""
 
+component_tip tldr "tldr tar" "Bir komutun kısa örneklerini göster"
+
 # Ubuntu 25.10'dan itibaren depoda "tldr" paketi yok; aynı komutu sağlayan
 # tealdeer 24.04'ten beri var (daha hızlı ve bakımı sürüyor). 22.04'te
 # yalnızca tldr paketi bulunur.

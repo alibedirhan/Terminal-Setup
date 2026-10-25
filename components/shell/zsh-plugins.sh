@@ -3,6 +3,9 @@
 
 component_register zsh-plugins "Zsh eklentileri" shell "Komut önerisi + sözdizimi renklendirme" "ohmyzsh"
 
+component_tip zsh-plugins "→" "Gri öneriyi kabul et"
+component_tip zsh-plugins "Alt+→" "Önerinin bir kelimesini al"
+
 ZSH_PLUGIN_DIR="$HOME/.oh-my-zsh/custom/plugins"
 
 comp_zsh_plugins_install() {

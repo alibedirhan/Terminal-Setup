@@ -3,6 +3,8 @@
 
 component_register p10k "Powerlevel10k" shell "Git durumunu gösteren hızlı prompt" "ohmyzsh fonts"
 
+component_tip p10k "p10k configure" "Prompt görünümünü yeniden seç"
+
 P10K_DIR="$HOME/.oh-my-zsh/custom/themes/powerlevel10k"
 
 comp_p10k_install() {

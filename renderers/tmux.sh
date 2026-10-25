@@ -6,7 +6,7 @@
 # ~/.config/terminal-setup/tmux.conf bu dosyayı "source-file -q" ile okur.
 # ============================================================================
 
-renderer_register tmux "tmux"
+renderer_register tmux "tmux" tool
 
 rend_tmux_available() {
     [[ -f "$TS_CONFIG_DIR/tmux.conf" ]]

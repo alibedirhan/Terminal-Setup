@@ -3,6 +3,8 @@
 
 component_register lazygit "lazygit" tools "Git arayüzü (lg)" ""
 
+component_tip lazygit "lg" "Git arayüzünü aç"
+
 comp_lazygit_install() {
     act_gh_binary jesseduffield/lazygit '_[Ll]inux_x86_64\.tar\.gz$' '_[Ll]inux_arm64\.tar\.gz$' lazygit || return 1
     act_zsh_snippet 60 lazygit "alias lg='lazygit'" || return 1

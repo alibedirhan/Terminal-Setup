@@ -19,10 +19,11 @@ tui_main() {
             0) tui_install_wizard ;;
             1) tui_theme_browser ;;
             2) tui_components ;;
-            3) tui_run tui_status ;;
-            4) tui_run upgrade_run ;;
-            5) tui_uninstall ;;
-            6) tui_settings ;;
+            3) tui_run tips_show ;;
+            4) tui_run tui_status ;;
+            5) tui_run upgrade_run ;;
+            6) tui_uninstall ;;
+            7) tui_settings ;;
             *) break ;;
         esac
     done
@@ -35,6 +36,7 @@ tui_main_menu() {
         "Kurulum sihirbazı|Profil ve tema seçerek adım adım kur|✦" \
         "Tema dene|7 temayı canlı önizle, beğenmezsen geri al|◐" \
         "Bileşenler|Araçları tek tek kur ya da kaldır|▦" \
+        "Kısayollar|Kurulan araçlar nasıl kullanılır|?" \
         "#Yönetim" \
         "Durum ve teşhis|Neler kurulu, sorun var mı|◎" \
         "Güncelle|Kurulan araçları son sürüme yükselt|↑" \

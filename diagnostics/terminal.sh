@@ -5,8 +5,7 @@ diag_register terminal "Terminal"
 
 diag_terminal_check() {
     local found=() id
-    for id in $(renderers_available); do
-        [[ "$id" == tmux ]] && continue
+    for id in $(renderers_available terminal); do
         found+=("${RENDERER_NAME[$id]}")
     done
     if ((${#found[@]} == 0)); then

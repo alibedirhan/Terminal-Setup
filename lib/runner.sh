@@ -161,6 +161,16 @@ runner_prepare_light() {
 
 RUN_INSTALLED=() RUN_SKIPPED=() RUN_FAILED=()
 
+# Kurulum ya da kaldırmadan sonra çağrılacak fonksiyonlar (üst katmanlar
+# kendini ekler; çalıştırıcı onları tanımaz): RUNNER_AFTER_CHANGE+=(fn)
+RUNNER_AFTER_CHANGE=()
+
+_runner_after_change() {
+    local fn
+    is_dry_run && return 0
+    for fn in "${RUNNER_AFTER_CHANGE[@]}"; do "$fn" || true; done
+}
+
 # Tek bileşeni kur; başarısızsa kayıtlarını geri al
 runner_install_one() {
     local id="$1" state fn
@@ -204,6 +214,7 @@ runner_install() {
         runner_install_one "$id" || true
     done
     runner_summary
+    _runner_after_change
     ((${#RUN_FAILED[@]} == 0))
 }
 
@@ -240,5 +251,6 @@ runner_remove_component() {
     log_step "%s kaldırılıyor" "$(comp_label "$id")"
     UNDO_FAILED=0
     undo_component "$id"
+    _runner_after_change
     ((UNDO_FAILED == 0))
 }

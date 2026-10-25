@@ -4,6 +4,10 @@
 
 component_register aliases "Alias'lar" extra "Örnek kısayollar; bash alias'larınızı zsh'e taşır" "zsh"
 
+component_tip aliases ".." "Üst dizine çık"
+component_tip aliases "gst" "git status"
+component_tip aliases "glg" "Git geçmişini grafikle göster"
+
 comp_aliases_install() {
     local f user_files=()
     act_zsh_snippet 90 aliases "$(cat "$TS_ROOT/aliases/aliases.zsh")" || return 1

@@ -9,6 +9,8 @@ SELECTION_BG="#33467C"
 SELECTION_FG="#C0CAF5"
 # tmux durum çubuğu vurgusu ve bölme kenarlığı
 ACCENT="#7AA2F7"
+# bat ve delta söz dizimi teması (yerleşik karşılığı yoksa: ansi)
+BAT_THEME="ansi"
 BORDER="#414868"
 COLOR0="#15161E"
 COLOR1="#F7768E"

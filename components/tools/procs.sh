@@ -3,6 +3,8 @@
 
 component_register procs "procs" tools "Modern ps" ""
 
+component_tip procs "procs ad" "Çalışan süreçleri ara"
+
 comp_procs_install() {
     act_pkg unzip || return 1
     act_gh_binary dalance/procs 'x86_64-linux\.zip$' 'aarch64-linux\.zip$' procs

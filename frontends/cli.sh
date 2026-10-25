@@ -27,6 +27,7 @@ Komutlar:
   theme apply TEMA              Temayı uygula
   theme reset                   Görünümü kurulum öncesine döndür
   status                        Neyin kurulu olduğunu göster
+  tips [--shell on|off]         Kurulan araçların kısayolları (ya da açılış ipucu)
   doctor [--fix]                Sağlık kontrolü (ve düzeltme)
   uninstall [--appearance]      Tamamen kaldır (ya da sadece görünümü sıfırla)
   verify [--strict]             Sistemi başlangıç fotoğrafıyla karşılaştır
@@ -83,6 +84,7 @@ cli_main() {
         update) upgrade_run "${args[@]}" ;;
         theme) cli_theme "${args[@]}" ;;
         status) status_show ;;
+        tips) cli_tips "${args[@]}" ;;
         doctor) run_doctor "${args[@]}" ;;
         uninstall)
             if [[ "${args[0]:-}" == "--appearance" ]]; then appearance_reset; else uninstall_all; fi ;;
@@ -139,6 +141,15 @@ install_next_steps() {
 }
 
 _next_step() { _t "$@"; printf '  • %s\n' "$TR"; }
+
+cli_tips() {
+    case "${1:-} ${2:-}" in
+        " ") tips_show ;;
+        "--shell on") tips_shell_enable && log_ok "Açılış ipucu açıldı; yeni terminallerde görünür." ;;
+        "--shell off") tips_shell_disable && log_ok "Açılış ipucu kapatıldı." ;;
+        *) log_err "Bilinmeyen seçenek: %s" "$*"; return 2 ;;
+    esac
+}
 
 cli_remove() {
     local id rc=0

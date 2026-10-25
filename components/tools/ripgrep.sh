@@ -3,6 +3,8 @@
 
 component_register ripgrep "ripgrep" tools "Çok hızlı içerik arama (rg)" ""
 
+component_tip ripgrep "rg kelime" "Dizinde çok hızlı içerik ara"
+
 comp_ripgrep_install() {
     act_pkg ripgrep || return 1
     act_write_file "$TS_CONFIG_DIR/ripgreprc" "--max-columns=150

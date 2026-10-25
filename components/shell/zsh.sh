@@ -9,10 +9,14 @@ _zsh_init_content() {
 # silinir. Kendi ayarlarınızı ~/.zshrc içinde, terminal-setup bloğunun dışına yazın.
 typeset -U path PATH
 path=("\$HOME/.local/bin" \$path)
+# TS_ZSH_TIMING tanımlıysa her parçanın süresi stderr'e yazılır (doctor kullanır)
+(( \${+TS_ZSH_TIMING} )) && zmodload zsh/datetime
 for _ts_snippet in "$TS_CONFIG_DIR"/zsh.d/*.zsh(N); do
+    (( \${+TS_ZSH_TIMING} )) && _ts_t=\$EPOCHREALTIME
     source "\$_ts_snippet"
+    (( \${+TS_ZSH_TIMING} )) && printf 'ts-timing %s %d\\n' "\${_ts_snippet:t:r}" \$(( (EPOCHREALTIME - _ts_t) * 1000 )) >&2
 done
-unset _ts_snippet
+unset _ts_snippet _ts_t
 INIT
 }
 

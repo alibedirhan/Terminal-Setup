@@ -98,6 +98,21 @@ act_write_file() {
         && mv -f "$path.ts-tmp" "$path"
 }
 
+# Kullanıcının sonradan değiştireceği bir ayar dosyasını yalnızca yoksa
+# oluştur. Kullanıcı verisi sayılır: üzerine yazılmaz, kaldırırken silinmez,
+# arşive taşınır. act_seed_file YOL İÇERİK
+act_seed_file() {
+    local path="$1" content="$2"
+    [[ -e "$path" ]] && return 0
+    if is_dry_run; then
+        log_plan "yaz %s" "$(ts_pretty_path "$path")"
+        return 0
+    fi
+    act_mkdir "$(dirname "$path")" || return 1
+    act_userdata "$path"
+    printf '%s\n' "$content" > "$path"
+}
+
 # İndirilen bir dosyayı yerleştir: act_download URL HEDEF
 act_download() {
     local url="$1" dest="$2" tmp
