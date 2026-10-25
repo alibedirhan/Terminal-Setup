@@ -26,6 +26,7 @@ TS_BASELINE_DIR="$TS_STATE_DIR/baseline"
 TS_FILES_DIR="$TS_STATE_DIR/files"   # değiştirilen dosyaların orijinal kopyaları
 TS_LOG_DIR="$TS_STATE_DIR/logs"
 TS_SETTINGS_FILE="$TS_STATE_DIR/settings"
+TS_VERSIONS_FILE="$TS_STATE_DIR/versions"   # GitHub'dan kurulan araçların sürümleri
 
 # Kaldırmada kullanıcı verisinin taşınacağı arşiv (kaldırma anında belirlenir)
 TS_ARCHIVE_DIR="${TS_ARCHIVE_DIR:-}"
@@ -104,6 +105,14 @@ sys_is_supported() {
 }
 
 # Kullanıcının /etc/passwd'deki giriş kabuğu
+# Ubuntu sürümü en az bu mu: sys_os_at_least 24.04
+sys_os_at_least() {
+    local id ver
+    read -r id ver <<< "$(sys_os)"
+    [[ "$ver" =~ ^[0-9]+(\.[0-9]+)*$ ]] || return 1
+    [[ "$(printf '%s\n%s\n' "$1" "$ver" | sort -V | head -n1)" == "$1" ]]
+}
+
 sys_login_shell() {
     getent passwd "$USER" 2>/dev/null | cut -d: -f7
 }
@@ -154,7 +163,7 @@ ts_load() {
         ui/style.sh ui/text.sh ui/term.sh ui/draw.sh ui/prompt.sh ui/widgets.sh
         net.sh sudo.sh settings.sh ledger.sh baseline.sh
         actions/pkg.sh actions/fs.sh actions/rc.sh actions/config.sh actions/legacy.sh
-        undo.sh runner.sh themes.sh verify.sh uninstall.sh doctor.sh
+        actions/upgrade.sh undo.sh runner.sh upgrade.sh themes.sh verify.sh uninstall.sh doctor.sh
     )
     for f in "${engine[@]}"; do
         # shellcheck source=/dev/null

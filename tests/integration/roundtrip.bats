@@ -163,3 +163,14 @@ home_listing() {
     run bash -c "EUID=0; source '$REPO_ROOT/lib/core.sh'; ts_load; runner_prepare" 2>&1
     [ "$status" -ne 0 ] || [[ "$output" == *root* ]]
 }
+
+@test "tldr paketi Ubuntu sürümüne göre seçilir" {
+    run ts --dry-run install --components tldr
+    [[ "$output" == *"apt-get install tealdeer"* ]]
+    printf 'ID=ubuntu\nVERSION_ID="26.04"\n' > "$TS_OS_RELEASE"
+    run ts --dry-run install --components tldr
+    [[ "$output" == *"apt-get install tealdeer"* ]]
+    printf 'ID=ubuntu\nVERSION_ID="22.04"\n' > "$TS_OS_RELEASE"
+    run ts --dry-run install --components tldr
+    [[ "$output" == *"apt-get install tldr"* ]]
+}

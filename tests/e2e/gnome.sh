@@ -106,7 +106,7 @@ fi
 # ---------------------------------------------------------------------------
 step "Hazırlık"
 apt-get update -qq
-apt-get install -y -qq --no-install-recommends sudo gnome-terminal dconf-cli dbus dbus-user-session > /dev/null
+apt-get install -y -qq --no-install-recommends sudo gnome-terminal dconf-cli libglib2.0-bin dbus dbus-user-session > /dev/null
 if apt-cache show ptyxis > /dev/null 2>&1; then
     apt-get install -y -qq --no-install-recommends ptyxis > /dev/null
     echo "Ptyxis kuruldu"
