@@ -69,7 +69,7 @@ assert_terminal_restored() {
     wait_for "işareti kaldırılanlar kaldırılır"
     keys Down Down Space q
     wait_for "Ne yapmak istersiniz?"
-    keys 6
+    keys 7
     wait_for "Dosya konumları"
     keys q q
     wait_for "ÇIKIŞ=0"
