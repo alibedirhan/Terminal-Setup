@@ -40,8 +40,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: ["ubuntu:22.04", "ubuntu:24.04"]
+        image: ["ubuntu:22.04", "ubuntu:24.04", "ubuntu:26.04"]
     steps:
       - uses: actions/checkout@v4
       - name: Temiz konteynerde kur, kaldır, karşılaştır
         run: docker run --rm -v "$PWD:/src:ro" "${{ matrix.image }}" bash /src/tests/e2e/container.sh
+
+  gnome:
+    name: GNOME ayar testi (${{ matrix.image }})
+    runs-on: ubuntu-24.04
+    needs: [static, unit]
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ["ubuntu:22.04", "ubuntu:24.04", "ubuntu:26.04"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gerçek dconf ile tema uygula, sıfırla, karşılaştır
+        run: docker run --rm -v "$PWD:/src:ro" "${{ matrix.image }}" bash /src/tests/e2e/gnome.sh
