@@ -62,7 +62,7 @@ assert_terminal_restored() {
     keys 2
     wait_for "Tema dene"
     keys Right Right
-    wait_for "3 / 7"
+    wait_for "3 / 12"
     keys q
     wait_for "Ne yapmak istersiniz?"
     keys 3

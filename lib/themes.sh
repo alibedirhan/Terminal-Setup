@@ -193,16 +193,18 @@ theme_apply() {
     done
     TS_CURRENT_COMPONENT="$owner"
     if ((applied == 0)); then
-        log_err "Desteklenen terminal bulunamadı (GNOME Terminal, Ptyxis, Kitty, Alacritty)."
+        log_err "Desteklenen terminal bulunamadı (GNOME Terminal, Ptyxis, Kitty, Alacritty, Ghostty, WezTerm)."
         return 1
     fi
     settings_set theme "$name"
     is_dry_run || log_ok "%s teması uygulandı. Yeni açılan pencerelerde görünür." "${THEME[NAME]}"
 }
 
-# Yazı tipini uygun terminallere ayarla (fonts bileşeni çağırır)
+# Seçili yazı tipini uygun terminallere ayarla (yazı tipi bileşenleri çağırır)
 theme_apply_font() {
     local id
+    font_current
+    TS_FONT_NAME="${FONT_FAMILY[$REPLY]}"
     for id in $(renderers_available); do
         declare -F "rend_${id}_font" >/dev/null || continue
         "rend_${id}_font" || log_warn "%s için yazı tipi ayarlanamadı" "${RENDERER_NAME[$id]}"

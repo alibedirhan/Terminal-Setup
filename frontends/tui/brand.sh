@@ -148,7 +148,7 @@ tui_hint() {
         TR="$msg $TR"
     elif [[ -z "$_TUI_ST_THEME" ]]; then
         _tui_bold "Tema dene"
-        _t "Kurulum tamam. %s ile 7 renk temasını canlı önizleyin." "$TR"
+        _t "Kurulum tamam. %s ile renk temalarını canlı önizleyin." "$TR"
     else
         _tui_bold "Kaldır"
         _t "Her şey yolunda. Beğenmezseniz %s her şeyi geri alır." "$TR"

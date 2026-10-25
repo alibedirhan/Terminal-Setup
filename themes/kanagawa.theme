@@ -1,0 +1,32 @@
+# Kanagawa — Terminal Setup renk paleti
+# Biçim: ANAHTAR="#RRGGBB". COLOR0-7 normal, COLOR8-15 parlak renkler.
+NAME="Kanagawa"
+DESC="Japon gravürlerinden mürekkep ve deniz tonları"
+BACKGROUND="#1F1F28"
+FOREGROUND="#DCD7BA"
+CURSOR="#C8C093"
+SELECTION_BG="#2D4F67"
+SELECTION_FG="#C8C093"
+# tmux durum çubuğu vurgusu ve bölme kenarlığı
+ACCENT="#7E9CD8"
+BORDER="#54546D"
+# bat ve delta söz dizimi teması (yerleşik karşılığı yoksa: ansi)
+BAT_THEME="ansi"
+# açık ya da koyu; PAIR: diğer tondaki eşi (Ptyxis sistemin tonunu izler)
+VARIANT="dark"
+COLOR0="#16161D"
+COLOR1="#C34043"
+COLOR2="#76946A"
+COLOR3="#C0A36E"
+COLOR4="#7E9CD8"
+COLOR5="#957FB8"
+COLOR6="#6A9589"
+COLOR7="#C8C093"
+COLOR8="#727169"
+COLOR9="#E82424"
+COLOR10="#98BB6C"
+COLOR11="#E6C384"
+COLOR12="#7FB4CA"
+COLOR13="#938AA9"
+COLOR14="#7AA89F"
+COLOR15="#DCD7BA"

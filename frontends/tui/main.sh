@@ -34,7 +34,7 @@ tui_main_menu() {
     ui_menu --hero --footer tui_hint "Ne yapmak istersiniz?" \
         "#Kurulum" \
         "Kurulum sihirbazı|Profil ve tema seçerek adım adım kur|✦" \
-        "Tema dene|7 temayı canlı önizle, beğenmezsen geri al|◐" \
+        "Tema dene|Temaları canlı önizle, beğenmezsen geri al|◐" \
         "Bileşenler|Araçları tek tek kur ya da kaldır|▦" \
         "Kısayollar|Kurulan araçlar nasıl kullanılır|?" \
         "#Yönetim" \

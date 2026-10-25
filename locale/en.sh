@@ -60,7 +60,7 @@ I18N_EN=(
     ["Kurulum sihirbazı"]="Setup wizard"
     ["Profil ve tema seçerek adım adım kur"]="Install step by step: pick a profile and theme"
     ["Tema dene"]="Try themes"
-    ["7 temayı canlı önizle, beğenmezsen geri al"]="Preview 7 themes live, undo if you don't like it"
+    ["Temaları canlı önizle, beğenmezsen geri al"]="Preview themes live, undo if you don't like it"
     ["Bileşenler"]="Components"
     ["Araçları tek tek kur ya da kaldır"]="Install or remove tools one by one"
     ["Yönetim"]="Manage"
@@ -85,7 +85,7 @@ I18N_EN=(
     ["İlk kez mi? %s ile başlayın; her adım geri alınabilir."]="First time? Start with %s; every step can be undone."
     ["%s bileşen bozuk görünüyor."]="%s component(s) look broken."
     ["%s ekranına bakın."]="See the %s screen."
-    ["Kurulum tamam. %s ile 7 renk temasını canlı önizleyin."]="Setup is done. Preview 7 color themes live with %s."
+    ["Kurulum tamam. %s ile renk temalarını canlı önizleyin."]="Setup is done. Preview the color themes live with %s."
     ["Her şey yolunda. Beğenmezseniz %s her şeyi geri alır."]="All good. If you don't like it, %s undoes everything."
     ["görüşmek üzere"]="see you"
     ["Değişiklikleri görmek için yeni bir terminal açın. Geri almak için: %s"]="Open a new terminal to see the changes. To undo: %s"
@@ -194,6 +194,16 @@ I18N_EN=(
     ["Bilimsel olarak dengelenmiş palet"]="A scientifically balanced palette"
     ["Tokyo Night"]="Tokyo Night"
     ["Modern mavi ve mor gece tonları"]="Modern blue and purple night tones"
+    ["Catppuccin Latte"]="Catppuccin Latte"
+    ["Pastel renkler, açık zemin"]="Pastel colors on a light background"
+    ["Gruvbox Light"]="Gruvbox Light"
+    ["Retro tonlar, krem zemin"]="Retro tones on a cream background"
+    ["Rosé Pine"]="Rosé Pine"
+    ["Sakin pembe ve mor; gece için yumuşak"]="Calm pinks and purples; soft for night work"
+    ["Kanagawa"]="Kanagawa"
+    ["Japon gravürlerinden mürekkep ve deniz tonları"]="Ink and sea tones from Japanese woodblock prints"
+    ["Everforest"]="Everforest"
+    ["Orman yeşilleri; uzun çalışmada göz yormaz"]="Forest greens; easy on the eyes for long sessions"
     ["Tema seçin"]="Choose a theme"
     ["Şu an uygulanan tema"]="Currently applied theme"
     ["Enter ile bu temayı terminalinize uygulayın."]="Press Enter to apply this theme to your terminal."
@@ -206,7 +216,7 @@ I18N_EN=(
     ["%s: %s geçersiz"]="%s: %s invalid"
     ["%s: %s uygulanıyor"]="%s: applying %s"
     ["%s için tema uygulanamadı"]="Could not apply the theme to %s"
-    ["Desteklenen terminal bulunamadı (GNOME Terminal, Ptyxis, Kitty, Alacritty)."]="No supported terminal found (GNOME Terminal, Ptyxis, Kitty, Alacritty)."
+    ["Desteklenen terminal bulunamadı (GNOME Terminal, Ptyxis, Kitty, Alacritty, Ghostty, WezTerm)."]="No supported terminal found (GNOME Terminal, Ptyxis, Kitty, Alacritty, Ghostty, WezTerm)."
     ["%s teması uygulandı. Yeni açılan pencerelerde görünür."]="%s theme applied. It shows in newly opened windows."
     ["%s için yazı tipi ayarlanamadı"]="Could not set the font for %s"
     ["btop ayarlarınız korunuyor; temayı btop'ta Options → color_theme → terminal-setup ile seçebilirsiniz."]="Your btop settings are kept; pick the theme in btop under Options → color_theme → terminal-setup."
@@ -216,6 +226,17 @@ I18N_EN=(
     ["Ptyxis"]="Ptyxis"
     ["Kitty"]="Kitty"
     ["Alacritty"]="Alacritty"
+    ["Ghostty"]="Ghostty"
+    ["WezTerm"]="WezTerm"
+    ["WezTerm ayarlarınız korunuyor; renkler için şunu ekleyin: %s"]="Your WezTerm settings are kept; for the colors add: %s"
+    ["Starship"]="Starship"
+    ["Hızlı ve sade prompt (Powerlevel10k yerine)"]="Fast, minimal prompt (instead of Powerlevel10k)"
+    ["starship preset -l"]="starship preset -l"
+    ["Hazır görünümleri listele"]="List the ready-made looks"
+    ["starship explain"]="starship explain"
+    ["Prompt'taki her parçanın ne olduğunu göster"]="Explain each part of the prompt"
+    ["Starship ve Powerlevel10k birlikte kullanılamaz; önce Powerlevel10k'yı kaldırın."]="Starship and Powerlevel10k can't be used together; remove Powerlevel10k first."
+    ["Starship ve Powerlevel10k birlikte kullanılamaz; önce Starship'i kaldırın."]="Starship and Powerlevel10k can't be used together; remove Starship first."
     ["~/projeler"]="~/projects"
     ["kur.sh"]="setup.sh"
     ["değiştirildi:"]="modified:"
@@ -466,6 +487,21 @@ I18N_EN=(
     ["git status"]="git status"
     ["Git geçmişini grafikle göster"]="Show git history as a graph"
 
+    # --- Yazı tipi seçimi ---------------------------------------------------
+    ["JetBrains Mono"]="JetBrains Mono"
+    ["Okunaklı kod yazı tipi (Nerd Font ikonlarıyla)"]="Readable coding font (with Nerd Font icons)"
+    ["Fira Code"]="Fira Code"
+    ["Bitişik harfli (=> !=) kod yazı tipi (Nerd Font)"]="Coding font with ligatures (=> !=) (Nerd Font)"
+    ["terminal-setup.sh font set jetbrains"]="terminal-setup.sh font set jetbrains"
+    ["terminal-setup.sh font set firacode"]="terminal-setup.sh font set firacode"
+    ["Bu yazı tipini seç"]="Choose this font"
+    ["Bilinmeyen yazı tipi: %s (seçenekler: %s)"]="Unknown font: %s (options: %s)"
+    ["%s kurulu değil; önce bileşeni kurun: %s"]="%s is not installed; install the component first: %s"
+    ["Yazı tipi: %s. Yeni açılan pencerelerde görünür."]="Font: %s. It shows in newly opened windows."
+    ["kurulu değil"]="not installed"
+    ["Yazı tipi adı gerekli"]="Font name required"
+    ["kurulu değil — Bileşenler'den kurun"]="not installed — install it from Components"
+
     # --- Sağlık kontrolü -----------------------------------------------------
     ["Sağlık kontrolü"]="Health check"
     ["Sorun bulunmadı."]="No problems found."
@@ -517,6 +553,7 @@ Commands:
   theme reset                   Restore the pre-install look
   status                        Show what is installed
   tips [--shell on|off]         Shortcuts of the installed tools (or the startup tip)
+  font list | font set NAME     List or choose fonts (meslo, jetbrains, firacode)
   doctor [--fix]                Health check (and fix)
   uninstall [--appearance]      Remove everything (or only reset the look)
   verify [--strict]             Compare the system with the baseline snapshot

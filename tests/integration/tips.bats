@@ -78,3 +78,24 @@ setup() {
     [ -d "$HOME/.oh-my-zsh/custom/plugins/fzf-tab" ]
     command -v fzf
 }
+
+@test "starship kurulur; powerlevel10k ile birlikte kurulamaz" {
+    run ts install --components starship
+    [ "$status" -eq 0 ]
+    [ -f "$HOME/.config/terminal-setup/zsh.d/90-starship.zsh" ]
+    [ "$(starship)" = "starship v0.1.0 (taklit)" ]
+    run ts install --components p10k
+    [ "$status" -ne 0 ]
+    [[ "$output" == *"birlikte kullanılamaz"* ]]
+    [ ! -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]
+    run ts uninstall
+    [[ "$output" == *"Sonuç: kalıntı yok."* ]]
+}
+
+@test "powerlevel10k kuruluyken starship reddedilir" {
+    ts install --components p10k
+    run ts install --components starship
+    [ "$status" -ne 0 ]
+    [[ "$output" == *"birlikte kullanılamaz"* ]]
+    [ ! -e "$HOME/.local/bin/starship" ]
+}

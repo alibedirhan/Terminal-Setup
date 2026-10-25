@@ -73,10 +73,19 @@ for f in "$WORK"/themes/*.theme; do
     printf '  ✓ %s → %s\n' "$(basename "$f" .theme)" "$t"
 done
 
+step "Yazı tipi seçimi (Fira Code Nerd Font)"
+as_user "./terminal-setup.sh --yes install --components font-firacode" || fail "Fira Code kurulamadı"
+as_user "fc-list : family" > /tmp/fonts.log
+grep -q "FiraCode Nerd Font" /tmp/fonts.log || fail "Fira Code fontconfig'te görünmüyor"
+as_user "./terminal-setup.sh font list" > /tmp/fontlist.log
+grep -q "^\* firacode" /tmp/fontlist.log || fail "Fira Code seçilmedi"
+as_user "./terminal-setup.sh --yes font set meslo" || fail "MesloLGS NF'ye dönülemedi"
+
 step "Açılış ipucu ve kısayollar"
 as_user "./terminal-setup.sh --yes tips --shell on" || fail "açılış ipucu açılamadı"
 as_user "zsh -n \$HOME/.config/terminal-setup/zsh.d/95-tips.zsh" || fail "ipucu parçası zsh sözdizimine uymuyor"
-as_user "./terminal-setup.sh tips" | grep -q "Ctrl+T" || fail "kısayollar listelenmedi"
+as_user "./terminal-setup.sh tips" > /tmp/tips.log || fail "kısayollar ekranı hata verdi"
+grep -q "Ctrl+T" /tmp/tips.log || fail "kısayollar listelenmedi"
 
 step "Etkileşimli zsh oturumu (önbellek ve geçmiş dosyaları oluşsun)"
 as_user "TERM=xterm-256color POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true script -qec 'zsh -i -c \"z --help >/dev/null; ls >/dev/null; exit\"' /dev/null" \

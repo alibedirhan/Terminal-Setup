@@ -9,9 +9,11 @@ SELECTION_BG="#4C566A"
 SELECTION_FG="#ECEFF4"
 # tmux durum çubuğu vurgusu ve bölme kenarlığı
 ACCENT="#88C0D0"
+BORDER="#4C566A"
 # bat ve delta söz dizimi teması (yerleşik karşılığı yoksa: ansi)
 BAT_THEME="Nord"
-BORDER="#4C566A"
+# açık ya da koyu; PAIR: diğer tondaki eşi (Ptyxis sistemin tonunu izler)
+VARIANT="dark"
 COLOR0="#3B4252"
 COLOR1="#BF616A"
 COLOR2="#A3BE8C"

@@ -53,6 +53,7 @@ duf: duf
 tldr: tldr
 tealdeer: tldr
 unzip: unzip
+xz-utils: xz
 curl: curl
 EOF
     _make_release_fixtures
@@ -65,7 +66,7 @@ _make_sysbin() {
     mkdir -p "$FAKE_ROOT/sysbin"
     for tool in bash sh env awk sed grep tar gzip python3 find comm sort uniq head tail wc cut tr \
         cat cp mv rm mkdir rmdir ln ls chmod install date mktemp base64 dirname basename readlink \
-        cmp diff tee sleep kill touch id uname paste xargs stat git tput stty true false; do
+        cmp diff tee sleep kill touch id uname paste xargs stat git tput stty true false xz; do
         path=$(PATH=/usr/bin:/bin command -v "$tool") && ln -sf "$path" "$FAKE_ROOT/sysbin/$tool"
     done
 }
@@ -82,6 +83,7 @@ _make_release_fixtures() {
         "bootandy/dust|v0.1.0|dust-v0.1.0-x86_64-unknown-linux-musl.tar.gz|dust"
         "dalance/procs|v0.1.0|procs-v0.1.0-x86_64-linux.zip|procs"
         "atuinsh/atuin|v0.1.0|atuin-x86_64-unknown-linux-musl.tar.gz|atuin"
+        "starship/starship|v0.1.0|starship-x86_64-unknown-linux-musl.tar.gz|starship"
     )
     for spec in "${specs[@]}"; do
         IFS='|' read -r repo tag asset bin <<< "$spec"
@@ -98,6 +100,19 @@ _make_release_fixtures() {
             tar -czf "$dir/assets/$asset" -C "$(dirname "$work")" "pkg-$bin"
         fi
     done
+    # Nerd Fonts: .tar.xz içinde yazı tipleri (NL varyantı kurulmamalı)
+    local nf="$FAKE_ROOT/releases/ryanoasis__nerd-fonts" font
+    mkdir -p "$nf/assets"
+    echo "v3.0.0" > "$nf/tag"
+    for font in JetBrainsMono FiraCode; do
+        mkdir -p "$BATS_TEST_TMPDIR/build-$font"
+        touch "$BATS_TEST_TMPDIR/build-$font/${font}NerdFont-Regular.ttf" \
+            "$BATS_TEST_TMPDIR/build-$font/${font}NerdFont-Bold.ttf" \
+            "$BATS_TEST_TMPDIR/build-$font/${font}NLNerdFont-Regular.ttf"
+        tar -cJf "$nf/assets/$font.tar.xz" -C "$BATS_TEST_TMPDIR/build-$font" .
+    done
+    # apt ile "xz-utils" kurulunca gerçek xz'ye yönlenen bir taklit gelsin
+    printf '#!/bin/sh\nexec %s "$@"\n' "$(PATH=/usr/bin:/bin command -v xz)" > "$FAKE_ROOT/impl-xz"
     # apt ile "unzip" kurulunca gerçekten açan bir taklit gelsin (python ile)
     cat > "$FAKE_ROOT/impl-unzip" <<'EOF'
 #!/usr/bin/env bash

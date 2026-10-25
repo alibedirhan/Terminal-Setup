@@ -163,7 +163,7 @@ ts_load() {
         ui/style.sh ui/text.sh ui/term.sh ui/draw.sh ui/prompt.sh ui/widgets.sh
         net.sh sudo.sh settings.sh i18n.sh ledger.sh baseline.sh
         actions/pkg.sh actions/fs.sh actions/rc.sh actions/config.sh actions/legacy.sh
-        actions/upgrade.sh undo.sh runner.sh tips.sh upgrade.sh themes.sh verify.sh uninstall.sh doctor.sh
+        actions/upgrade.sh undo.sh runner.sh tips.sh fonts.sh upgrade.sh themes.sh verify.sh uninstall.sh doctor.sh
     )
     for f in "${engine[@]}"; do
         # shellcheck source=/dev/null

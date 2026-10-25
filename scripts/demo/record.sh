@@ -100,16 +100,17 @@ theme_tour() {
     keys 2
     wait_for "$3"
     snap 1600
-    for _ in 1 2 3 4 5 6 7; do
+    local i themes=("$ROOT"/themes/*.theme)
+    for ((i = 1; i < ${#themes[@]}; i++)); do
         keys Right
-        snap 1300
+        snap 1200
     done
     render_gif "$4"
 }
 theme_tour tr "Ne yapmak istersiniz?" "Tema dene" tema-dene.gif
 theme_tour en "What would you like to do?" "Try themes" theme-browser.gif
 
-# 3. Menü turu: gezinme, bileşenler, güncelleme, dil değiştirme
+# 3. Menü turu: gezinme, bileşenler, kısayollar, güncelleme, dil değiştirme
 start_menu tr "Ne yapmak istersiniz?"
 snap 1800
 for _ in 1 2 3; do keys Down; snap 350; done
@@ -118,6 +119,11 @@ wait_for "işareti kaldırılanlar"
 snap 1500
 for _ in 1 2 3 4 5 6; do keys Down; snap 300; done
 keys q
+wait_for "Ne yapmak istersiniz?"
+keys 4
+wait_for "devam etmek için basın"
+snap 2500
+keys Enter
 wait_for "Ne yapmak istersiniz?"
 keys 6
 wait_for "Her şey güncel."

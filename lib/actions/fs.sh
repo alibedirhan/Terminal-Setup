@@ -208,6 +208,40 @@ _gh_fetch_bin() {
     REPLY="$file"
 }
 
+# GitHub release arşivinden seçilen dosyaları script'e ait bir dizine çıkar.
+# Dizin varsa (önceden kurulmuş ya da kullanıcının) dokunulmaz.
+#   act_gh_extract owner/repo 'dosya-deseni' HEDEF-DİZİN 'glob'...
+act_gh_extract() {
+    local repo="$1" pattern="$2" dest="$3" tag asset work f n=0
+    shift 3
+    [[ -d "$dest" ]] && return 0
+    if is_dry_run; then
+        log_plan "GitHub %s -> %s" "$repo" "$(ts_pretty_path "$dest")"
+        return 0
+    fi
+    tag=$(gh_latest_tag "$repo") || { log_err "%s: son sürüm bulunamadı" "$repo"; return 1; }
+    asset=$(gh_find_asset "$repo" "$tag" "$pattern")
+    [[ -n "$asset" ]] || { log_err "%s %s: %s için dosya yok" "$repo" "$tag" "$pattern"; return 1; }
+    work="$TS_TMP/gh.$RANDOM"
+    mkdir -p "$work/x"
+    log_step "%s %s indiriliyor (%s)" "$repo" "$tag" "$asset"
+    gh_download "$repo" "$tag" "$asset" "$work/$asset" || { log_err "İndirilemedi: %s" "$asset"; return 1; }
+    case "$asset" in
+        *.tar.xz) tar -xJf "$work/$asset" -C "$work/x" || return 1 ;;
+        *.tar.gz|*.tgz) tar -xzf "$work/$asset" -C "$work/x" || return 1 ;;
+        *) log_err "%s içinde '%s' bulunamadı" "$asset" "$*"; return 1 ;;
+    esac
+    act_mkdir "$(dirname "$dest")" || return 1
+    act_path "$dest"
+    mkdir -p "$dest"
+    for pattern in "$@"; do
+        while IFS= read -r f; do
+            cp "$f" "$dest/" && n=$((n + 1))
+        done < <(find "$work/x" -type f -name "$pattern")
+    done
+    ((n > 0)) || { log_err "%s içinde '%s' bulunamadı" "$asset" "$*"; return 1; }
+}
+
 # Yazı tipi önbelleğini yenile (yazı tipi eklendiğinde/silindiğinde)
 act_font_cache() {
     has_cmd fc-cache || return 0

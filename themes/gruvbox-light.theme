@@ -1,0 +1,33 @@
+# Gruvbox Light — Terminal Setup renk paleti
+# Biçim: ANAHTAR="#RRGGBB". COLOR0-7 normal, COLOR8-15 parlak renkler.
+NAME="Gruvbox Light"
+DESC="Retro tonlar, krem zemin"
+BACKGROUND="#FBF1C7"
+FOREGROUND="#3C3836"
+CURSOR="#3C3836"
+SELECTION_BG="#D5C4A1"
+SELECTION_FG="#3C3836"
+# tmux durum çubuğu vurgusu ve bölme kenarlığı
+ACCENT="#AF3A03"
+BORDER="#D5C4A1"
+# bat ve delta söz dizimi teması (yerleşik karşılığı yoksa: ansi)
+BAT_THEME="gruvbox-light"
+# açık ya da koyu; PAIR: diğer tondaki eşi (Ptyxis sistemin tonunu izler)
+VARIANT="light"
+PAIR="gruvbox"
+COLOR0="#FBF1C7"
+COLOR1="#CC241D"
+COLOR2="#98971A"
+COLOR3="#D79921"
+COLOR4="#458588"
+COLOR5="#B16286"
+COLOR6="#689D6A"
+COLOR7="#7C6F64"
+COLOR8="#928374"
+COLOR9="#9D0006"
+COLOR10="#79740E"
+COLOR11="#B57614"
+COLOR12="#076678"
+COLOR13="#8F3F71"
+COLOR14="#427B58"
+COLOR15="#3C3836"

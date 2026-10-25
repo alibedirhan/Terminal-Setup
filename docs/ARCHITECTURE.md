@@ -152,16 +152,31 @@ comp_bat_verify() { has_cmd batcat || has_cmd bat; }
 
 - Kaldırma fonksiyonu yazılmaz; defter geri almayı genel olarak yapar.
 - `verify`, bileşen sistemde varsa 0 döner. Script kurmadan önce `verify` başarılıysa bileşen "dış kurulum" sayılır ve dokunulmaz.
-- GitHub release'inden araç için: `act_gh_binary owner/repo 'x86_64-deseni' 'aarch64-deseni' ikili`.
+- GitHub release'inden araç için: `act_gh_binary owner/repo 'x86_64-deseni' 'aarch64-deseni' ikili`. Arşivden birden çok dosya (ör. yazı tipleri) için: `act_gh_extract owner/repo 'desen' HEDEF-DİZİN 'glob'...`.
+- Kullanıcının sonradan değiştireceği bir ayar dosyası (btop.conf, wezterm.lua) yalnızca yoksa `act_seed_file` ile oluşturulur: kullanıcı verisi sayılır, üzerine yazılmaz, kaldırırken arşive taşınır.
+- Aracın öğrettiği kısayollar `component_tip <ad> "Tuş ya da komut" "Ne yapar"` ile bildirilir; "Kısayollar" ekranı ve açılış ipucu yalnızca kurulu araçlarınkini gösterir.
+- Kurulum ya da kaldırmadan sonra bir şey yenilenecekse (açılış ipucu, yazı tipi seçimi) çalıştırıcıya kanca eklenir: `RUNNER_AFTER_CHANGE+=(fonksiyon)`. Çalıştırıcı üst katmanları tanımaz.
 - İstenirse `profiles/*.profile` dosyalarına eklenir.
 
 ## Tema eklemek
 
 `themes/<ad>.theme`: `NAME`, `DESC`, `BACKGROUND`, `FOREGROUND`, `CURSOR`, `SELECTION_BG`, `SELECTION_FG`, `ACCENT`, `BORDER`, `COLOR0`–`COLOR15`. Dosya kaynak olarak yüklenmez (source edilmez), satır satır ayrıştırılır.
 
+İsteğe bağlı alanlar:
+
+| Alan | Anlamı |
+|---|---|
+| `BAT_THEME` | bat ve delta'nın söz dizimi teması; bat'ta yerleşik karşılığı yoksa `ansi` (terminalin 16 rengini kullanır). Gerçek Ubuntu'daki bat'ta adın bulunduğu CI'da denetlenir. |
+| `VARIANT` | `dark` ya da `light` |
+| `PAIR` | diğer tondaki eşi (`catppuccin` ↔ `catppuccin-latte`). Ptyxis paletine iki ton birlikte yazılır, terminal sistemin tonunu izler. |
+
 ## Terminal eklemek
 
-`renderers/<ad>.sh`: `renderer_register`, `rend_<ad>_available`, `rend_<ad>_apply` ve isteğe bağlı `rend_<ad>_font`. Renkler `THEME[...]` dizisinden okunur, değişiklikler `act_*` ile yapılır.
+`renderers/<ad>.sh`: `renderer_register <ad> "Ad" [terminal|tool]`, `rend_<ad>_available`, `rend_<ad>_apply` ve isteğe bağlı `rend_<ad>_font`. Renkler `THEME[...]` dizisinden okunur, değişiklikler `act_*` ile yapılır.
+
+Tür `terminal` (varsayılan) ya da `tool`'dur. Araç renderer'ları (tmux, bat/delta/fzf, btop) temayı bir araca uygular; durum ekranında ve teşhiste terminal sayılmazlar. Kullanıcının araç ayar dosyalarına dokunulmaz: bat/delta/fzf, Terminal Setup'ın kendi zsh parçasındaki ortam değişkenleriyle (`BAT_THEME`, `FZF_DEFAULT_OPTS`) ayarlanır.
+
+Yazı tipi `rend_<ad>_font` ile uygulanır; hangi yazı tipinin uygulanacağını `lib/fonts.sh` belirler (`font` ayarı; seçili yazı tipinin bileşeni kaldırılırsa MesloLGS NF'ye dönülür).
 
 ## Testler
 

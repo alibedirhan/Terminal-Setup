@@ -1,6 +1,6 @@
 # Terminal Setup
 
-Ubuntu terminalini tek seferde güzel ve kullanışlı hale getiren, **yaptığı her şeyi geri alabilen** kurulum aracı. Zsh, Oh My Zsh, Powerlevel10k, 7 renk teması, 14 modern komut satırı aracı ve tmux'u bir menüden kurar. Beğenmezseniz tek komutla kurulumdan önceki haline döner; kurulumdan önce sizde olan hiçbir şeye dokunmaz.
+Ubuntu terminalini tek seferde güzel ve kullanışlı hale getiren, **yaptığı her şeyi geri alabilen** kurulum aracı. Zsh, Oh My Zsh, Powerlevel10k (ya da Starship), 12 renk teması, 14 modern komut satırı aracı ve tmux'u bir menüden kurar; seçtiğiniz tema terminalle birlikte bat, delta, fzf ve btop'a da uygulanır. Beğenmezseniz tek komutla kurulumdan önceki haline döner; kurulumdan önce sizde olan hiçbir şeye dokunmaz.
 
 ![Version](https://img.shields.io/badge/version-6.1.1-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -23,13 +23,18 @@ Kurulumdan önce sizde olan bir paket (ör. tmux) ya da dosya (ör. kendi `.zshr
 
 | Grup | Bileşenler |
 |---|---|
-| Kabuk | Zsh (varsayılan kabuk yapılır), Oh My Zsh, Powerlevel10k, MesloLGS NF yazı tipi, komut önerisi ve sözdizimi renklendirme eklentileri |
+| Kabuk | Zsh (varsayılan kabuk yapılır), Oh My Zsh, Powerlevel10k ya da Starship, MesloLGS NF yazı tipi, komut önerisi ve sözdizimi renklendirme eklentileri, fzf-tab (Tab ile aranabilir tamamlama) |
 | Araçlar | fzf, zoxide, eza, bat, ripgrep, fd, delta, lazygit, btop, dust, duf, procs, atuin, tldr (tealdeer) |
-| Ekstra | tmux (temalı durum çubuğu), örnek alias'lar ve mevcut `~/.bash_aliases` dosyanızın zsh'e bağlanması |
-| Temalar | Dracula, Nord, Gruvbox, Tokyo Night, Catppuccin, One Dark, Solarized |
-| Terminaller | GNOME Terminal, Ptyxis (Ubuntu 25.10+), Kitty, Alacritty |
+| Ekstra | tmux (temalı durum çubuğu), örnek alias'lar ve mevcut `~/.bash_aliases` dosyanızın zsh'e bağlanması, isteğe bağlı JetBrains Mono ve Fira Code Nerd Font |
+| Temalar | Koyu: Catppuccin Mocha, Dracula, Everforest, Gruvbox, Kanagawa, Nord, One Dark, Rosé Pine, Solarized, Tokyo Night. Açık: Catppuccin Latte, Gruvbox Light |
+| Terminaller | GNOME Terminal, Ptyxis (Ubuntu 25.10+), Kitty, Alacritty, Ghostty, WezTerm |
+| Araç renkleri | bat ve delta (söz dizimi teması), fzf, btop ve tmux da seçilen temaya uyar |
 
 Üç hazır profil vardır: **minimal** (kabuk), **developer** (kabuk + geliştirici araçları, varsayılan) ve **full** (her şey).
+
+Ptyxis'te Catppuccin ve Gruvbox açık/koyu eşleriyle birlikte yazılır: sistem açık temaya geçince terminal de kendiliğinden açık renklere döner.
+
+**Kısayollar:** Menüdeki "Kısayollar" ekranı (ya da `./terminal-setup.sh tips`) kurulan araçların nasıl kullanılacağını gösterir: Ctrl+R, Ctrl+T, `z proje`, `lg`... İsterseniz Ayarlar'dan "Açılış ipucu"nu açın; her yeni terminalde bir kısayol hatırlatılır.
 
 ## Hızlı başlangıç
 
@@ -63,7 +68,9 @@ Menünün yaptığı her şey etkileşimsiz de yapılabilir:
 ./terminal-setup.sh remove lazygit                         # tek bileşeni kaldır
 ./terminal-setup.sh update                                 # kurulan araçları son sürüme güncelle
 ./terminal-setup.sh status                                 # neler kurulu
-./terminal-setup.sh doctor                                 # sağlık kontrolü
+./terminal-setup.sh doctor                                 # sağlık kontrolü (zsh açılış süresi dahil)
+./terminal-setup.sh tips                                   # kurulan araçların kısayolları
+./terminal-setup.sh font set jetbrains                     # yazı tipini değiştir
 ./terminal-setup.sh --dry-run uninstall                    # kaldırınca ne olacağını gör
 ./terminal-setup.sh uninstall                              # her şeyi geri al
 ```
@@ -117,9 +124,9 @@ Kendi zsh ayarlarınızı `~/.zshrc` içinde, `terminal-setup` bloğunun dışı
 terminal-setup.sh   giriş noktası
 lib/                motor: defter, fotoğraf, eylemler, geri alma, çalıştırıcı, dil
 locale/             İngilizce çeviriler (en.sh)
-components/         21 bileşen, her biri 10-40 satırlık tek dosya
-themes/             7 renk paleti (yalnızca veri)
-renderers/          paleti terminale çeviren 5 renderer
+components/         25 bileşen, her biri 10-40 satırlık tek dosya
+themes/             12 renk paleti (yalnızca veri)
+renderers/          paleti terminallere ve araçlara çeviren 9 renderer
 frontends/          menü (tui/) ve komut satırı (cli.sh)
 diagnostics/        8 sağlık kontrolü
 profiles/           minimal, developer, full
@@ -131,7 +138,7 @@ Mimari, kurallar ve yeni bileşen/tema/terminal ekleme: [docs/ARCHITECTURE.md](d
 ## Kalite
 
 - Her push'ta CI: ShellCheck (sıfır uyarı), 600 satır sınırı, "sisteme yalnızca `lib/actions/` dokunur" kuralı.
-- 147 birim, entegrasyon ve etkileşim testi, sahte bir sistem üzerinde (gerçek sisteme dokunmaz, ağa çıkmaz).
+- 170 birim, entegrasyon ve etkileşim testi, sahte bir sistem üzerinde (gerçek sisteme dokunmaz, ağa çıkmaz).
 - Temiz Ubuntu 22.04, 24.04 ve 26.04 konteynerlerinde gerçek gidiş-dönüş testi: tam kurulum → zsh oturumu → kaldırma → paket listesi, ev dizini, kabuk ve `/etc/shells` kurulum öncesiyle aynı mı?
 - İngilizce arayüz testi: tüm akış İngilizce çalıştırılır; çevirisi eksik ya da Türkçe kalan tek bir metin testi düşürür.
 - Aynı üç sürümde gerçek dconf ile GNOME Terminal ve Ptyxis testi: tema ve yazı tipi anahtarları şemaya uyuyor mu, kullanıcının kendi ayarları korunuyor mu, kaldırınca dconf eskisiyle aynı mı?

@@ -1,0 +1,33 @@
+# Catppuccin Latte — Terminal Setup renk paleti
+# Biçim: ANAHTAR="#RRGGBB". COLOR0-7 normal, COLOR8-15 parlak renkler.
+NAME="Catppuccin Latte"
+DESC="Pastel renkler, açık zemin"
+BACKGROUND="#EFF1F5"
+FOREGROUND="#4C4F69"
+CURSOR="#DC8A78"
+SELECTION_BG="#ACB0BE"
+SELECTION_FG="#4C4F69"
+# tmux durum çubuğu vurgusu ve bölme kenarlığı
+ACCENT="#8839EF"
+BORDER="#BCC0CC"
+# bat ve delta söz dizimi teması (yerleşik karşılığı yoksa: ansi)
+BAT_THEME="ansi"
+# açık ya da koyu; PAIR: diğer tondaki eşi (Ptyxis sistemin tonunu izler)
+VARIANT="light"
+PAIR="catppuccin"
+COLOR0="#5C5F77"
+COLOR1="#D20F39"
+COLOR2="#40A02B"
+COLOR3="#DF8E1D"
+COLOR4="#1E66F5"
+COLOR5="#EA76CB"
+COLOR6="#179299"
+COLOR7="#ACB0BE"
+COLOR8="#6C6F85"
+COLOR9="#D20F39"
+COLOR10="#40A02B"
+COLOR11="#DF8E1D"
+COLOR12="#1E66F5"
+COLOR13="#EA76CB"
+COLOR14="#179299"
+COLOR15="#BCC0CC"
