@@ -37,6 +37,7 @@ upgrade_apply() {
             act_upgrade_gh "${f[1]}" "${f[2]}" "${f[3]}" "${f[4]}" "${f[5]}" ;;
         git)
             label=$(basename "${f[2]}")
+            label="${label#.}"
             act_upgrade_git "${f[1]}" "${f[2]}" ;;
         *) return 0 ;;
     esac
@@ -118,6 +119,6 @@ upgrade_summary() {
         log_ok "Her şey güncel."
     fi
     ((${#UPGRADE_FAILED[@]})) && log_err "Güncellenemeyen: %s (ayrıntı: %s)" "${UPGRADE_FAILED[*]}" "$TS_LOG_FILE"
-    log_info "apt ile kurulan paketler sistemle birlikte güncellenir (Yazılım Güncelleyici ya da 'sudo apt upgrade')."
+    log_info "apt paketleri sistemle birlikte güncellenir ('sudo apt upgrade')."
     return 0
 }

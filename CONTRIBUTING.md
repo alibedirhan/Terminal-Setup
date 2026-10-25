@@ -27,6 +27,12 @@ docker run --rm -v "$PWD:/src:ro" ubuntu:24.04 bash /src/tests/e2e/gnome.sh   # 
 
 CI bunların hepsini her push'ta çalıştırır.
 
+Arayüz değiştiyse README görsellerini yeniden üretin (tmux ve Pillow gerekir; sahte sistemde çalışır, gerçek sisteme dokunmaz):
+
+```bash
+bash scripts/demo/record.sh    # docs/images/*.png, *.gif
+```
+
 ## Kurallar
 
 1. Sisteme dokunan her işlem `lib/actions/` içindeki bir `act_*` fonksiyonu üzerinden yapılır ve deftere yazılır. Doğrudan `apt-get`, `sudo`, `gsettings set`, `git config --global` kullanmayın.

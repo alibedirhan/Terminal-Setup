@@ -29,7 +29,7 @@ Ubuntu'yu formatladıktan sonra terminali tek seferde kurar: Zsh, Oh My Zsh, Pow
 | `frontends/` | komut satırı, durum ekranı, menü ekranları | 9 |
 | `diagnostics/` | sağlık kontrolleri | 8 |
 | `profiles/` | minimal, developer, full | 3 |
-| `tests/` | 144 bats testi (15 dosya) + Docker gidiş-dönüş ve GNOME betikleri | 17 |
+| `tests/` | 147 bats testi (15 dosya) + Docker gidiş-dönüş ve GNOME betikleri | 17 |
 
 En büyük dosya 400 satırın altında; kural 600.
 

@@ -98,3 +98,11 @@ new_lazygit_release() {
     [ "$status" -eq 2 ]
     [[ "$output" == *"Bilinmeyen bileşen: olmayan"* ]]
 }
+
+@test "klonlanan depolar ağa çıkmadan denetlenir; güncelse dokunulmaz" {
+    ts install --components zsh-plugins
+    run ts update
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"zsh-autosuggestions güncel"* ]]
+    [[ "$output" == *"Her şey güncel."* ]]
+}

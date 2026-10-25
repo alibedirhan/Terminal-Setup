@@ -39,7 +39,15 @@ cd Terminal-Setup
 ./terminal-setup.sh
 ```
 
-The menu is driven with the arrow keys. To run a verified release without cloning (checked with SHA-256), see [INSTALL.md](INSTALL.md).
+The menu is driven with the arrow keys:
+
+![Main menu](docs/images/main-menu.png)
+
+In "Try themes" every theme is previewed in a terminal window drawn with its own colors:
+
+![Try themes: browsing the seven themes](docs/images/theme-browser.gif)
+
+To run a verified release without cloning (checked with SHA-256), see [INSTALL.md](INSTALL.md).
 
 ## Language
 
@@ -82,7 +90,7 @@ Only an archive folder, `~/terminal-setup-kaldirilan-DATE/`, is left behind. It 
 ## Quality
 
 - CI on every push: ShellCheck (zero warnings), a 600-line file limit, and the rule that only `lib/actions/` may change the system.
-- 144 unit, integration and interaction tests on a fake system (they never touch the real system or the network).
+- 147 unit, integration and interaction tests on a fake system (they never touch the real system or the network).
 - Real round-trip tests in clean Ubuntu 22.04, 24.04 and 26.04 containers: full install → zsh session → uninstall → are packages, home directory, shell and `/etc/shells` identical to before?
 - Real GNOME Terminal and Ptyxis tests with dconf on the same three releases.
 - An English interface test: the whole flow runs in English; a single untranslated or leftover Turkish string fails it.

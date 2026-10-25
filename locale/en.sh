@@ -327,11 +327,12 @@ I18N_EN=(
     ["Güncellenen: %s"]="Updated: %s"
     ["Her şey güncel."]="Everything is up to date."
     ["Güncellenemeyen: %s (ayrıntı: %s)"]="Could not update: %s (details: %s)"
-    ["apt ile kurulan paketler sistemle birlikte güncellenir (Yazılım Güncelleyici ya da 'sudo apt upgrade')."]="Packages installed with apt are updated with the system (Software Updater or 'sudo apt upgrade')."
+    ["apt paketleri sistemle birlikte güncellenir ('sudo apt upgrade')."]="apt packages are updated with the system ('sudo apt upgrade')."
     ["bilinmiyor"]="unknown"
     ["%s %s -> %s"]="%s %s -> %s"
     ["%s: uzak depoya ulaşılamadı"]="%s: remote repository unreachable"
     ["%s içinde değiştirilmiş dosyalar var; güncellenmedi"]="%s has modified files; not updated"
+    ["%s geçerli bir git deposu değil; güncellenmedi"]="%s is not a valid git repository; not updated"
 
     # --- Kaldırma ve doğrulama -----------------------------------------------
     ["Kaldırma planı"]="Removal plan"

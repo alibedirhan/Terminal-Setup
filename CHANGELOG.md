@@ -1,5 +1,18 @@
 # Changelog
 
+## [Yayınlanmadı]
+
+### Eklendi
+- README'de animasyonlu tanıtım: menü turu ve tema önizleme GIF'leri (Türkçe ve İngilizce). `scripts/demo/record.sh` görselleri sahte sistemde, gerçek sisteme dokunmadan yeniden üretir.
+
+### Değişti
+- `install.sh` mesajları programla aynı dil kuralına uyar (`--lang`, `TS_LANG`, ayar, sistem dili).
+- CI: bats testleri ağ arayüzü olmayan bir ad alanında çalışır; ağa çıkan test düşer.
+
+### Düzeltildi
+- `update`, geçerli bir git deposu olmayan klasörü "değiştirilmiş dosyalar var" diye raporluyordu.
+- Testlerdeki sahte `git`, `ls-remote`'u taklit etmediği için güncelleme testleri gerçek GitHub'a çıkıyordu.
+
 ## [6.1.0] - 2026-10-25
 
 ### Eklendi

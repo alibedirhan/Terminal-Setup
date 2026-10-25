@@ -73,3 +73,12 @@ new_origin_commit() {
     [ "$UPG_RESULT" = planned ]
     [ "$(cat "$DEST/dosya")" = bir ]
 }
+
+@test "geçerli git deposu olmayan klasör güncellenmez" {
+    rm -rf "$DEST/.git"
+    mkdir -p "$DEST/.git"
+    run act_upgrade_git "file://$ORIGIN" "$DEST"
+    [[ "$output" == *"geçerli bir git deposu değil"* ]]
+    act_upgrade_git "file://$ORIGIN" "$DEST"
+    [ "$UPG_RESULT" = skipped ]
+}

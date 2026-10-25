@@ -41,11 +41,11 @@ cd Terminal-Setup
 
 Menü ok tuşlarıyla gezilir:
 
-![Ana menü](docs/images/ana-menu.png)
+![Menü turu: bileşenler, güncelleme ve dil değiştirme](docs/images/menu-turu.gif)
 
 "Tema dene" ekranında her tema, kendi renkleriyle çizilmiş bir terminal penceresinde önizlenir:
 
-![Tema önizleme](docs/images/tema-dene.png)
+![Tema dene: yedi tema arasında gezinme](docs/images/tema-dene.gif)
 
 Arayüz hiçbir ek programa ihtiyaç duymaz. 24 bit, 256 ve 8 renkli terminallerde çalışır, `NO_COLOR` tanımlıysa renk kullanmaz; küçük pencerelerde sade başlığa geçer, uzun listeler kayar.
 
@@ -131,7 +131,7 @@ Mimari, kurallar ve yeni bileşen/tema/terminal ekleme: [docs/ARCHITECTURE.md](d
 ## Kalite
 
 - Her push'ta CI: ShellCheck (sıfır uyarı), 600 satır sınırı, "sisteme yalnızca `lib/actions/` dokunur" kuralı.
-- 144 birim, entegrasyon ve etkileşim testi, sahte bir sistem üzerinde (gerçek sisteme dokunmaz, ağa çıkmaz).
+- 147 birim, entegrasyon ve etkileşim testi, sahte bir sistem üzerinde (gerçek sisteme dokunmaz, ağa çıkmaz).
 - Temiz Ubuntu 22.04, 24.04 ve 26.04 konteynerlerinde gerçek gidiş-dönüş testi: tam kurulum → zsh oturumu → kaldırma → paket listesi, ev dizini, kabuk ve `/etc/shells` kurulum öncesiyle aynı mı?
 - İngilizce arayüz testi: tüm akış İngilizce çalıştırılır; çevirisi eksik ya da Türkçe kalan tek bir metin testi düşürür.
 - Aynı üç sürümde gerçek dconf ile GNOME Terminal ve Ptyxis testi: tema ve yazı tipi anahtarları şemaya uyuyor mu, kullanıcının kendi ayarları korunuyor mu, kaldırınca dconf eskisiyle aynı mı?
