@@ -183,7 +183,7 @@ cli_theme() {
                 theme_load "$t" >/dev/null || continue
                 [[ "$t" == "$current" ]] && printf '* ' || printf '  '
                 _t "${THEME[DESC]:-}"
-                printf '%-12s %s\n' "$t" "$TR"
+                printf '%-18s %s\n' "$t" "$TR"
             done ;;
         preview) [[ -n "$name" ]] || { log_err "Tema adı gerekli"; return 2; }; theme_preview "$name" ;;
         apply)

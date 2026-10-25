@@ -37,11 +37,12 @@ renderers_available() {
     done
 }
 
+# Tema adları; eşler yan yana ve koyu olan önce (catppuccin, catppuccin-latte)
 theme_list() {
     local f
     for f in "$TS_ROOT"/themes/*.theme; do
         [[ -f "$f" ]] && basename "$f" .theme
-    done
+    done | LC_ALL=C sort
 }
 
 theme_exists() { [[ -f "$TS_ROOT/themes/$1.theme" ]]; }
