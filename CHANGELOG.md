@@ -1,6 +1,6 @@
 # Changelog
 
-## [Yayınlanmadı]
+## [6.1.1] - 2026-10-25
 
 ### Eklendi
 - README'de animasyonlu tanıtım: menü turu ve tema önizleme GIF'leri (Türkçe ve İngilizce). `scripts/demo/record.sh` görselleri sahte sistemde, gerçek sisteme dokunmadan yeniden üretir.

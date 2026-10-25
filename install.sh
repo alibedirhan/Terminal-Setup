@@ -10,7 +10,7 @@
 #   wget https://raw.githubusercontent.com/alibedirhan/Terminal-Setup/main/install.sh
 #   bash install.sh                 # menüyü aç
 #   bash install.sh uninstall       # her şeyi geri al
-#   TS_RELEASE=v6.1.0 bash install.sh   # belirli bir sürüm
+#   TS_RELEASE=v6.1.1 bash install.sh   # belirli bir sürüm
 # ============================================================================
 set -euo pipefail
 
