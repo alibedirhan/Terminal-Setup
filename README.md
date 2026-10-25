@@ -1,155 +1,142 @@
 # Terminal Setup
 
-Terminal Setup, Ubuntu terminalini hızlıca daha kullanışlı hale getirmek için hazırlanmış modüler bir Bash araç setidir. Zsh, Oh My Zsh, Powerlevel10k, renk temaları, tmux ayarı ve modern CLI araçlarını tek menüden kurmayı amaçlar.
+Ubuntu terminalini tek seferde güzel ve kullanışlı hale getiren, **yaptığı her şeyi geri alabilen** kurulum aracı. Zsh, Oh My Zsh, Powerlevel10k, 7 renk teması, 14 modern komut satırı aracı ve tmux'u bir menüden kurar. Beğenmezseniz tek komutla kurulumdan önceki haline döner; kurulumdan önce sizde olan hiçbir şeye dokunmaz.
 
-Bu proje özellikle Linux'a yeni geçen kullanıcılar ve terminalini daha modern hale getirmek isteyenler için tasarlandı. Script sistem ayarlarına ve kullanıcı shell dosyalarına dokunduğu için kurmadan önce ne yaptığını bilerek ilerlemek en doğru yaklaşımdır.
-
-![Version](https://img.shields.io/badge/version-5.0.2-blue.svg)
+![Version](https://img.shields.io/badge/version-6.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Platform](https://img.shields.io/badge/platform-Ubuntu-orange.svg)
+![Platform](https://img.shields.io/badge/Ubuntu-22.04%20%7C%2024.04%20%7C%2026.04-orange.svg)
+![CI](https://github.com/alibedirhan/Terminal-Setup/actions/workflows/ci.yml/badge.svg)
 
-## Neler yapar?
+## Neden farklı?
 
-- Zsh ve Oh My Zsh kurulumu
-- Powerlevel10k kurulumu
-- 7 terminal teması: Dracula, Nord, Gruvbox, Tokyo Night, Catppuccin, One Dark, Solarized
-- Zsh plugin kurulumu
-- Modern terminal araçları: fzf, zoxide, eza, bat, ripgrep, fd, delta, lazygit, btop, dust, duf, procs, atuin, tldr
-- Tmux kurulumu ve tema ayarı
-- Mevcut `.aliases` veya `.bash_aliases` dosyalarını Zsh tarafına bağlama
-- Yedek alma, sağlık kontrolü, teşhis ve kaldırma menüleri
+Çoğu kurulum betiği sisteme bir şeyler ekler ama nasıl geri alınacağını bilmez. Terminal Setup üç şey yapar:
 
-## Kullanmadan önce
+1. **Başlangıç fotoğrafı:** İlk kurulumdan önce sistemin hali (paketler, kabuk, git ve terminal ayarları) kaydedilir.
+2. **Değişiklik defteri:** Kurulan her paket, oluşturulan her dosya, değiştirilen her ayar bir satır olarak yazılır.
+3. **Kanıtlı kaldırma:** Kaldırma defteri sondan başa geri alır, sonra sistemi fotoğrafla karşılaştırıp rapor verir: `Sonuç: kalıntı yok.`
 
-Bu script terminal görünümünü, `.zshrc`, `.tmux.conf`, GNOME Terminal renk ayarları ve bazı CLI araçlarını değiştirebilir. Script işlem öncesinde yedek almaya çalışır; yine de ana sistemde kullanmadan önce dosyaları incelemeniz önerilir.
+Kurulumdan önce sizde olan bir paket (ör. tmux) ya da dosya (ör. kendi `.zshrc`'niz) kaldırmada silinmez. Komut geçmişiniz gibi kullanımla oluşan veriler silinmez; arşiv klasörüne taşınır.
 
-Özellikle YouTube demosu veya ilk deneme için en güvenli yol: sanal makine, test kullanıcısı veya yeni kurulmuş Ubuntu oturumu.
+## Neler kurulur?
 
-## Gereksinimler
+| Grup | Bileşenler |
+|---|---|
+| Kabuk | Zsh (varsayılan kabuk yapılır), Oh My Zsh, Powerlevel10k, MesloLGS NF yazı tipi, komut önerisi ve sözdizimi renklendirme eklentileri |
+| Araçlar | fzf, zoxide, eza, bat, ripgrep, fd, delta, lazygit, btop, dust, duf, procs, atuin, tldr |
+| Ekstra | tmux (temalı durum çubuğu), örnek alias'lar ve mevcut `~/.bash_aliases` dosyanızın zsh'e bağlanması |
+| Temalar | Dracula, Nord, Gruvbox, Tokyo Night, Catppuccin, One Dark, Solarized |
+| Terminaller | GNOME Terminal, Ptyxis (Ubuntu 25.10+), Kitty, Alacritty |
 
-- Ubuntu 20.04 veya üzeri
-- Bash
-- İnternet bağlantısı
-- `sudo` yetkisi
-- `git`, `curl` veya `wget`
+Üç hazır profil vardır: **minimal** (kabuk), **developer** (kabuk + geliştirici araçları, varsayılan) ve **full** (her şey).
 
-## Kurulum
-
-### 1. Repo üzerinden çalıştırma
+## Hızlı başlangıç
 
 ```bash
 git clone https://github.com/alibedirhan/Terminal-Setup.git
 cd Terminal-Setup
-chmod +x terminal-setup.sh
 ./terminal-setup.sh
 ```
 
-### 2. Hızlı installer
+Menü ok tuşlarıyla gezilir:
+
+![Ana menü](docs/images/ana-menu.png)
+
+"Tema dene" ekranında her tema, kendi renkleriyle çizilmiş bir terminal penceresinde önizlenir:
+
+![Tema önizleme](docs/images/tema-dene.png)
+
+Arayüz hiçbir ek programa ihtiyaç duymaz. 24 bit, 256 ve 8 renkli terminallerde çalışır, `NO_COLOR` tanımlıysa renk kullanmaz; küçük pencerelerde sade başlığa geçer, uzun listeler kayar.
+
+Depoyu klonlamadan, sürümü SHA-256 ile doğrulayarak çalıştırmak için [INSTALL.md](INSTALL.md)'ye bakın.
+
+## Komut satırından
+
+Menünün yaptığı her şey etkileşimsiz de yapılabilir:
 
 ```bash
-wget https://raw.githubusercontent.com/alibedirhan/Terminal-Setup/main/install.sh
-chmod +x install.sh
-./install.sh
+./terminal-setup.sh install --profile full --theme nord   # kur
+./terminal-setup.sh theme preview dracula                  # temayı terminalde önizle
+./terminal-setup.sh theme apply dracula                    # temayı uygula
+./terminal-setup.sh theme reset                            # renkleri eski haline döndür
+./terminal-setup.sh remove lazygit                         # tek bileşeni kaldır
+./terminal-setup.sh status                                 # neler kurulu
+./terminal-setup.sh doctor                                 # sağlık kontrolü
+./terminal-setup.sh --dry-run uninstall                    # kaldırınca ne olacağını gör
+./terminal-setup.sh uninstall                              # her şeyi geri al
 ```
 
-## Menüden önerilen kullanım
+`--dry-run` her komutla çalışır: hiçbir şeyi değiştirmez, yalnızca planı gösterir.
 
-Ana menü 71x45 terminal boyutuna göre sadeleştirildi. İlk defa kullanıyorsanız en güvenli akış:
+## Tema denemek
 
-```text
-1  Tam Kurulum          Zsh + Oh My Zsh + Powerlevel10k + tema + pluginler
-3  Tema Değiştir        Kurulumdan sonra 7 tema arasında geçiş
-4  Terminal Araçları    fzf, zoxide, eza, bat, ripgrep ve diğer araçlar
-6  Sağlık & Teşhis      Sistem durumunu ve yaygın sorunları kontrol et
-7  Yedekler             Yedekleri göster veya seçili yedeği geri yükle
-9  Kaldır               Terminal Setup değişikliklerini temizle
-```
+"Tema dene" ekranında sol/sağ ok tuşlarıyla temalar arasında gezilir; 16 renk ve örnek bir prompt canlı önizlenir. Enter temayı uygular, `r` renkleri kurulum öncesine döndürür. Tema değiştirmek için araçları kaldırıp yeniden kurmak gerekmez.
 
-Yedek menüsü sadece listeleme yapmaz; v5.0.2 ile en son yedeği veya seçtiğiniz yedeği geri yükleyebilir.
+## Kaldırma
+
+İki seviye vardır:
+
+- **Görünümü sıfırla:** Tema ve terminal renkleri eski haline döner; araçlar kalır.
+- **Tamamen kaldır:** Önce plan gösterilir, onay için `kaldır` yazmanız istenir. Sonra:
+  - script'in kurduğu paketler kaldırılır (bağımlılıkları dahil; başka bir paketin ihtiyaç duyduğu paket atlanır),
+  - indirilen araçlar, eklentiler ve yazı tipleri silinir,
+  - `.zshrc`, `.gitconfig`, `.tmux.conf` gibi dosyalar kurulum öncesi haline döner,
+  - giriş kabuğu ve terminal profili geri yüklenir,
+  - sistem başlangıç fotoğrafıyla karşılaştırılır.
+
+Geriye yalnızca `~/terminal-setup-kaldirilan-TARİH/` arşiv klasörü kalır. İçinde kaldırma raporu, log, komut geçmişiniz ve kurulumdan sonra elle değiştirdiğiniz dosyaların son hali bulunur. İstediğiniz zaman silebilirsiniz.
+
+v5 ve öncesiyle kurulum yaptıysanız (defter yoksa) "Kaldır" menüsü eski kurulumu algılar ve her adımı ayrıca sorarak temizler.
+
+## Dosyalar nerede?
+
+| Konum | İçerik |
+|---|---|
+| `~/.terminal-setup/` | defter, başlangıç fotoğrafı, log, ayarlar |
+| `~/.config/terminal-setup/` | zsh ve tmux ayar parçaları |
+| `~/.local/bin/` | GitHub'dan indirilen araçlar (fzf, zoxide, eza, delta, lazygit, dust, procs, atuin) |
+| `~/.zshrc` | yalnızca tek bir işaretli blok eklenir; kendi satırlarınıza dokunulmaz |
+
+Kendi zsh ayarlarınızı `~/.zshrc` içinde, `terminal-setup` bloğunun dışına yazın.
+
+## Gereksinimler
+
+- Ubuntu 22.04, 24.04 veya 26.04 (x86_64 ya da ARM64)
+- Bash 4.4+
+- `sudo` yetkisi ve internet bağlantısı
 
 ## Proje yapısı
 
 ```text
-Terminal-Setup/
-├── terminal-setup.sh        # Ana menü ve akış
-├── install.sh               # Hızlı indirici/başlatıcı
-├── terminal-ui.sh           # Menü ve görsel terminal çıktıları
-├── terminal-router.sh       # Menü numaraları ve aksiyon yönlendirme
-├── terminal-assistant.sh    # Sağlık kontrolü ve teşhis
-├── core/
-│   ├── terminal-base.sh     # Zsh, Oh My Zsh, Powerlevel10k
-│   ├── terminal-tools.sh    # CLI araçları
-│   └── terminal-config.sh   # Tema, tmux, kaldırma
-├── utils/
-│   ├── helpers.sh           # Log, retry, güvenli indirme
-│   ├── system.sh            # Sistem/internet/terminal kontrolleri
-│   └── config.sh            # Config, tema, backup/snapshot
-├── themes/                  # Tema dosyaları
-├── aliases/                 # Örnek alias dosyası
-└── scripts/                 # Test ve release yardımcıları
+terminal-setup.sh   giriş noktası
+lib/                motor: defter, fotoğraf, eylemler, geri alma, çalıştırıcı
+components/         21 bileşen, her biri 10-40 satırlık tek dosya
+themes/             7 renk paleti (yalnızca veri)
+renderers/          paleti terminale çeviren 5 renderer
+frontends/          menü (tui/) ve komut satırı (cli.sh)
+diagnostics/        8 sağlık kontrolü
+profiles/           minimal, developer, full
+tests/              birim, entegrasyon ve Docker gidiş-dönüş testleri
 ```
 
-## Kontrol komutları
+Mimari, kurallar ve yeni bileşen/tema/terminal ekleme: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-Geliştirme veya video öncesi şu komutları çalıştırın:
+## Kalite
 
-```bash
-bash scripts/check_static.sh
-bash scripts/check_repo_links.sh
-```
+- Her push'ta CI: ShellCheck (sıfır uyarı), 600 satır sınırı, "sisteme yalnızca `lib/actions/` dokunur" kuralı.
+- 117 birim, entegrasyon ve etkileşim testi, sahte bir sistem üzerinde (gerçek sisteme dokunmaz, ağa çıkmaz).
+- Temiz Ubuntu 22.04 ve 24.04 konteynerlerinde gerçek gidiş-dönüş testi: tam kurulum → zsh oturumu → kaldırma → paket listesi, ev dizini, kabuk ve `/etc/shells` kurulum öncesiyle aynı mı?
 
-Release paketi almak için:
+## Katkı ve destek
 
-```bash
-bash scripts/package_release.sh
-```
-
-Log toplamak için:
-
-```bash
-bash scripts/collect_logs.sh
-```
-
-## Kaldırma
-
-Menüden kaldırma:
-
-```bash
-./terminal-setup.sh
-# Menü 9: Kaldır
-```
-
-Yedekler ve geri yükleme kayıtları varsayılan olarak şu dizinde tutulur:
-
-```text
-~/.terminal-setup/backups
-```
-
-## Bilinen sınırlar
-
-- Ana hedef Ubuntu ve GNOME Terminal'dir.
-- Kitty ve Alacritty için tema desteği vardır, ancak her terminalde aynı görünüm garanti edilmez.
-- Bazı araçlar internetten kendi kurulum scriptleriyle gelir; bu yüzden güvenlik için kaynakları incelemek önemlidir.
-- Shell değişikliklerinin tam görünmesi için terminali kapatıp açmak veya oturumu yenilemek gerekebilir.
-
-## Güvenlik notu
-
-Bu proje telemetry, kullanıcı hesabı veya bulut senkronu kullanmaz. Kurulum sırasında bazı açık kaynak projelerden dosya indirir. Riskli işlemlerden önce yedek alma hedeflenir; yine de sistem ayarlarını değiştiren her scriptte olduğu gibi sorumluluk kullanıcıdadır.
-
-## Dokümantasyon
-
-- [Kurulum Rehberi](INSTALL.md)
-- [Değişiklik Günlüğü](CHANGELOG.md)
-- [Katkı Rehberi](CONTRIBUTING.md)
-- [Güvenlik](SECURITY.md)
-- [Destek](SUPPORT.md)
+- [CONTRIBUTING.md](CONTRIBUTING.md) — geliştirme ve test
+- [SUPPORT.md](SUPPORT.md) — sorun bildirme
+- [SECURITY.md](SECURITY.md) — güvenlik
+- [CHANGELOG.md](CHANGELOG.md) — sürüm notları
 
 ## Lisans
 
-MIT License. Ayrıntılar için [LICENSE](LICENSE) dosyasına bakabilirsiniz.
+MIT — [LICENSE](LICENSE)
 
-## İletişim
+## Teşekkürler
 
-- GitHub: [@alibedirhan](https://github.com/alibedirhan)
-- Repository: [Terminal-Setup](https://github.com/alibedirhan/Terminal-Setup)
-- Issues: [Sorun bildir](https://github.com/alibedirhan/Terminal-Setup/issues)
+[Oh My Zsh](https://ohmyz.sh/), [Powerlevel10k](https://github.com/romkatv/powerlevel10k) ve kurulan tüm araçların geliştiricilerine.

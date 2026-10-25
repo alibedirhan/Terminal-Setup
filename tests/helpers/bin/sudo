@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Test taklidi: sudo komutu doğrudan çalıştırır
+while [[ "${1:-}" == -* ]]; do
+    [[ "$1" == "-v" ]] && exit 0
+    shift
+done
+exec "$@"

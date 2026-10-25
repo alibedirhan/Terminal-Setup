@@ -1,211 +1,67 @@
 #!/usr/bin/env bash
-
 # ============================================================================
-# Terminal Setup - Quick Installer
-# v5.0.2
+# Terminal Setup - Hızlı başlatıcı
 # ============================================================================
-# Usage:
+# Belirli bir GitHub sürümünü (tag) indirir, SHA-256 ile doğrular ve geçici
+# bir dizinden çalıştırır. Programın kendisi diske kurulmaz; iş bitince
+# geçici dizin silinir. Sonradan kaldırmak için aynı betiği tekrar çalıştırın.
+#
+# Kullanım:
 #   wget https://raw.githubusercontent.com/alibedirhan/Terminal-Setup/main/install.sh
-#   chmod +x install.sh
-#   ./install.sh
+#   bash install.sh                 # menüyü aç
+#   bash install.sh uninstall       # her şeyi geri al
+#   TS_RELEASE=v6.0.0 bash install.sh   # belirli bir sürüm
 # ============================================================================
-
 set -euo pipefail
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
-BOLD='\033[1m'
-NC='\033[0m'
+REPO="alibedirhan/Terminal-Setup"
 
-readonly PROJECT_NAME="Terminal Setup"
-readonly VERSION="5.0.2"
-readonly REPO_RAW_URL="https://raw.githubusercontent.com/alibedirhan/Terminal-Setup/main"
-readonly INSTALL_DIR="$HOME/.terminal-setup-installer"
-readonly REQUIRED_FILES=(
-    "VERSION"
-    "terminal-setup.sh"
-    "terminal-ui.sh"
-    "terminal-assistant.sh"
-    "terminal-router.sh"
-    "core/terminal-base.sh"
-    "core/terminal-tools.sh"
-    "core/terminal-config.sh"
-    "utils/helpers.sh"
-    "utils/system.sh"
-    "utils/config.sh"
-    "themes/dracula.sh"
-    "themes/nord.sh"
-    "themes/gruvbox.sh"
-    "themes/tokyo-night.sh"
-    "themes/catppuccin.sh"
-    "themes/one-dark.sh"
-    "themes/solarized.sh"
-    "aliases/.aliases"
-)
+die() { printf '\033[0;31m✗\033[0m %s\n' "$*" >&2; exit 1; }
+info() { printf '\033[0;34mℹ\033[0m %s\n' "$*"; }
+ok() { printf '\033[0;32m✓\033[0m %s\n' "$*"; }
 
-log_info() { echo -e "${BLUE}ℹ${NC} $*"; }
-log_success() { echo -e "${GREEN}✓${NC} $*"; }
-log_warning() { echo -e "${YELLOW}⚠${NC} $*"; }
-log_error() { echo -e "${RED}✗${NC} $*" >&2; }
+[[ $EUID -ne 0 ]] || die "Root olarak değil, normal kullanıcıyla çalıştırın."
+for cmd in tar sha256sum; do
+    command -v "$cmd" >/dev/null || die "'$cmd' bulunamadı."
+done
 
-show_banner() {
-    clear
-    echo -e "${BOLD}${CYAN}"
-    cat <<EOF_BANNER
-╔═══════════════════════════════════════════════════════════╗
-║                                                           ║
-║                    Terminal Setup                        ║
-║                                                           ║
-║        Zsh • Oh My Zsh • Powerlevel10k • CLI Tools        ║
-║                                                           ║
-║                     Quick Installer                       ║
-║                       v${VERSION}                         ║
-║                                                           ║
-╚═══════════════════════════════════════════════════════════╝
-EOF_BANNER
-    echo -e "${NC}"
-}
+if command -v curl >/dev/null; then
+    fetch() { curl -fsSL --retry 3 --connect-timeout 15 -o "$2" "$1"; }
+    final_url() { curl -fsSLI -o /dev/null -w '%{url_effective}' "$1"; }
+elif command -v wget >/dev/null; then
+    fetch() { wget -q --tries=3 --timeout=15 -O "$2" "$1"; }
+    final_url() { wget -q --max-redirect=5 -S --spider "$1" 2>&1 | awk '/^  Location: /{ u=$2 } END { print u }'; }
+else
+    die "curl ya da wget gerekli: sudo apt install wget"
+fi
 
-cleanup_on_error() {
-    if [[ -d "$INSTALL_DIR" ]]; then
-        log_info "Geçici kurulum dizini temizleniyor..."
-        rm -rf -- "$INSTALL_DIR" 2>/dev/null || true
-    fi
-}
+tag="${TS_RELEASE:-}"
+if [[ -z "$tag" ]]; then
+    url=$(final_url "https://github.com/$REPO/releases/latest" || true)
+    tag="${url##*/tag/}"
+    [[ -n "$tag" && "$tag" != "$url" ]] || die "Yayınlanmış sürüm bulunamadı. Depoyu klonlayarak kurabilirsiniz:
+  git clone https://github.com/$REPO.git && cd Terminal-Setup && ./terminal-setup.sh"
+fi
+version="${tag#v}"
+asset="terminal-setup-$version.tar.gz"
 
-trap cleanup_on_error INT TERM ERR
+work=$(mktemp -d "${TMPDIR:-/tmp}/terminal-setup-install.XXXXXXXX")
+trap 'rm -rf -- "$work"' EXIT
 
-check_requirements() {
-    log_info "Gereksinimler kontrol ediliyor..."
+info "Terminal Setup $tag indiriliyor"
+# TS_RELEASE_BASE yalnızca testler içindir (ör. file:///yol/release)
+base="${TS_RELEASE_BASE:-https://github.com/$REPO/releases/download/$tag}"
+fetch "$base/$asset" "$work/$asset" || die "İndirilemedi: $base/$asset"
+fetch "$base/$asset.sha256" "$work/$asset.sha256" || die "Sağlama dosyası indirilemedi"
 
-    if [[ ${EUID:-$(id -u)} -eq 0 ]]; then
-        log_error "Bu scripti root olarak çalıştırmayın. Normal kullanıcıyla çalıştırın."
-        exit 1
-    fi
+expected=$(awk '{ print $1 }' "$work/$asset.sha256")
+actual=$(sha256sum "$work/$asset" | awk '{ print $1 }')
+[[ -n "$expected" && "$expected" == "$actual" ]] || die "SHA-256 doğrulaması başarısız; dosya bozuk ya da değiştirilmiş."
+ok "SHA-256 doğrulandı"
 
-    if ! command -v curl >/dev/null 2>&1 && ! command -v wget >/dev/null 2>&1; then
-        log_error "curl veya wget bulunamadı. Önce şunu çalıştırın: sudo apt install curl wget"
-        exit 1
-    fi
+tar -xzf "$work/$asset" -C "$work"
+root="$work/terminal-setup-$version"
+[[ -x "$root/terminal-setup.sh" ]] || die "Arşiv beklenen yapıda değil"
 
-    if command -v curl >/dev/null 2>&1; then
-        if ! curl -fsSL --connect-timeout 8 "$REPO_RAW_URL/VERSION" >/dev/null; then
-            log_error "GitHub raw dosyalarına erişilemiyor. İnternet/VPN/DNS durumunu kontrol edin."
-            exit 1
-        fi
-    elif command -v wget >/dev/null 2>&1; then
-        if ! wget -q --timeout=8 -O /dev/null "$REPO_RAW_URL/VERSION"; then
-            log_error "GitHub raw dosyalarına erişilemiyor. İnternet/VPN/DNS durumunu kontrol edin."
-            exit 1
-        fi
-    fi
-
-    log_success "Gereksinimler tamam"
-}
-
-download_one() {
-    local file="$1"
-    local url="$REPO_RAW_URL/$file"
-    local target="$INSTALL_DIR/$file"
-    local dir
-    dir=$(dirname "$target")
-    mkdir -p "$dir"
-
-    echo -ne "${CYAN}↓${NC} $file... "
-
-    if command -v curl >/dev/null 2>&1; then
-        if ! curl -fsSL --connect-timeout 10 --retry 2 --retry-delay 2 -o "$target" "$url"; then
-            echo -e "${RED}✗${NC}"
-            return 1
-        fi
-    else
-        if ! wget -q --timeout=15 --tries=2 -O "$target" "$url"; then
-            echo -e "${RED}✗${NC}"
-            return 1
-        fi
-    fi
-
-    if [[ ! -s "$target" ]]; then
-        echo -e "${RED}✗${NC} (boş dosya)"
-        return 1
-    fi
-
-    if grep -q "404: Not Found" "$target" 2>/dev/null; then
-        echo -e "${RED}✗${NC} (404)"
-        return 1
-    fi
-
-    chmod +x "$target" 2>/dev/null || true
-    echo -e "${GREEN}✓${NC}"
-    return 0
-}
-
-download_files() {
-    log_info "Dosyalar indiriliyor..."
-    rm -rf -- "$INSTALL_DIR"
-    mkdir -p "$INSTALL_DIR"
-
-    local failed=0
-    for file in "${REQUIRED_FILES[@]}"; do
-        if ! download_one "$file"; then
-            failed=$((failed + 1))
-        fi
-    done
-
-    if [[ $failed -ne 0 ]]; then
-        log_error "$failed dosya indirilemedi. Kurulum durduruldu."
-        return 1
-    fi
-
-    log_success "Tüm dosyalar indirildi"
-}
-
-verify_files() {
-    log_info "Dosyalar doğrulanıyor..."
-    cd "$INSTALL_DIR"
-
-    local file
-    for file in "${REQUIRED_FILES[@]}"; do
-        if [[ ! -f "$file" ]]; then
-            log_error "Eksik dosya: $file"
-            return 1
-        fi
-        if [[ "$file" == *.sh ]]; then
-            if ! bash -n "$file"; then
-                log_error "Sözdizimi hatası: $file"
-                return 1
-            fi
-        fi
-    done
-
-    log_success "Dosya doğrulaması tamam"
-}
-
-launch_installer() {
-    log_info "Ana kurulum menüsü başlatılıyor..."
-    cd "$INSTALL_DIR"
-    exec ./terminal-setup.sh
-}
-
-main() {
-    show_banner
-    echo -e "${CYAN}╔══════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${CYAN}║   Terminal Setup kuruluma hazırlanıyor                  ║${NC}"
-    echo -e "${CYAN}╚══════════════════════════════════════════════════════════╝${NC}"
-    echo
-    check_requirements
-    echo
-    download_files
-    echo
-    verify_files
-    echo
-    log_success "Hazır. Menü açılıyor..."
-    sleep 1
-    trap - INT TERM ERR
-    launch_installer
-}
-
-main "$@"
+# Menü ya da verilen komut; çıkışta geçici dizin silinir
+"$root/terminal-setup.sh" "$@"

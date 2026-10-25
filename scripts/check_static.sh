@@ -1,92 +1,112 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# ============================================================================
+# Terminal Setup - Statik kontroller
+# ============================================================================
+# Kurallar (docs/ARCHITECTURE.md):
+#   1. Tüm .sh dosyaları bash sözdizimi kontrolünden geçer.
+#   2. ShellCheck: uyarı seviyesinde sıfır bulgu.
+#   3. Hiçbir .sh dosyası 600 satırı aşamaz.
+#   4. Sisteme dokunan komutlar yalnızca lib/actions/ içinde kullanılır.
+#   5. curl/wget çıktısı doğrudan bir kabuğa borulanmaz.
+#
+# Kullanım: scripts/check_static.sh [--shellcheck PATH]
+# ============================================================================
+set -uo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$ROOT_DIR"
+cd "$ROOT_DIR" || exit 1
+
+SHELLCHECK="${SHELLCHECK:-shellcheck}"
+if [[ "${1:-}" == "--shellcheck" && -n "${2:-}" ]]; then
+    SHELLCHECK="$2"
+fi
+
+MAX_LINES=600
+failures=0
 
 fail() {
-  echo "[FAIL] $*" >&2
-  exit 1
+    echo "  [HATA] $*" >&2
+    failures=$((failures + 1))
 }
 
-echo "[1/10] Zorunlu dosyalar"
-required=(
-  VERSION
-  README.md
-  INSTALL.md
-  LICENSE
-  install.sh
-  terminal-setup.sh
-  terminal-ui.sh
-  terminal-router.sh
-  terminal-assistant.sh
-  core/terminal-base.sh
-  core/terminal-tools.sh
-  core/terminal-config.sh
-  utils/helpers.sh
-  utils/system.sh
-  utils/config.sh
-  aliases/.aliases
-)
-for file in "${required[@]}"; do
-  [[ -f "$file" ]] || fail "Eksik dosya: $file"
+# Geçiş süresince kurallardan muaf tutulan eski (v5) dosyalar.
+# Yeni mimariye taşındıkça bu liste boşalır; boş olması hedeftir.
+LEGACY_FILES=()
+
+is_legacy() {
+    local file="$1" legacy
+    for legacy in "${LEGACY_FILES[@]}"; do
+        [[ "$file" == "$legacy" ]] && return 0
+    done
+    return 1
+}
+
+mapfile -t SH_FILES < <(git ls-files --cached --others --exclude-standard -- '*.sh' '*.bash' | sort)
+mapfile -t BATS_FILES < <(git ls-files --cached --others --exclude-standard -- '*.bats' | sort)
+
+echo "[1/5] Bash sözdizimi (${#SH_FILES[@]} dosya)"
+for file in "${SH_FILES[@]}"; do
+    bash -n "$file" 2>/dev/null || fail "Sözdizimi hatası: $file"
 done
 
-echo "[2/10] Bash sözdizimi"
-while IFS= read -r -d '' file; do
-  bash -n "$file" || fail "Bash syntax hatası: $file"
-done < <(find . -path './.git' -prune -o -path './release' -prune -o -path './dist' -prune -o -name '*.sh' -print0)
+echo "[2/5] ShellCheck"
+if command -v "$SHELLCHECK" >/dev/null 2>&1; then
+    check_targets=()
+    for file in "${SH_FILES[@]}"; do
+        is_legacy "$file" || check_targets+=("$file")
+    done
+    if ((${#check_targets[@]} > 0)); then
+        if ! "$SHELLCHECK" -x -S warning "${check_targets[@]}"; then
+            fail "ShellCheck uyarıları var"
+        fi
+    fi
+else
+    fail "ShellCheck bulunamadı ($SHELLCHECK)"
+fi
 
-echo "[3/10] Repository linkleri"
-bash scripts/check_repo_links.sh
-
-echo "[4/10] VERSION tutarlılığı"
-version="$(tr -d '[:space:]' < VERSION)"
-[[ -n "$version" ]] || fail "VERSION boş"
-grep -q "version-${version}" README.md || fail "README badge VERSION ile uyumlu değil: $version"
-grep -q "readonly VERSION=\"${version}\"" install.sh || fail "install.sh VERSION ile uyumlu değil: $version"
-
-echo "[5/10] Installer required file kontrolü"
-for file in "${required[@]}"; do
-  case "$file" in
-    README.md|INSTALL.md|LICENSE|install.sh) continue ;;
-  esac
-  grep -q "\"$file\"" install.sh || fail "install.sh REQUIRED_FILES içinde eksik: $file"
+echo "[3/5] Dosya boyutu (en fazla $MAX_LINES satır)"
+for file in "${SH_FILES[@]}" "${BATS_FILES[@]}"; do
+    lines=$(wc -l < "$file")
+    if ((lines > MAX_LINES)); then
+        if is_legacy "$file"; then
+            echo "  [muaf] $file: $lines satır"
+        else
+            fail "$file: $lines satır (sınır $MAX_LINES)"
+        fi
+    fi
 done
 
-echo "[6/10] Menü/route kontrolü"
-grep -q '1) do_full_install ;;' terminal-router.sh || fail "Route 1 Tam Kurulum yanlış"
-grep -q '2) do_modular_install ;;' terminal-router.sh || fail "Route 2 Modüler Kurulum yanlış"
-grep -q '3) do_change_theme ;;' terminal-router.sh || fail "Route 3 Tema Değiştir yanlış"
-grep -q '4) do_tools ;;' terminal-router.sh || fail "Route 4 Terminal Araçları yanlış"
-grep -q '5) do_tmux ;;' terminal-router.sh || fail "Route 5 Tmux yanlış"
-grep -q '6) do_health_and_diagnostics ;;' terminal-router.sh || fail "Route 6 Sağlık & Teşhis yanlış"
-grep -q '7) do_backups ;;' terminal-router.sh || fail "Route 7 Yedekler yanlış"
-grep -q '8) do_settings ;;' terminal-router.sh || fail "Route 8 Ayarlar yanlış"
-grep -q '9) do_uninstall ;;' terminal-router.sh || fail "Route 9 Kaldır yanlış"
-grep -q '0)' terminal-router.sh || fail "Route 0 Çıkış yok"
-grep -q "Seçiminiz (0-9)" terminal-ui.sh || fail "Ana menü seçim aralığı 0-9 değil"
-grep -q "do_backups" terminal-router.sh || fail "Yedek route fonksiyonu yok"
-grep -q "restore_backup_snapshot" core/terminal-base.sh || fail "Yedek geri yükleme fonksiyonu yok"
-grep -q 'create_backup "before_restore" "no_cleanup"' core/terminal-base.sh || fail "Geri yükleme öncesi yedek eski seçimi silebilir"
-grep -q "terminal-router.sh" terminal-setup.sh || fail "Ana script router modülünü yüklemiyor"
+echo "[4/5] Yan etki kuralı (yalnızca lib/actions/)"
+# Sistemi değiştiren komut kalıpları: komut konumunda (satır başı ya da
+# ; & | ( sonrası) sudo/apt/snap/chsh, ya da herhangi bir yerde ayar yazan
+# alt komutlar. Okuma amaçlı kullanımlar (dconf read, git config --get)
+# kurala takılmaz.
+cmd_pattern='(^|[;&|(])[[:space:]]*(sudo|apt-get|apt|snap|chsh)[[:space:]]'
+write_pattern='gsettings[[:space:]]+set|dconf[[:space:]]+(write|reset|load)|git[[:space:]]+config[[:space:]]+--global[[:space:]]+[^-[:space:]]|fc-cache[[:space:]]'
+for file in "${SH_FILES[@]}"; do
+    case "$file" in
+        lib/actions/*|lib/sudo.sh|tests/*|scripts/*|install.sh) continue ;;
+    esac
+    is_legacy "$file" && continue
+    hits=$(grep -nE "$cmd_pattern|$write_pattern" "$file" | grep -vE '^[0-9]+:[[:space:]]*#')
+    if [[ -n "$hits" ]]; then
+        printf '%s\n' "$hits" | sed "s|^|  $file:|" >&2
+        fail "$file: lib/actions/ dışında sisteme dokunan komut"
+    fi
+done
 
-echo "[7/10] 71x45 terminal UI kontrolü"
-grep -q 'TERMINAL_TARGET_COLS=71' terminal-ui.sh || fail "Terminal hedef genişliği 71 değil"
-grep -q 'TERMINAL_TARGET_ROWS=45' terminal-ui.sh || fail "Terminal hedef yüksekliği 45 değil"
-grep -q '\033\[8;%s;%st' terminal-ui.sh || fail "Terminal resize kaçış dizisi yok"
+echo "[5/5] Borulu kurulum yasağı (curl|sh)"
+for file in "${SH_FILES[@]}"; do
+    [[ "$file" == "scripts/check_static.sh" ]] && continue
+    if grep -nE '(curl|wget)[^|]*\|[[:space:]]*(sudo[[:space:]]+)?(ba)?sh([[:space:]]|$)' "$file" \
+        | grep -vE '^[0-9]+:[[:space:]]*#' | grep -q .; then
+        fail "$file: curl/wget çıktısı kabuğa borulanıyor"
+    fi
+done
 
-echo "[8/10] Riskli release dosyası kontrolü"
-if find . -path './.git' -prune -o -path './release' -prune -o -path './dist' -prune -o -type f \( -name '*.zip' -o -name '*.sha256' -o -name '*.log' \) -print | grep -q .; then
-  fail "Repo içinde release/log artığı var"
+echo
+if ((failures > 0)); then
+    echo "Statik kontrol BAŞARISIZ: $failures hata." >&2
+    exit 1
 fi
-
-echo "[9/10] Doğrudan curl/wget pipe kontrolü"
-if grep -RIn --exclude-dir=.git --exclude-dir=release --exclude-dir=dist --exclude='*.md' --exclude='check_static.sh' -E 'curl .*[|] *(bash|sh)|wget .*[|] *(bash|sh)' .; then
-  fail "Kod içinde doğrudan curl/wget pipe kurulumu bulundu"
-fi
-
-echo "[10/10] Paket scripti hızlı kontrol"
-bash -n scripts/package_release.sh
-
-echo "Statik kontrol tamamlandı."
+echo "Statik kontrol başarılı."

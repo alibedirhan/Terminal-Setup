@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Test taklidi: dpkg-query -W -f=BİÇİM [paket]
+db="$FAKE_ROOT/dpkg.txt"
+pkg="${!#}"
+if [[ "$pkg" == -* || "$pkg" == *'${'* ]]; then
+    while IFS= read -r p; do [[ -n "$p" ]] && echo "ii  $p"; done < "$db"
+    exit 0
+fi
+grep -qxF "$pkg" "$db" && { printf 'ii '; exit 0; }
+exit 1

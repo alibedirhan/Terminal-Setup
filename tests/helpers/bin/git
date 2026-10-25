@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Test taklidi: "git clone" ağa çıkmadan sahte bir depo oluşturur; diğer
+# git komutları gerçek git'e iletilir.
+if [[ "${1:-}" == "clone" ]]; then
+    url="" dest=""
+    for a in "$@"; do
+        case "$a" in clone|--depth|--quiet|[0-9]) ;; *) [[ -z "$url" ]] && url="$a" || dest="$a" ;; esac
+    done
+    [[ -f "$FAKE_ROOT/clone-fail" ]] && exit 128
+    mkdir -p "$dest/.git"
+    case "$url" in
+        *ohmyzsh*) echo "# taklit" > "$dest/oh-my-zsh.sh"; mkdir -p "$dest/custom/themes" "$dest/custom/plugins" ;;
+        *powerlevel10k.git) echo "# taklit" > "$dest/powerlevel10k.zsh-theme" ;;
+        *) echo "# taklit" > "$dest/README" ;;
+    esac
+    exit 0
+fi
+self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+real=$(PATH=$(echo "$PATH" | tr ':' '\n' | grep -vxF "$self_dir" | paste -sd:) command -v git)
+exec "$real" "$@"

@@ -1,0 +1,5 @@
+# Sürüm paketine (git archive) girmeyecekler
+tests/ export-ignore
+.github/ export-ignore
+.shellcheckrc export-ignore
+.gitattributes export-ignore

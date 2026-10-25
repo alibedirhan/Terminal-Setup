@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Test taklidi: yalnızca varsayılan GNOME Terminal profili sorgusu
+[[ "$1 $2 $3" == "get org.gnome.Terminal.ProfilesList default" ]] && echo "'b1dcc9dd-5262-4d8d-a863-c897e6d979b9'"
+exit 0

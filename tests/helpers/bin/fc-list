@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Test taklidi: yazı tipi dizinindeki dosyaları listeler
+for f in "${TS_FONT_DIR:-$HOME/.local/share/fonts}"/*.ttf; do
+    [[ -f "$f" ]] && echo "$f: $(basename "$f" .ttf)"
+done
+exit 0

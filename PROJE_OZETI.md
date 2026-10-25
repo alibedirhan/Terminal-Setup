@@ -1,121 +1,53 @@
-# Proje Özeti - Terminal Setup v5.0.0
+# Proje Özeti — Terminal Setup 6.0.0
 
-Son güncelleme: 25 Mayıs 2026
+Son güncelleme: 23 Ekim 2026
 
-## Genel Bakış
+## Ne yapar?
 
-Terminal Setup, Ubuntu terminalini tek komutla konfigüre eden modüler script koleksiyonu. Zsh, Oh My Zsh, Powerlevel10k, 14 CLI aracı ve 7 tema dahil.
+Ubuntu'yu formatladıktan sonra terminali tek seferde kurar: Zsh, Oh My Zsh, Powerlevel10k, MesloLGS NF, 14 komut satırı aracı, tmux ve 7 renk teması. Yaptığı her şeyi kaydeder ve tek komutla, kurulumdan önceki haline döner.
 
-**Ana özellikler:**
-- Otomatik kurulum (bağımlılıklar, fontlar, temalar)
-- 7 farklı renk teması
-- 14 CLI aracı seçeneği
-- GNOME Terminal, Kitty, Alacritty desteği
-- Aliases şablon sistemi
-- Backup/restore mekanizması
-- Tam kaldırma (19 adım)
+## Temel fikir
 
-## Mimari
+| Parça | Görevi |
+|---|---|
+| Başlangıç fotoğrafı | İlk kurulumdan önceki sistem hali (bir kez, rotasyonsuz) |
+| Değişiklik defteri | Script'in yaptığı her değişiklik, sahibi olan bileşenle birlikte |
+| Yönetilen bloklar | Kullanıcı dosyalarına tek bir işaretli blok; ayarlar `~/.config/terminal-setup/` altında |
+| Kanıtlı kaldırma | Defteri tersten geri al, sonra fotoğrafla karşılaştır ve raporla |
 
-### v5.0.0 Yapısı
+## Yapı
 
-Modüler mimari - 14 modül:
+| Dizin | İçerik | Dosya |
+|---|---|---|
+| `lib/` | motor | 13 |
+| `lib/ui/` | arayüz: renk, ölçü, terminal, çizim, sorular, menü | 6 |
+| `lib/actions/` | sisteme dokunan tek katman (yap + geri al) | 5 |
+| `components/` | kabuk (5), araçlar (14), ekstra (2) | 21 |
+| `themes/` | renk paletleri | 7 |
+| `renderers/` | GNOME Terminal, Ptyxis, Kitty, Alacritty, tmux | 5 |
+| `frontends/` | komut satırı, durum ekranı, menü ekranları | 9 |
+| `diagnostics/` | sağlık kontrolleri | 8 |
+| `profiles/` | minimal, developer, full | 3 |
+| `tests/` | 117 bats testi (11 dosya) + Docker gidiş-dönüş betiği | 12 |
 
-```
-Terminal-Setup/
-├── terminal-setup.sh         (~165 satır - sadece orchestration)
-├── terminal-ui.sh            (~655 satır - menüler, banner, widgetlar)
-├── terminal-router.sh        (~520 satır - routing + aksiyonlar + config) [YENİ]
-├── terminal-assistant.sh     (~987 satır - diagnostic)
-├── install.sh                (~210 satır - hızlı kurulum)
-│
-├── core/ (3 dosya, ~2400 satır)
-│   ├── terminal-base.sh      - Zsh, Oh My Zsh, P10k
-│   ├── terminal-tools.sh     - 14 CLI aracı
-│   └── terminal-config.sh    - Tema, tmux, kaldırma
-│
-├── utils/ (3 dosya, ~1300 satır)
-│   ├── helpers.sh            - Logging, error handling, transactions
-│   ├── system.sh             - Terminal detection
-│   └── config.sh             - Backup, snapshot
-│
-└── themes/ (7 dosya, ~700 satır)
-    ├── dracula.sh / nord.sh / gruvbox.sh
-    ├── tokyo-night.sh / catppuccin.sh
-    ├── one-dark.sh / solarized.sh
-```
+En büyük dosya 400 satırın altında; kural 600.
 
-### v5.0.2 → v5.0.0 Değişiklikler
+## Kalite kapıları
 
-| Dosya | v5.0.2 | v5.0.0 | Değişiklik |
-|-------|--------|--------|------------|
-| terminal-setup.sh | 883 satır | 165 satır | %81 küçülme, sadece orchestration |
-| terminal-ui.sh | 707 satır | 655 satır | Menü redesign, emoji kaldırıldı |
-| terminal-router.sh | - | ~520 satır | YENİ: tüm routing + aksiyonlar |
-| **Toplam** | ~8000 | ~8300 | Net +300 (yeni özellikler) |
+- ShellCheck sıfır uyarı, 600 satır sınırı, "yan etki yalnızca `lib/actions/`" kuralı (`scripts/check_static.sh`)
+- Sahte sistem üzerinde bats testleri (`tests/unit`, `tests/integration`)
+- Temiz Ubuntu 22.04 ve 24.04 konteynerlerinde gerçek gidiş-dönüş testi (`tests/e2e/container.sh`)
+- Hepsi GitHub Actions'ta her push'ta çalışır
 
-### Sorumluluk Ayrımı
+## Kararlar
 
-- **terminal-setup.sh**: Modül yükleme → cleanup → args → config → ana döngü
-- **terminal-router.sh**: `route_choice()` → `do_*()` fonksiyonları → config yönetimi
-- **terminal-ui.sh**: `show_*()` fonksiyonları → banner, menü, progress, spinner
+| Konu | Karar | Neden |
+|---|---|---|
+| Dil | Bash | Formatlanmış makinede hiçbir şey kurmadan çalışır |
+| Arayüz | Bağımlılıksız, ok tuşlu menü | gum gibi ek bir ikiliye gerek kalmadı |
+| Desteklenen sürümler | Ubuntu 22.04, 24.04, 26.04; x86_64 ve ARM64 | LTS sürümleri |
+| GitHub araçları | Release ikilileri, `~/.local/bin` | sudo, rustup, snap gerekmez; kaldırması tek dosya |
+| Kullanıcı verisi | Silinmez, arşive taşınır | Geri alınamaz kayıp olmasın |
+| Dil (arayüz) | Türkçe | Hedef kitle |
 
-### Ana Menü Yapısı (v5.0.0)
-
-```
-KURULUM
-  1  Tam Kurulum           → do_full_install()    → show_theme_menu → 7 adım
-  2  Modüler Kurulum       → do_modular_install() → show_modular_menu → 3 seçenek
-  3  Tema Değiştir          → do_change_theme()    → show_theme_menu → install_theme
-  4  Terminal Araçları      → do_tools()           → show_tools_submenu → 16 araç
-  5  Tmux Kurulumu          → do_tmux()            → tema seç → install_tmux_with_theme
-
-YÖNETİM
-  6  Sağlık & Teşhis        → do_health_and_diagnostics() → 8 teşhis seçeneği
-  7  Yedekler               → do_backups()         → show_backups
-  8  Ayarlar                → do_settings()        → show_settings_menu → 5 seçenek
-  9  Kaldır                 → do_uninstall()       → uninstall_all
-
-  0  Çıkış
-```
-
-## Dosya Yapısı
-
-### Ana Script'ler
-
-**terminal-setup.sh** (~165 satır)
-- Giriş noktası (orchestrator)
-- Modülleri yükler
-- Cleanup / trap
-- Argüman parse
-- Ana döngü: show_banner → show_menu → route_choice
-
-**terminal-router.sh** (~520 satır) [YENİ]
-- route_choice() → ana menü yönlendirici
-- do_full_install() → tam kurulum (tema seçimi dahil)
-- do_modular_install() → bileşen seçimi alt menüsü
-- do_change_theme() → sadece tema değiştir
-- do_tools() → 14 CLI aracı alt menüsü
-- do_tmux() → tmux + tema kurulumu
-- do_health_and_diagnostics() → sağlık + teşhis birleşik menü
-- do_settings() → ayarlar yönetimi
-- load_config / save_config / validate_config
-- wait_for_enter() → ortak yardımcı
-- prepare_install() → bağımlılık + sudo + yedek
-
-**terminal-ui.sh** (~655 satır)
-- İnteraktif menüler
-- Banner & animasyon (dokunulmadı)
-- Progress bar & spinner
-- Renk önizlemesi
-
-**terminal-assistant.sh** (~987 satır)
-- Diagnostic sistem
-- Sağlık kontrolleri
-- Sorun giderme
-
-### Core Modülü
-
-**core/terminal-base.sh** - Zsh, Oh My Zsh, P10k, fontlar, pluginler
-**core/terminal-tools.sh** - 14 CLI aracı
-**core/terminal-config.sh** - Tema uygulama, tmux, kaldırma
+Ayrıntılı mimari: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
