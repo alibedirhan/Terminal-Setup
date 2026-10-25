@@ -1,0 +1,32 @@
+# Everforest — Terminal Setup renk paleti
+# Biçim: ANAHTAR="#RRGGBB". COLOR0-7 normal, COLOR8-15 parlak renkler.
+NAME="Everforest"
+DESC="Orman yeşilleri; uzun çalışmada göz yormaz"
+BACKGROUND="#2D353B"
+FOREGROUND="#D3C6AA"
+CURSOR="#D3C6AA"
+SELECTION_BG="#543A48"
+SELECTION_FG="#D3C6AA"
+# tmux durum çubuğu vurgusu ve bölme kenarlığı
+ACCENT="#A7C080"
+BORDER="#475258"
+# bat ve delta söz dizimi teması (yerleşik karşılığı yoksa: ansi)
+BAT_THEME="ansi"
+# açık ya da koyu; PAIR: diğer tondaki eşi (Ptyxis sistemin tonunu izler)
+VARIANT="dark"
+COLOR0="#475258"
+COLOR1="#E67E80"
+COLOR2="#A7C080"
+COLOR3="#DBBC7F"
+COLOR4="#7FBBB3"
+COLOR5="#D699B6"
+COLOR6="#83C092"
+COLOR7="#D3C6AA"
+COLOR8="#7A8478"
+COLOR9="#E67E80"
+COLOR10="#A7C080"
+COLOR11="#DBBC7F"
+COLOR12="#7FBBB3"
+COLOR13="#D699B6"
+COLOR14="#83C092"
+COLOR15="#D3C6AA"

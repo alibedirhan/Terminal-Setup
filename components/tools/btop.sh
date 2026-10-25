@@ -3,6 +3,8 @@
 
 component_register btop "btop" tools "Sistem izleyici" ""
 
+component_tip btop "btop" "Sistem kaynaklarını izle"
+
 comp_btop_install() {
     act_pkg btop || return 1
     act_glob "$HOME/.config/btop"

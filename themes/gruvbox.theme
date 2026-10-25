@@ -10,6 +10,11 @@ SELECTION_FG="#EBDBB2"
 # tmux durum çubuğu vurgusu ve bölme kenarlığı
 ACCENT="#FABD2F"
 BORDER="#504945"
+# bat ve delta söz dizimi teması (yerleşik karşılığı yoksa: ansi)
+BAT_THEME="gruvbox-dark"
+# açık ya da koyu; PAIR: diğer tondaki eşi (Ptyxis sistemin tonunu izler)
+VARIANT="dark"
+PAIR="gruvbox-light"
 COLOR0="#282828"
 COLOR1="#CC241D"
 COLOR2="#98971A"

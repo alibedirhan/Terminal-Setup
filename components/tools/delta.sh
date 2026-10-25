@@ -4,6 +4,8 @@
 
 component_register delta "delta" tools "Okunaklı git diff" ""
 
+component_tip delta "git diff" "Farkları renkli ve okunaklı göster"
+
 comp_delta_install() {
     act_gh_binary dandavison/delta 'x86_64-unknown-linux-musl\.tar\.gz$' 'aarch64-unknown-linux-gnu\.tar\.gz$' delta || return 1
     act_gitcfg core.pager delta &&

@@ -62,14 +62,14 @@ assert_terminal_restored() {
     keys 2
     wait_for "Tema dene"
     keys Right Right
-    wait_for "3 / 7"
+    wait_for "3 / 12"
     keys q
     wait_for "Ne yapmak istersiniz?"
     keys 3
     wait_for "işareti kaldırılanlar kaldırılır"
     keys Down Down Space q
     wait_for "Ne yapmak istersiniz?"
-    keys 7
+    keys 8
     wait_for "Dosya konumları"
     keys q q
     wait_for "ÇIKIŞ=0"
@@ -79,7 +79,7 @@ assert_terminal_restored() {
 
 @test "işlem çıktısı normal ekranda kalır; Enter ile menüye dönülür" {
     start_menu
-    keys 4
+    keys 5
     wait_for "devam etmek için basın"
     screen | grep -q "Sağlık kontrolü"
     keys Enter
@@ -132,7 +132,7 @@ assert_terminal_restored() {
 
 @test "dil menüden değiştirilir ve hemen uygulanır" {
     start_menu
-    keys 7
+    keys 8
     wait_for "Dil / Language"
     keys Enter
     wait_for "English"

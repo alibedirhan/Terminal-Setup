@@ -74,6 +74,15 @@ user_main() {
         [[ -f "$HOME/.local/share/org.gnome.Ptyxis/palettes/terminal-setup.palette" ]] || fail "Ptyxis paleti yazılmadı"
         [[ "$(dconf read "/org/gnome/Ptyxis/Profiles/$PTYXIS_UUID/palette")" == "'terminal-setup'" ]] || fail "Ptyxis paleti seçilmedi"
         check_schema "/org/gnome/Ptyxis/Profiles/$PTYXIS_UUID/" org.gnome.Ptyxis.Profile relocatable
+
+        step "Ptyxis: açık/koyu eşli tema (sistem tonunu izler)"
+        ./terminal-setup.sh --yes theme apply catppuccin
+        pal="$HOME/.local/share/org.gnome.Ptyxis/palettes/terminal-setup.palette"
+        light=$(sed -n '/^\[Light\]/,/^\[Dark\]/p' "$pal")
+        dark=$(sed -n '/^\[Dark\]/,$p' "$pal")
+        [[ "$light" == *$'\n'"Background=#EFF1F5"$'\n'* ]] || fail "açık bölüm Latte değil"
+        [[ "$dark" == *$'\n'"Background=#1E1E2E"$'\n'* ]] || fail "koyu bölüm Mocha değil"
+        ./terminal-setup.sh --yes theme apply dracula
     fi
 
     step "Yazı tipi bileşeni (dconf font anahtarları)"

@@ -4,6 +4,11 @@
 
 component_register tmux "tmux" extra "Terminal çoğaltıcı, temalı durum çubuğu (önek: Ctrl+a)" ""
 
+component_tip tmux "tmux" "Oturum aç (önek: Ctrl+a)"
+component_tip tmux "Ctrl+a c" "Yeni pencere"
+component_tip tmux "Ctrl+a %" "Pencereyi dikey böl"
+component_tip tmux "Ctrl+a d" "Oturumdan ayrıl (arka planda sürer)"
+
 _tmux_base_conf() {
     cat <<CONF
 # Terminal Setup — tmux ayarları (yönetilir, kaldırmada silinir)

@@ -27,8 +27,7 @@ _status_system_card() {
         _t "yok"
         _status_kv "Tema" "${U_MUTED}${TR}${U_RST}"
     fi
-    for id in $(renderers_available); do
-        [[ "$id" == tmux ]] && continue
+    for id in $(renderers_available terminal); do
         terms+=("${RENDERER_NAME[$id]}")
     done
     _t "bulunamadı"

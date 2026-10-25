@@ -1,0 +1,32 @@
+# Rosé Pine — Terminal Setup renk paleti
+# Biçim: ANAHTAR="#RRGGBB". COLOR0-7 normal, COLOR8-15 parlak renkler.
+NAME="Rosé Pine"
+DESC="Sakin pembe ve mor; gece için yumuşak"
+BACKGROUND="#191724"
+FOREGROUND="#E0DEF4"
+CURSOR="#E0DEF4"
+SELECTION_BG="#403D52"
+SELECTION_FG="#E0DEF4"
+# tmux durum çubuğu vurgusu ve bölme kenarlığı
+ACCENT="#C4A7E7"
+BORDER="#403D52"
+# bat ve delta söz dizimi teması (yerleşik karşılığı yoksa: ansi)
+BAT_THEME="ansi"
+# açık ya da koyu; PAIR: diğer tondaki eşi (Ptyxis sistemin tonunu izler)
+VARIANT="dark"
+COLOR0="#26233A"
+COLOR1="#EB6F92"
+COLOR2="#31748F"
+COLOR3="#F6C177"
+COLOR4="#9CCFD8"
+COLOR5="#C4A7E7"
+COLOR6="#EBBCBA"
+COLOR7="#E0DEF4"
+COLOR8="#6E6A86"
+COLOR9="#EB6F92"
+COLOR10="#31748F"
+COLOR11="#F6C177"
+COLOR12="#9CCFD8"
+COLOR13="#C4A7E7"
+COLOR14="#EBBCBA"
+COLOR15="#E0DEF4"

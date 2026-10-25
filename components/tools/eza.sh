@@ -3,6 +3,9 @@
 
 component_register eza "eza" tools "Modern ls: ikonlar ve git durumu" ""
 
+component_tip eza "ll" "Ayrıntılı liste (git durumuyla)"
+component_tip eza "lt" "Ağaç görünümü"
+
 comp_eza_install() {
     act_gh_binary eza-community/eza '^eza_x86_64-unknown-linux-musl\.tar\.gz$' '^eza_aarch64-unknown-linux-gnu\.tar\.gz$' eza || return 1
     act_zsh_snippet 60 eza "alias ls='eza --group-directories-first --icons=auto'

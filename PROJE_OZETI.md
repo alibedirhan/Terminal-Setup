@@ -1,10 +1,10 @@
-# Proje Özeti — Terminal Setup 6.1.1
+# Proje Özeti — Terminal Setup 6.2.0
 
 Son güncelleme: 23 Ekim 2026
 
 ## Ne yapar?
 
-Ubuntu'yu formatladıktan sonra terminali tek seferde kurar: Zsh, Oh My Zsh, Powerlevel10k, MesloLGS NF, 14 komut satırı aracı, tmux ve 7 renk teması. Yaptığı her şeyi kaydeder ve tek komutla, kurulumdan önceki haline döner.
+Ubuntu'yu formatladıktan sonra terminali tek seferde kurar: Zsh, Oh My Zsh, Powerlevel10k, MesloLGS NF, 14 komut satırı aracı, tmux ve 12 renk teması. Yaptığı her şeyi kaydeder ve tek komutla, kurulumdan önceki haline döner.
 
 ## Temel fikir
 
@@ -19,17 +19,17 @@ Ubuntu'yu formatladıktan sonra terminali tek seferde kurar: Zsh, Oh My Zsh, Pow
 
 | Dizin | İçerik | Dosya |
 |---|---|---|
-| `lib/` | motor (dil desteği dahil) | 15 |
+| `lib/` | motor (dil, kısayollar, yazı tipi seçimi dahil) | 17 |
 | `locale/` | İngilizce çeviri katalogu | 1 |
 | `lib/ui/` | arayüz: renk, ölçü, terminal, çizim, sorular, menü | 6 |
 | `lib/actions/` | sisteme dokunan tek katman (yap + geri al + güncelle) | 6 |
-| `components/` | kabuk (5), araçlar (14), ekstra (2) | 21 |
-| `themes/` | renk paletleri | 7 |
-| `renderers/` | GNOME Terminal, Ptyxis, Kitty, Alacritty, tmux | 5 |
+| `components/` | kabuk (7), araçlar (14), ekstra (4) | 25 |
+| `themes/` | renk paletleri (10 koyu, 2 açık) | 12 |
+| `renderers/` | terminaller: GNOME Terminal, Ptyxis, Kitty, Alacritty, Ghostty, WezTerm; araçlar: tmux, bat/delta/fzf, btop | 9 |
 | `frontends/` | komut satırı, durum ekranı, menü ekranları | 9 |
-| `diagnostics/` | sağlık kontrolleri | 8 |
+| `diagnostics/` | sağlık kontrolleri (zsh açılış süresi dahil) | 9 |
 | `profiles/` | minimal, developer, full | 3 |
-| `tests/` | 147 bats testi (15 dosya) + Docker gidiş-dönüş ve GNOME betikleri | 17 |
+| `tests/` | 170 bats testi (18 dosya) + Docker gidiş-dönüş ve GNOME betikleri | 20 |
 
 En büyük dosya 400 satırın altında; kural 600.
 

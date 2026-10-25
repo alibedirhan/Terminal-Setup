@@ -1,5 +1,18 @@
 # Changelog
 
+## [6.2.0] - 2026-10-25
+
+### Eklendi
+- **Araçlar da temaya uyar:** Tema değişince bat ve delta (söz dizimi teması), fzf (paletten renkler) ve btop (paletten üretilen tema) da değişir. Kullanıcının araç ayar dosyalarına dokunulmaz; btop.conf yoksa oluşturulur ve kullanıcı verisi sayılır.
+- **Kısayollar ekranı** (menü ve `tips`): kurulan araçların kısayolları; bileşenler ne öğrettiğini `component_tip` ile bildirir.
+- **Açılış ipucu** (Ayarlar ya da `tips --shell on`): her yeni zsh oturumunda bir kısayol.
+- **Zsh açılış süresi** `doctor`'da; 300 ms'yi aşarsa en yavaş parçalar söylenir.
+- **fzf-tab:** Tab tamamlaması aranabilir listede (developer ve full profillerinde).
+- **5 yeni tema:** Rosé Pine, Kanagawa, Everforest ve açık temalar Catppuccin Latte, Gruvbox Light. Ptyxis'te eşli temalar sistemin açık/koyu tonunu izler.
+- **Ghostty ve WezTerm** desteği.
+- **Starship:** Powerlevel10k'ya seçenek olarak hızlı prompt (ikisi birlikte kurulamaz).
+- **Yazı tipi seçimi:** JetBrains Mono ve Fira Code Nerd Font bileşenleri; Ayarlar'da ya da `font set` ile seçilir.
+
 ## [6.1.1] - 2026-10-25
 
 ### Eklendi

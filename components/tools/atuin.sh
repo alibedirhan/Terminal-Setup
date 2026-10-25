@@ -4,6 +4,8 @@
 
 component_register atuin "atuin" tools "Aranabilir komut geçmişi" ""
 
+component_tip atuin "Ctrl+R" "Geçmişi atuin ile ara (tarih, dizin ve çıkış koduyla)"
+
 comp_atuin_install() {
     act_gh_binary atuinsh/atuin '^atuin-x86_64-unknown-linux-musl\.tar\.gz$' '^atuin-aarch64-unknown-linux-musl\.tar\.gz$' atuin || return 1
     act_zsh_snippet 70 atuin 'eval "$(atuin init zsh --disable-up-arrow)"' || return 1

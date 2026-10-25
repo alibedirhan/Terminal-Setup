@@ -22,13 +22,23 @@ add_terminal() {
     chmod +x "$BATS_TEST_TMPDIR/shims/$1"
 }
 
-@test "7 tema da geçerli (16 renk, zorunlu anahtarlar)" {
+@test "12 tema da geçerli (16 renk, zorunlu anahtarlar, eşler karşılıklı)" {
     local t n=0
     for t in $(theme_list); do
         theme_load "$t"
         n=$((n + 1))
     done
-    [ "$n" -eq 7 ]
+    [ "$n" -eq 12 ]
+    for t in $(theme_list); do
+        theme_load "$t"
+        [[ "${THEME[VARIANT]}" == dark || "${THEME[VARIANT]}" == light ]]
+        if [[ -n "${THEME[PAIR]:-}" ]]; then
+            local pair="${THEME[PAIR]}" variant="${THEME[VARIANT]}"
+            theme_load "$pair"
+            [ "${THEME[PAIR]}" = "$t" ]
+            [ "${THEME[VARIANT]}" != "$variant" ]
+        fi
+    done
 }
 
 @test "olmayan tema reddedilir" {
@@ -93,6 +103,21 @@ add_terminal() {
     [ ! -e "$HOME/.local" ]
 }
 
+@test "ptyxis: eşli temada açık ve koyu bölümler farklı yazılır" {
+    add_terminal ptyxis
+    dconf write /org/gnome/Ptyxis/default-profile-uuid "'abc123'"
+    theme_apply catppuccin
+    local pal="$HOME/.local/share/org.gnome.Ptyxis/palettes/terminal-setup.palette"
+    [ "$(sed -n '/^\[Light\]/,/^\[Dark\]/p' "$pal" | grep '^Background=')" = "Background=#EFF1F5" ]
+    [ "$(sed -n '/^\[Dark\]/,$p' "$pal" | grep '^Background=')" = "Background=#1E1E2E" ]
+    [ "${THEME[NAME]}" = "Catppuccin Mocha" ]
+    theme_apply catppuccin-latte
+    [ "$(sed -n '/^\[Dark\]/,$p' "$pal" | grep '^Background=')" = "Background=#1E1E2E" ]
+    grep -qx "Name=Terminal Setup (Catppuccin Latte)" "$pal"
+    theme_apply nord
+    [ "$(grep -c '^Background=#2E3440' "$pal")" -eq 2 ]
+}
+
 @test "ptyxis: profil yoksa palet yazılır, uyarı verilir" {
     add_terminal ptyxis
     run theme_apply nord
@@ -128,4 +153,40 @@ add_terminal() {
     mkdir -p "$TS_CONFIG_DIR" && touch "$TS_CONFIG_DIR/tmux.conf"
     theme_apply nord
     grep -q "window-status-current-style bg='#88C0D0'" "$TS_CONFIG_DIR/tmux-theme.conf"
+}
+
+@test "ghostty: tema dosyası ve theme bloğu; geri alınca config eski haline döner" {
+    add_terminal ghostty
+    mkdir -p "$HOME/.config/ghostty"
+    printf 'theme = Dracula\nfont-size = 13\n' > "$HOME/.config/ghostty/config"
+    cp "$HOME/.config/ghostty/config" "$BATS_TEST_TMPDIR/before"
+    theme_apply nord
+    local t="$HOME/.config/ghostty/themes/terminal-setup"
+    grep -qx "background = #2E3440" "$t"
+    [ "$(grep -c '^palette = ' "$t")" -eq 16 ]
+    grep -qx "palette = 15=#ECEFF4" "$t"
+    [ "$(grep '^theme = ' "$HOME/.config/ghostty/config" | tail -1)" = "theme = terminal-setup" ]
+    undo_component theme
+    cmp "$HOME/.config/ghostty/config" "$BATS_TEST_TMPDIR/before"
+    [ ! -e "$t" ]
+}
+
+@test "wezterm: ayar yoksa şemayı seçen wezterm.lua oluşturulur, kaldırınca arşivlenir" {
+    add_terminal wezterm
+    theme_apply kanagawa
+    grep -q 'background = "#1F1F28"' "$HOME/.config/wezterm/colors/terminal-setup.toml"
+    grep -q 'ansi = \["#16161D", ' "$HOME/.config/wezterm/colors/terminal-setup.toml"
+    grep -qx "config.color_scheme = 'Terminal Setup'" "$HOME/.config/wezterm/wezterm.lua"
+    undo_component theme
+    [ ! -e "$HOME/.config/wezterm" ]
+    [ -f "$HOME"/terminal-setup-kaldirilan-*/.config/wezterm/wezterm.lua ]
+}
+
+@test "wezterm: kullanıcının ayar dosyasına dokunulmaz, eklenecek satır söylenir" {
+    add_terminal wezterm
+    echo "return {}" > "$HOME/.wezterm.lua"
+    run theme_apply nord
+    [[ "$output" == *"config.color_scheme = 'Terminal Setup'"* ]]
+    [ "$(cat "$HOME/.wezterm.lua")" = "return {}" ]
+    [ ! -e "$HOME/.config/wezterm/wezterm.lua" ]
 }

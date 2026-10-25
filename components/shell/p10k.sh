@@ -3,9 +3,15 @@
 
 component_register p10k "Powerlevel10k" shell "Git durumunu gösteren hızlı prompt" "ohmyzsh fonts"
 
+component_tip p10k "p10k configure" "Prompt görünümünü yeniden seç"
+
 P10K_DIR="$HOME/.oh-my-zsh/custom/themes/powerlevel10k"
 
 comp_p10k_install() {
+    if [[ "$(component_state starship)" == ours ]]; then
+        log_err "Starship ve Powerlevel10k birlikte kullanılamaz; önce Starship'i kaldırın."
+        return 1
+    fi
     act_clone https://github.com/romkatv/powerlevel10k.git "$P10K_DIR" || return 1
     act_zsh_snippet 05 p10k-instant '# Anında prompt: zsh başlangıcının en üstünde kalmalı
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then

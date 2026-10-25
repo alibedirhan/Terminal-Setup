@@ -61,6 +61,32 @@ for cmd in zsh fzf zoxide eza batcat rg fdfind delta lazygit btop dust duf procs
 done
 [[ "$(as_user 'git config --global --get core.pager')" == "delta" ]] || fail "delta git'e bağlanmadı"
 
+step "Tema araçlara uygulandı mı?"
+snippet="/home/$USER_NAME/.config/terminal-setup/zsh.d/65-theme-tools.zsh"
+grep -qx "export BAT_THEME='Nord'" "$snippet" || fail "BAT_THEME yazılmadı"
+[[ -f "/home/$USER_NAME/.config/btop/themes/terminal-setup.theme" ]] || fail "btop teması yazılmadı"
+# Her temanın bat teması bu Ubuntu'nun bat sürümünde gerçekten var mı?
+batcat --list-themes --color=never > /tmp/bat-themes
+for f in "$WORK"/themes/*.theme; do
+    t=$(sed -n 's/^BAT_THEME="\(.*\)"$/\1/p' "$f")
+    grep -qxF "$t" /tmp/bat-themes || fail "$(basename "$f"): bat teması yok: $t"
+    printf '  ✓ %s → %s\n' "$(basename "$f" .theme)" "$t"
+done
+
+step "Yazı tipi seçimi (Fira Code Nerd Font)"
+as_user "./terminal-setup.sh --yes install --components font-firacode" || fail "Fira Code kurulamadı"
+as_user "fc-list : family" > /tmp/fonts.log
+grep -q "FiraCode Nerd Font" /tmp/fonts.log || fail "Fira Code fontconfig'te görünmüyor"
+as_user "./terminal-setup.sh font list" > /tmp/fontlist.log
+grep -q "^\* firacode" /tmp/fontlist.log || fail "Fira Code seçilmedi"
+as_user "./terminal-setup.sh --yes font set meslo" || fail "MesloLGS NF'ye dönülemedi"
+
+step "Açılış ipucu ve kısayollar"
+as_user "./terminal-setup.sh --yes tips --shell on" || fail "açılış ipucu açılamadı"
+as_user "zsh -n \$HOME/.config/terminal-setup/zsh.d/95-tips.zsh" || fail "ipucu parçası zsh sözdizimine uymuyor"
+as_user "./terminal-setup.sh tips" > /tmp/tips.log || fail "kısayollar ekranı hata verdi"
+grep -q "Ctrl+T" /tmp/tips.log || fail "kısayollar listelenmedi"
+
 step "Etkileşimli zsh oturumu (önbellek ve geçmiş dosyaları oluşsun)"
 as_user "TERM=xterm-256color POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true script -qec 'zsh -i -c \"z --help >/dev/null; ls >/dev/null; exit\"' /dev/null" \
     > /tmp/zsh.log 2>&1 || { cat /tmp/zsh.log; fail "zsh başlangıcı hata verdi"; }

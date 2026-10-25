@@ -3,6 +3,8 @@
 
 component_register dust "dust" tools "Görsel disk kullanımı (du)" ""
 
+component_tip dust "dust" "Hangi dizin ne kadar yer kaplıyor"
+
 comp_dust_install() {
     act_gh_binary bootandy/dust 'x86_64-unknown-linux-musl\.tar\.gz$' 'aarch64-unknown-linux-musl\.tar\.gz$' dust
 }

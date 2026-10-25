@@ -6,8 +6,8 @@
 # (renderers/*.sh). Yeni tema tek dosya, yeni terminal tek renderer'dır.
 #
 # Renderer sözleşmesi:
-#   renderer_register kimlik "Ad"
-#   rend_<kimlik>_available   terminal bu sistemde var mı?
+#   renderer_register kimlik "Ad" [terminal|tool]
+#   rend_<kimlik>_available   terminal ya da araç bu sistemde var mı?
 #   rend_<kimlik>_apply       THEME[...] dizisindeki renkleri uygula
 #   rend_<kimlik>_font        (isteğe bağlı) MesloLGS NF yazı tipini ayarla
 # ============================================================================
@@ -15,6 +15,7 @@
 declare -gA THEME=()
 declare -ga RENDERER_IDS=()
 declare -gA RENDERER_NAME=()
+declare -gA RENDERER_KIND=()   # terminal: renkleri terminale; tool: bir araca (bat, btop)
 
 THEME_REQUIRED_KEYS=(NAME BACKGROUND FOREGROUND CURSOR SELECTION_BG SELECTION_FG ACCENT BORDER)
 TS_FONT_NAME="MesloLGS NF"
@@ -23,11 +24,15 @@ TS_FONT_SIZE=11
 renderer_register() {
     RENDERER_IDS+=("$1")
     RENDERER_NAME[$1]="$2"
+    RENDERER_KIND[$1]="${3:-terminal}"
 }
 
+# Bu sistemde uygulanabilen renderer'lar: renderers_available [terminal|tool]
+# shellcheck disable=SC2120  # tür argümanı başka dosyalardan (durum, teşhis) verilir
 renderers_available() {
-    local id
+    local id kind="${1:-}"
     for id in "${RENDERER_IDS[@]}"; do
+        [[ -n "$kind" && "${RENDERER_KIND[$id]}" != "$kind" ]] && continue
         "rend_${id}_available" 2>/dev/null && echo "$id"
     done
 }
@@ -188,16 +193,18 @@ theme_apply() {
     done
     TS_CURRENT_COMPONENT="$owner"
     if ((applied == 0)); then
-        log_err "Desteklenen terminal bulunamadı (GNOME Terminal, Ptyxis, Kitty, Alacritty)."
+        log_err "Desteklenen terminal bulunamadı (GNOME Terminal, Ptyxis, Kitty, Alacritty, Ghostty, WezTerm)."
         return 1
     fi
     settings_set theme "$name"
     is_dry_run || log_ok "%s teması uygulandı. Yeni açılan pencerelerde görünür." "${THEME[NAME]}"
 }
 
-# Yazı tipini uygun terminallere ayarla (fonts bileşeni çağırır)
+# Seçili yazı tipini uygun terminallere ayarla (yazı tipi bileşenleri çağırır)
 theme_apply_font() {
     local id
+    font_current
+    TS_FONT_NAME="${FONT_FAMILY[$REPLY]}"
     for id in $(renderers_available); do
         declare -F "rend_${id}_font" >/dev/null || continue
         "rend_${id}_font" || log_warn "%s için yazı tipi ayarlanamadı" "${RENDERER_NAME[$id]}"

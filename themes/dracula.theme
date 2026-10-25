@@ -10,6 +10,10 @@ SELECTION_FG="#FFFFFF"
 # tmux durum çubuğu vurgusu ve bölme kenarlığı
 ACCENT="#BD93F9"
 BORDER="#6272A4"
+# bat ve delta söz dizimi teması (yerleşik karşılığı yoksa: ansi)
+BAT_THEME="Dracula"
+# açık ya da koyu; PAIR: diğer tondaki eşi (Ptyxis sistemin tonunu izler)
+VARIANT="dark"
 COLOR0="#21222C"
 COLOR1="#FF5555"
 COLOR2="#50FA7B"
