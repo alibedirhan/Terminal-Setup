@@ -39,19 +39,13 @@ cd Terminal-Setup
 
 Menü ok tuşlarıyla gezilir:
 
-```text
- Terminal Setup 6.0.0  │ Zsh ✓  P10k ✓  Tema: nord  Kayıt: 87
+![Ana menü](docs/images/ana-menu.png)
 
-Ana menü
-────────────────────────────────────────────────────────────
- ❯ Kurulum sihirbazı        Profil ve tema seçerek kur
-   Tema dene                Önizle, uygula, beğenmezsen geri al
-   Bileşenler               Araçları tek tek kur ya da kaldır
-   Durum ve teşhis          Neler kurulu, sorun var mı
-   Kaldır                   Görünümü sıfırla ya da tamamen kaldır
-   Ayarlar                  Varsayılan profil, güncelleme kontrolü
-   Çıkış
-```
+"Tema dene" ekranında her tema, kendi renkleriyle çizilmiş bir terminal penceresinde önizlenir:
+
+![Tema önizleme](docs/images/tema-dene.png)
+
+Arayüz hiçbir ek programa ihtiyaç duymaz. 24 bit, 256 ve 8 renkli terminallerde çalışır, `NO_COLOR` tanımlıysa renk kullanmaz; küçük pencerelerde sade başlığa geçer, uzun listeler kayar.
 
 Depoyu klonlamadan, sürümü SHA-256 ile doğrulayarak çalıştırmak için [INSTALL.md](INSTALL.md)'ye bakın.
 
@@ -129,7 +123,7 @@ Mimari, kurallar ve yeni bileşen/tema/terminal ekleme: [docs/ARCHITECTURE.md](d
 ## Kalite
 
 - Her push'ta CI: ShellCheck (sıfır uyarı), 600 satır sınırı, "sisteme yalnızca `lib/actions/` dokunur" kuralı.
-- 81 birim ve entegrasyon testi, sahte bir sistem üzerinde (gerçek sisteme dokunmaz, ağa çıkmaz).
+- 92 birim ve entegrasyon testi, sahte bir sistem üzerinde (gerçek sisteme dokunmaz, ağa çıkmaz).
 - Temiz Ubuntu 22.04 ve 24.04 konteynerlerinde gerçek gidiş-dönüş testi: tam kurulum → zsh oturumu → kaldırma → paket listesi, ev dizini, kabuk ve `/etc/shells` kurulum öncesiyle aynı mı?
 
 ## Katkı ve destek

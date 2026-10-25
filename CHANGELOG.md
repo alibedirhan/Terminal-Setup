@@ -11,10 +11,10 @@ Mimari baştan yazıldı. Ana hedef: kurulan her şeyin iz bırakmadan geri alı
 - **İki seviyeli kaldırma:** "Görünümü sıfırla" (yalnızca tema) ve "Tamamen kaldır" (plan + yazılı onay).
 - Kullanımla oluşan veriler (komut geçmişi, prompt ayarı) silinmez, `~/terminal-setup-kaldirilan-TARİH/` arşivine taşınır.
 - Güvenli paket kaldırma: silme öncesi apt simülasyonu; başka bir paketin ihtiyaç duyduğu paket atlanır.
-- **Tema önizleme:** 16 renk ve örnek prompt canlı gösterilir; ok tuşlarıyla gezilir.
+- **Tema önizleme:** Temanın kendi renkleriyle çizilmiş bir terminal penceresi ve 16 renklik palet canlı gösterilir; ok tuşlarıyla gezilir.
 - **Ptyxis** (Ubuntu 25.10+ varsayılan terminali) desteği; Alacritty için TOML biçimi.
 - **ARM64** desteği: GitHub araçları mimariye göre indirilir.
-- Ok tuşlarıyla gezilen bağımlılıksız menü ve çoklu seçim listesi.
+- **Yeni arayüz (bağımlılıksız):** renk geçişli logo, durum ve öneri kartları, bölümlere ayrılmış menüler, adım göstergeli kurulum sihirbazı, iki sütunlu durum ekranı. 24 bit / 256 / 8 renkli terminallere ve `NO_COLOR`'a uyum sağlar; ekran titremeden yeniden çizilir, uzun listeler kayar, pencere boyutu değişince düzen yenilenir. Küçük terminalde (80x24) sade başlığa geçer.
 - Etkileşimsiz komut satırı: `install`, `remove`, `theme`, `status`, `doctor`, `uninstall`, `verify`, `list`.
 - Her komut için `--dry-run` (prova) modu.
 - Hazır profiller: minimal, developer, full.

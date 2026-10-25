@@ -16,7 +16,7 @@ VERIFY_NOTES=0
 
 _verify_ok()   { printf '  %s %s\n' "${C_GREEN}✓${C_RESET}" "$*"; }
 _verify_err()  { printf '  %s %s\n' "${C_RED}✗${C_RESET}" "$*"; VERIFY_ERRORS=$((VERIFY_ERRORS + 1)); }
-_verify_note() { printf '  %s %s\n' "${C_YELLOW}ℹ${C_RESET}" "$*"; VERIFY_NOTES=$((VERIFY_NOTES + 1)); }
+_verify_note() { printf '  %s %s\n' "${U_INFO:-$C_YELLOW}•${C_RESET}" "$*"; VERIFY_NOTES=$((VERIFY_NOTES + 1)); }
 
 _verify_list() {
     local max=12 n=0 item

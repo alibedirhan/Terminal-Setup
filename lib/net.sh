@@ -75,12 +75,18 @@ gh_download() {
     net_fetch "https://github.com/$repo/releases/download/$tag/$asset" "$dest"
 }
 
+# A sürümü B'den yeni mi: version_newer 6.1.0 6.0.0
+version_newer() {
+    [[ "$1" =~ ^[0-9]+(\.[0-9]+)*$ && "$1" != "$2" ]] || return 1
+    [[ "$(printf '%s\n%s\n' "$1" "$2" | sort -V | tail -n1)" == "$1" ]]
+}
+
 # GitHub'daki sürümle karşılaştır. Yeni sürüm varsa yazdırır ve 0 döner.
 update_check() {
     local remote
     has_cmd curl || return 1
     remote=$(curl -fsSL --max-time 4 -A "$NET_UA" \
         "https://raw.githubusercontent.com/alibedirhan/Terminal-Setup/main/VERSION" 2>/dev/null | tr -d '[:space:]')
-    [[ -n "$remote" && "$remote" != "$TS_VERSION" ]] || return 1
+    version_newer "$remote" "$TS_VERSION" || return 1
     log_info "Yeni sürüm mevcut: $remote (kurulu: $TS_VERSION) — https://github.com/alibedirhan/Terminal-Setup"
 }

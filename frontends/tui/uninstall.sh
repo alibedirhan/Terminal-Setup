@@ -5,11 +5,11 @@
 
 tui_uninstall() {
     local items=(
-        "Görünümü sıfırla|Tema ve renkler eski haline döner, araçlar kalır"
-        "Planı göster|Tamamen kaldırınca neyin olacağını gör (değişiklik yok)"
-        "Tamamen kaldır|Sistem kurulum öncesine döner"
+        "Görünümü sıfırla|Tema ve renkler eski haline döner, araçlar kalır|◐"
+        "Planı göster|Tamamen kaldırınca ne olacağını gör (değişiklik yok)|◎"
+        "Tamamen kaldır|Sistem kurulum öncesine döner|↺"
     )
-    legacy_detect && items+=("v5 kurulumunu temizle|Eski sürümün bıraktıklarını adım adım kaldır")
+    legacy_detect && items+=("v5 kurulumunu temizle|Eski sürümün bıraktıklarını adım adım kaldır|×")
     ui_menu "Kaldır" "${items[@]}" || return 0
     ui_clear
     case "$UI_CHOICE" in

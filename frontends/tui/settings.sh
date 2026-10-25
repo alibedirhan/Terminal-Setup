@@ -8,10 +8,10 @@ tui_settings() {
     while true; do
         upd=$(settings_get update_check on)
         ui_menu "Ayarlar" \
-            "Varsayılan profil|Şu an: $(settings_get default_profile developer)" \
-            "Güncelleme kontrolü|Açılışta GitHub'a bakılsın mı? Şu an: $upd" \
-            "Şimdi güncelleme ara|" \
-            "Dosya konumları|Defter, fotoğraf, log nerede" || return 0
+            "Varsayılan profil|Şu an: $(settings_get default_profile developer)|▸" \
+            "Güncelleme kontrolü|Açılışta GitHub'a bakılsın mı? Şu an: $upd|▸" \
+            "Şimdi güncelleme ara||▸" \
+            "Dosya konumları|Defter, fotoğraf, log nerede|▸" || return 0
         ui_clear
         case "$UI_CHOICE" in
             0)
@@ -23,11 +23,11 @@ tui_settings() {
             2) update_check || log_ok "Güncel sürümdesiniz ($TS_VERSION)."; ui_pause ;;
             3)
                 ui_title "Dosya konumları"
-                printf '  %s%s\n' "$(ui_pad "Defter" 22)" "$(ts_pretty_path "$TS_LEDGER")"
-                printf '  %s%s\n' "$(ui_pad "Başlangıç fotoğrafı" 22)" "$(ts_pretty_path "$TS_BASELINE_DIR")"
-                printf '  %s%s\n' "$(ui_pad "Zsh/tmux parçaları" 22)" "$(ts_pretty_path "$TS_CONFIG_DIR")"
-                printf '  %s%s\n' "$(ui_pad "İndirilen araçlar" 22)" "$(ts_pretty_path "$TS_BIN_DIR")"
-                printf '  %s%s\n' "$(ui_pad "Log" 22)" "$(ts_pretty_path "$TS_LOG_FILE")"
+                ui_line "  ${U_MUTED}$(ui_pad "Defter" 22)${U_RST}$(ts_pretty_path "$TS_LEDGER")"
+                ui_line "  ${U_MUTED}$(ui_pad "Başlangıç fotoğrafı" 22)${U_RST}$(ts_pretty_path "$TS_BASELINE_DIR")"
+                ui_line "  ${U_MUTED}$(ui_pad "Zsh/tmux parçaları" 22)${U_RST}$(ts_pretty_path "$TS_CONFIG_DIR")"
+                ui_line "  ${U_MUTED}$(ui_pad "İndirilen araçlar" 22)${U_RST}$(ts_pretty_path "$TS_BIN_DIR")"
+                ui_line "  ${U_MUTED}$(ui_pad "Log" 22)${U_RST}$(ts_pretty_path "$TS_LOG_FILE")"
                 ui_pause ;;
         esac
     done

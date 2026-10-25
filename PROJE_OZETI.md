@@ -19,17 +19,17 @@ Ubuntu'yu formatladıktan sonra terminali tek seferde kurar: Zsh, Oh My Zsh, Pow
 
 | Dizin | İçerik | Dosya |
 |---|---|---|
-| `lib/` | motor | 14 |
+| `lib/` | motor | 15 |
 | `lib/actions/` | sisteme dokunan tek katman (yap + geri al) | 5 |
 | `components/` | kabuk (5), araçlar (14), ekstra (2) | 21 |
 | `themes/` | renk paletleri | 7 |
 | `renderers/` | GNOME Terminal, Ptyxis, Kitty, Alacritty, tmux | 5 |
-| `frontends/` | komut satırı, durum ekranı, menü ekranları | 8 |
+| `frontends/` | komut satırı, durum ekranı, menü ekranları | 9 |
 | `diagnostics/` | sağlık kontrolleri | 8 |
 | `profiles/` | minimal, developer, full | 3 |
-| `tests/` | 81 bats testi (8 dosya) + Docker gidiş-dönüş betiği | 9 |
+| `tests/` | 92 bats testi (9 dosya) + Docker gidiş-dönüş betiği | 10 |
 
-En büyük dosya 300 satırın altında; kural 600.
+En büyük dosya 400 satırın altında; kural 600.
 
 ## Kalite kapıları
 

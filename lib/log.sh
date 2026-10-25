@@ -49,10 +49,12 @@ _log_write() {
     printf '[%s] [%s] %s\n' "$(ts_now)" "$1" "$2" >> "$TS_LOG_FILE" 2>/dev/null || true
 }
 
-log_info()  { _log_write INFO "$*";  printf '%s\n' "${C_BLUE}ℹ${C_RESET} $*"; }
-log_ok()    { _log_write OK "$*";    printf '%s\n' "${C_GREEN}✓${C_RESET} $*"; }
-log_warn()  { _log_write WARN "$*";  printf '%s\n' "${C_YELLOW}⚠${C_RESET} $*" >&2; }
-log_err()   { _log_write ERROR "$*"; printf '%s\n' "${C_RED}✗${C_RESET} $*" >&2; }
+# Konsol satırları menünün kenar boşluğuna (UI_M) hizalanır; renkler ui.sh
+# yüklüyse onun paletinden, değilse temel renklerden gelir.
+log_info()  { _log_write INFO "$*";  printf '%s%s\n' "${UI_M:-}" "${U_INFO:-$C_BLUE}•${C_RESET} $*"; }
+log_ok()    { _log_write OK "$*";    printf '%s%s\n' "${UI_M:-}" "${U_OK:-$C_GREEN}✓${C_RESET} $*"; }
+log_warn()  { _log_write WARN "$*";  printf '%s%s\n' "${UI_M:-}" "${U_WARN:-$C_YELLOW}▲${C_RESET} $*" >&2; }
+log_err()   { _log_write ERROR "$*"; printf '%s%s\n' "${UI_M:-}" "${U_ERR:-$C_RED}✗${C_RESET} $*" >&2; }
 log_debug() {
     _log_write DEBUG "$*"
     [[ "$TS_DEBUG" == "1" ]] && printf '%s\n' "${C_DIM}[debug] $*${C_RESET}" >&2
@@ -60,10 +62,10 @@ log_debug() {
 }
 
 # Kurulum adımı başlığı: log_step "Bat kuruluyor"
-log_step() { _log_write STEP "$*"; printf '%s\n' "${C_CYAN}→${C_RESET} $*"; }
+log_step() { _log_write STEP "$*"; printf '%s%s\n' "${UI_M:-}" "${U_ACC:-$C_CYAN}◆${C_RESET} $*"; }
 
 # Prova modunda yapılacak işlemi yazdır
-log_plan() { _log_write PLAN "$*"; printf '%s\n' "  ${C_MAGENTA}[plan]${C_RESET} $*"; }
+log_plan() { _log_write PLAN "$*"; printf '%s%s\n' "${UI_M:-}" "  ${U_PINK:-$C_MAGENTA}[plan]${C_RESET} ${U_MUTED:-}$*${C_RESET}"; }
 
 # Komutu çalıştır; çıktıyı log dosyasına yaz, çıkış kodunu döndür.
 run_logged() {

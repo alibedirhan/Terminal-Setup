@@ -29,9 +29,9 @@ run_doctor() {
         msg=$("diag_${id}_check" 2>/dev/null)
         rc=$?
         case "$rc" in
-            0) printf '  %s %s%s\n' "${C_GREEN}✓${C_RESET}" "$(ui_pad "${DIAG_TITLE[$id]}" 20)" "${C_DIM}$msg${C_RESET}" ;;
-            1) printf '  %s %s%s\n' "${C_YELLOW}⚠${C_RESET}" "$(ui_pad "${DIAG_TITLE[$id]}" 20)" "$msg"; warn=$((warn + 1)) ;;
-            *) printf '  %s %s%s\n' "${C_RED}✗${C_RESET}" "$(ui_pad "${DIAG_TITLE[$id]}" 20)" "$msg"; err=$((err + 1)) ;;
+            0) ui_line "  ${U_OK}✓${C_RESET} $(ui_pad "${DIAG_TITLE[$id]}" 22)${U_MUTED:-$C_DIM}$msg" ;;
+            1) ui_line "  ${U_WARN}▲${C_RESET} $(ui_pad "${DIAG_TITLE[$id]}" 22)$msg"; warn=$((warn + 1)) ;;
+            *) ui_line "  ${U_ERR}✗${C_RESET} $(ui_pad "${DIAG_TITLE[$id]}" 22)$msg"; err=$((err + 1)) ;;
         esac
         if ((rc != 0)) && declare -F "diag_${id}_fix" >/dev/null; then
             fixable+=("$id")

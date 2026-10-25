@@ -3,30 +3,30 @@
 # Terminal Setup - Menü: ana ekran
 # ============================================================================
 
-# Her menü çiziminde üstte görünen durum satırı (ağa çıkmaz)
-tui_header() {
-    local zsh_s p10k_s theme
-    [[ "$(component_state zsh)" == ours ]] && zsh_s="${C_GREEN}✓${C_RESET}" || zsh_s="${C_DIM}-${C_RESET}"
-    [[ "$(component_state p10k)" == ours ]] && p10k_s="${C_GREEN}✓${C_RESET}" || p10k_s="${C_DIM}-${C_RESET}"
-    theme=$(settings_get theme)
-    printf ' %s  %s\n' "${C_BOLD}${C_CYAN}Terminal Setup${C_RESET} ${C_DIM}$TS_VERSION${C_RESET}" \
-        "${C_DIM}│${C_RESET} Zsh $zsh_s  P10k $p10k_s  Tema: ${theme:-yok}  Kayıt: $(ledger_count)"
-}
-
 tui_main() {
     UI_HEADER_FN=tui_header
+    ui_session_begin
     if [[ "$(settings_get update_check on)" == "on" ]]; then
         update_check && ui_pause
     fi
     while true; do
-        ui_menu "Ana menü" \
-            "Kurulum sihirbazı|Profil ve tema seçerek kur" \
-            "Tema dene|Önizle, uygula, beğenmezsen geri al" \
-            "Bileşenler|Araçları tek tek kur ya da kaldır" \
-            "Durum ve teşhis|Neler kurulu, sorun var mı" \
-            "Kaldır|Görünümü sıfırla ya da tamamen kaldır" \
-            "Ayarlar|Varsayılan profil, güncelleme kontrolü" \
-            "Çıkış|" || return 0
+        TUI_BIG_HEADER=1 UI_FOOTER_FN=tui_hint
+        ui_menu "Ne yapmak istersiniz?" \
+            "#Kurulum" \
+            "Kurulum sihirbazı|Profil ve tema seçerek adım adım kur|✦" \
+            "Tema dene|7 temayı canlı önizle, beğenmezsen geri al|◐" \
+            "Bileşenler|Araçları tek tek kur ya da kaldır|▦" \
+            "#Yönetim" \
+            "Durum ve teşhis|Neler kurulu, sorun var mı|◎" \
+            "Kaldır|Görünümü sıfırla ya da tamamen kaldır|↺" \
+            "Ayarlar|Varsayılan profil, güncelleme kontrolü|≡" \
+            "Çıkış||×"
+        local rc=$?
+        TUI_BIG_HEADER=0 UI_FOOTER_FN=""
+        if ((rc != 0)) || ((UI_CHOICE == 6)); then
+            tui_goodbye
+            return 0
+        fi
         ui_clear
         case "$UI_CHOICE" in
             0) tui_install_wizard ;;
@@ -35,7 +35,15 @@ tui_main() {
             3) status_show; run_doctor; ui_pause ;;
             4) tui_uninstall ;;
             5) tui_settings ;;
-            6) return 0 ;;
         esac
     done
+}
+
+tui_goodbye() {
+    ui_session_end
+    ui_clear
+    printf '%s %s\n' "$(ui_gradient_text "Terminal Setup")" "${U_MUTED}· görüşmek üzere${U_RST}"
+    if ((_TUI_ST_COUNT > 0)); then
+        printf '%s\n' "${U_MUTED}Değişiklikleri görmek için yeni bir terminal açın. Geri almak için: ./terminal-setup.sh uninstall${U_RST}"
+    fi
 }
