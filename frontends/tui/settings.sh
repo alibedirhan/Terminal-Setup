@@ -12,23 +12,30 @@ tui_settings() {
             "Güncelleme kontrolü|Açılışta GitHub'a bakılsın mı? Şu an: $upd|▸" \
             "Şimdi güncelleme ara||▸" \
             "Dosya konumları|Defter, fotoğraf, log nerede|▸" || return 0
-        ui_clear
         case "$UI_CHOICE" in
             0)
                 mapfile -t profiles < <(profile_list)
                 items=()
-                for p in "${profiles[@]}"; do items+=("$p|$(profile_description "$p")"); done
+                for p in "${profiles[@]}"; do items+=("$p|$(profile_description "$p")|▸"); done
                 ui_menu "Varsayılan profil" "${items[@]}" && settings_set default_profile "${profiles[UI_CHOICE]}" ;;
-            1) [[ "$upd" == on ]] && settings_set update_check off || settings_set update_check on ;;
-            2) update_check || log_ok "Güncel sürümdesiniz ($TS_VERSION)."; ui_pause ;;
-            3)
-                ui_title "Dosya konumları"
-                ui_line "  ${U_MUTED}$(ui_pad "Defter" 22)${U_RST}$(ts_pretty_path "$TS_LEDGER")"
-                ui_line "  ${U_MUTED}$(ui_pad "Başlangıç fotoğrafı" 22)${U_RST}$(ts_pretty_path "$TS_BASELINE_DIR")"
-                ui_line "  ${U_MUTED}$(ui_pad "Zsh/tmux parçaları" 22)${U_RST}$(ts_pretty_path "$TS_CONFIG_DIR")"
-                ui_line "  ${U_MUTED}$(ui_pad "İndirilen araçlar" 22)${U_RST}$(ts_pretty_path "$TS_BIN_DIR")"
-                ui_line "  ${U_MUTED}$(ui_pad "Log" 22)${U_RST}$(ts_pretty_path "$TS_LOG_FILE")"
-                ui_pause ;;
+            1) if [[ "$upd" == on ]]; then settings_set update_check off; else settings_set update_check on; fi ;;
+            2) tui_run tui_update_check ;;
+            3) tui_run tui_paths ;;
         esac
     done
+}
+
+tui_update_check() {
+    update_check || log_ok "Güncel sürümdesiniz ($TS_VERSION)."
+}
+
+tui_paths() {
+    ui_title "Dosya konumları"
+    ui_card_top ""
+    _status_kv "Defter" "$(ts_pretty_path "$TS_LEDGER")"
+    _status_kv "Başlangıç fotoğrafı" "$(ts_pretty_path "$TS_BASELINE_DIR")"
+    _status_kv "Zsh/tmux parçaları" "$(ts_pretty_path "$TS_CONFIG_DIR")"
+    _status_kv "İndirilen araçlar" "$(ts_pretty_path "$TS_BIN_DIR")"
+    _status_kv "Log" "$(ts_pretty_path "$TS_LOG_FILE")"
+    ui_card_bottom
 }

@@ -76,66 +76,88 @@ theme_palette_gvariant() {
     echo "$out]"
 }
 
-# Temanın önizlemesi: temanın renkleriyle çizilmiş küçük bir terminal
-# penceresi ve 16 renklik palet. Terminalin kendi renklerinden bağımsızdır
-# (24 bit renk kodları kullanılır).
-_tp_fg() { printf '\033[38;2;%sm' "$(theme_rgb "${THEME[$1]}")"; }
-_tp_bg() { printf '\033[48;2;%sm' "$(theme_rgb "${THEME[$1]}")"; }
+# ----------------------------------------------------------------------------
+# Önizleme: temanın kendi renkleriyle çizilmiş küçük bir terminal penceresi
+# ve 16 renklik palet. Terminalin renklerinden bağımsızdır (24 bit kodlar).
+# Parçalar ayrı çağrılabilir; menü ekran yüksekliğine göre seçer.
+# ----------------------------------------------------------------------------
 
-# Pencere satırı: arka plan rengiyle genişliğe tamamlanır
-_tp_row() {
-    local n
-    ui_vlen "$1"
-    n=$((_TP_W - UI_LEN))
-    ((n < 0)) && n=0
-    ui_line "  ${_TP_BG}$1${_TP_BG}$(printf '%*s' "$n" '')${U_RST:-$'\033[0m'}"
+THEME_PREVIEW_WINDOW_ROWS=12
+THEME_PREVIEW_PALETTE_ROWS=2
+
+# Yüklü temanın renk kodları: TPF[ANAHTAR] ön plan, TPB[ANAHTAR] arka plan
+declare -gA TPF=() TPB=()
+_tp_load_colors() {
+    local key h
+    TPF=() TPB=()
+    for key in BACKGROUND FOREGROUND CURSOR ACCENT BORDER COLOR{0..15}; do
+        h="${THEME[$key]#\#}"
+        printf -v "TPF[$key]" '\033[38;2;%d;%d;%dm' "0x${h:0:2}" "0x${h:2:2}" "0x${h:4:2}"
+        printf -v "TPB[$key]" '\033[48;2;%d;%d;%dm' "0x${h:0:2}" "0x${h:2:2}" "0x${h:4:2}"
+    done
 }
 
+# Pencere içi satır: zemin rengiyle pencere genişliğine tamamlanır
+_tp_row() {
+    ui_padr "${TPB[BACKGROUND]}$1${TPB[BACKGROUND]}" "$2"
+    ui_line "  $REPLY"$'\033[0m'
+}
+
+theme_preview_title() {
+    ui_line "  ${U_BOLD}${THEME[NAME]}${U_RST}  ${U_MUTED}${THEME[DESC]:-}${U_RST}"
+}
+
+# theme_preview_window [GENİŞLİK] — tema yüklü olmalı
+theme_preview_window() {
+    local w="${1:-64}" bg fg dim acc edge title n rst=$'\033[0m'
+    _tp_load_colors
+    bg="${TPB[BACKGROUND]}" fg="${TPF[FOREGROUND]}" dim="${TPF[COLOR8]}" acc="${TPF[ACCENT]}"
+    # Başlık çubuğu; üst kenar yarım blokla yumuşatılır
+    ui_repeat "▄" "$w"
+    ui_line "  ${TPF[BORDER]}$REPLY$rst"
+    title="${THEME[NAME]}"
+    n=$(((w - ${#title}) / 2 - 7))
+    ((n < 1)) && n=1
+    printf -v edge '%*s' "$n" ''
+    ui_padr "${TPB[BORDER]} ${TPF[COLOR1]}●${TPF[COLOR3]} ●${TPF[COLOR2]} ●${edge}${fg}${title}" "$w"
+    ui_line "  $REPLY$rst"
+    _tp_row "" "$w"
+    _tp_row " ${TPB[ACCENT]}${TPF[BACKGROUND]} ~/projeler ${TPB[COLOR2]} main ✓ ${bg}${fg} ls" "$w"
+    _tp_row " ${TPF[COLOR4]}src/  docs/  ${fg}README.md  ${TPF[COLOR2]}kur.sh  ${dim}.env" "$w"
+    _tp_row " ${acc}❯ ${fg}git status" "$w"
+    _tp_row "   ${TPF[COLOR1]}değiştirildi:  lib/ui.sh" "$w"
+    _tp_row "   ${TPF[COLOR2]}yeni dosya:    tema.sh" "$w"
+    _tp_row " ${acc}❯ ${fg}echo ${TPF[COLOR3]}\"merhaba dünya\" ${dim}# yorum" "$w"
+    _tp_row " ${fg}merhaba dünya" "$w"
+    _tp_row " ${acc}❯ ${TPB[CURSOR]} ${bg}" "$w"
+    ui_repeat "▀" "$w"
+    ui_line "  ${TPF[BACKGROUND]}$REPLY$rst"
+}
+
+# theme_preview_palette [KUTU-GENİŞLİĞİ] — üstte normal, altta parlak 8 renk
+theme_preview_palette() {
+    local sw="${1:-6}" i row line="" box
+    _tp_load_colors
+    printf -v box '%*s' "$sw" ''
+    for row in 0 8; do
+        line=""
+        for ((i = row; i < row + 8; i++)); do line+="${TPB[COLOR$i]}$box"$'\033[0m '; done
+        if ((row == 0)); then ui_line "  $line ${U_MUTED}normal"; else ui_line "  $line ${U_MUTED}parlak"; fi
+    done
+}
+
+# Komut satırı önizlemesi: başlık, pencere ve palet
 theme_preview() {
     theme_load "$1" || return 1
-    local bg fg title dim i line="" bar rst=$'\033[0m' n
+    local w
     ui_layout
-    _TP_W=$((UI_W - 4))
-    ((_TP_W > 64)) && _TP_W=64
-    _TP_BG=$(_tp_bg BACKGROUND)
-    bg="$_TP_BG" fg=$(_tp_fg FOREGROUND) dim=$(_tp_fg COLOR8)
-    bar=$(_tp_bg BORDER)
-
-    ui_line "  ${U_BOLD}${THEME[NAME]}${rst}  ${U_MUTED:-}${THEME[DESC]:-}${rst}"
+    w=$((UI_W - 4))
+    ((w > 64)) && w=64
+    theme_preview_title
     ui_line ""
-    # Başlık çubuğu: üstte yarım blokla yumuşatılmış kenar
-    printf -v line '%*s' "$_TP_W" ''
-    ui_line "  $(_tp_fg BORDER)${line// /▄}${rst}"
-    title="${THEME[NAME]}"
-    n=$(((_TP_W - ${#title}) / 2 - 7))
-    ((n < 1)) && n=1
-    line=" $(_tp_fg COLOR1)●$(_tp_fg COLOR3) ●$(_tp_fg COLOR2) ●$(printf '%*s' "$n" '')${fg}${title}"
-    ui_vlen "$line"
-    ui_line "  ${bar}${line}${bar}$(printf '%*s' $((_TP_W - UI_LEN)) '')${rst}"
-
-    _tp_row ""
-    _tp_row " $(_tp_bg ACCENT)$(_tp_fg BACKGROUND) ~/projeler ${bg}$(_tp_bg COLOR2)$(_tp_fg BACKGROUND) main ✓ ${bg}${fg} ls"
-    _tp_row " $(_tp_fg COLOR4)src/  docs/  ${fg}README.md  $(_tp_fg COLOR2)kur.sh  ${dim}.env"
-    _tp_row " $(_tp_fg ACCENT)❯ ${fg}git status"
-    _tp_row "   $(_tp_fg COLOR1)değiştirildi:  lib/ui.sh"
-    _tp_row "   $(_tp_fg COLOR2)yeni dosya:    tema.sh"
-    _tp_row " $(_tp_fg ACCENT)❯ ${fg}echo $(_tp_fg COLOR3)\"merhaba dünya\" ${dim}# yorum"
-    _tp_row " ${fg}merhaba dünya"
-    _tp_row " $(_tp_fg ACCENT)❯ ${fg}$(_tp_bg CURSOR) ${bg}"
-    printf -v line '%*s' "$_TP_W" ''
-    ui_line "  $(_tp_fg BACKGROUND)${line// /▀}${rst}"
+    theme_preview_window "$w"
     ui_line ""
-
-    # Palet: üstte normal, altta parlak 8 renk
-    line=""
-    for ((i = 0; i < 16; i++)); do
-        line+="\033[48;2;$(theme_rgb "${THEME[COLOR$i]}")m      ${rst} "
-        if ((i == 7)); then
-            ui_line "  $(printf '%b' "$line") ${U_MUTED:-}normal${rst}"
-            line=""
-        fi
-    done
-    ui_line "  $(printf '%b' "$line") ${U_MUTED:-}parlak${rst}"
+    theme_preview_palette 6
 }
 
 # Temayı uygun tüm terminallere uygula

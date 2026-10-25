@@ -61,7 +61,7 @@ _make_sysbin() {
     mkdir -p "$FAKE_ROOT/sysbin"
     for tool in bash sh env awk sed grep tar gzip python3 find comm sort uniq head tail wc cut tr \
         cat cp mv rm mkdir rmdir ln ls chmod install date mktemp base64 dirname basename readlink \
-        cmp diff tee sleep kill touch id uname paste xargs stat git tput true false; do
+        cmp diff tee sleep kill touch id uname paste xargs stat git tput stty true false; do
         path=$(PATH=/usr/bin:/bin command -v "$tool") && ln -sf "$path" "$FAKE_ROOT/sysbin/$tool"
     done
 }

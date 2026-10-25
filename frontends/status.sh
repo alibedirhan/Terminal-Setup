@@ -15,12 +15,8 @@ status_symbol() {
     esac
 }
 
-# Kart içinde "Etiket   değer" satırı
-_status_kv() { ui_card_row "${U_MUTED}$(ui_pad "$1" 22)${U_RST}$2"; }
-
-status_show() {
-    local cat id theme terms=() cells=() col i cw
-    ui_title "Terminal Setup $TS_VERSION — durum"
+_status_system_card() {
+    local theme terms=() id
     ui_card_top "Sistem"
     _status_kv "Sistem" "$(sys_os) ($(sys_arch || uname -m))"
     _status_kv "Giriş kabuğu" "$(sys_login_shell)"
@@ -42,6 +38,15 @@ status_show() {
         _status_kv "Başlangıç fotoğrafı" "${U_MUTED}henüz yok (ilk kurulumda alınır)${U_RST}"
     fi
     ui_card_bottom
+}
+
+# Kart içinde "Etiket   değer" satırı
+_status_kv() { ui_card_row "${U_MUTED}$(ui_pad "$1" 22)${U_RST}$2"; }
+
+status_show() {
+    local cat id cells=() col i cw
+    ui_title "Terminal Setup $TS_VERSION — durum"
+    _status_system_card
 
     # Bileşenler geniş ekranda iki sütun halinde
     cw=$((UI_W / 2))

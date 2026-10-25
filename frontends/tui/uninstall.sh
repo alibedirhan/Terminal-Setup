@@ -11,12 +11,18 @@ tui_uninstall() {
     )
     legacy_detect && items+=("v5 kurulumunu temizle|Eski sürümün bıraktıklarını adım adım kaldır|×")
     ui_menu "Kaldır" "${items[@]}" || return 0
-    ui_clear
     case "$UI_CHOICE" in
-        0) appearance_reset ;;
-        1) if ledger_exists; then uninstall_show_plan; else log_info "Kayıtlı bir değişiklik yok."; fi ;;
-        2) uninstall_all ;;
-        3) legacy_uninstall ;;
+        0) tui_run appearance_reset ;;
+        1) tui_run tui_uninstall_plan ;;
+        2) tui_run uninstall_all ;;
+        3) tui_run legacy_uninstall ;;
     esac
-    ui_pause
+}
+
+tui_uninstall_plan() {
+    if ledger_exists; then
+        uninstall_show_plan
+    else
+        log_info "Kayıtlı bir değişiklik yok."
+    fi
 }

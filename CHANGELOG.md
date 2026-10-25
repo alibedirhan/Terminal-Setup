@@ -14,7 +14,7 @@ Mimari baştan yazıldı. Ana hedef: kurulan her şeyin iz bırakmadan geri alı
 - **Tema önizleme:** Temanın kendi renkleriyle çizilmiş bir terminal penceresi ve 16 renklik palet canlı gösterilir; ok tuşlarıyla gezilir.
 - **Ptyxis** (Ubuntu 25.10+ varsayılan terminali) desteği; Alacritty için TOML biçimi.
 - **ARM64** desteği: GitHub araçları mimariye göre indirilir.
-- **Yeni arayüz (bağımlılıksız):** renk geçişli logo, durum ve öneri kartları, bölümlere ayrılmış menüler, adım göstergeli kurulum sihirbazı, iki sütunlu durum ekranı. 24 bit / 256 / 8 renkli terminallere ve `NO_COLOR`'a uyum sağlar; ekran titremeden yeniden çizilir, uzun listeler kayar, pencere boyutu değişince düzen yenilenir. Küçük terminalde (80x24) sade başlığa geçer.
+- **Yeni arayüz (bağımlılıksız):** renk geçişli logo, durum ve öneri kartları, bölümlere ayrılmış menüler, adım göstergeli kurulum sihirbazı, iki sütunlu durum ekranı. 24 bit / 256 / 8 renkli terminallere ve `NO_COLOR`'a uyum sağlar; ekran titremeden ve alt süreç açmadan yeniden çizilir (tuş başına ~15 ms), uzun listeler kayar, pencere boyutu değişince düzen yenilenir. Hiçbir satır terminal genişliğini, hiçbir ekran terminal yüksekliğini aşmaz. Menü alternatif ekranda çalışır; işlemlerin çıktısı normal ekranda kaydırılabilir kalır; çıkışta ve Ctrl+C'de terminal ayarları her durumda geri yüklenir. Arayüz katmanı `lib/ui/` altında altı modüldür (docs/ARCHITECTURE.md).
 - Etkileşimsiz komut satırı: `install`, `remove`, `theme`, `status`, `doctor`, `uninstall`, `verify`, `list`.
 - Her komut için `--dry-run` (prova) modu.
 - Hazır profiller: minimal, developer, full.

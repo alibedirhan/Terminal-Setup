@@ -58,6 +58,49 @@ bileşen <TAB> tür <TAB> arg1 [<TAB> arg2]
 
 `init.zsh`, `zsh.d/` altındaki parçaları sıra numarasıyla yükler (`05-p10k-instant`, `15-ohmyzsh-base`, `40-ohmyzsh-load`, `60-fzf` ...).
 
+## Arayüz katmanı
+
+Menü bağımlılıksız saf bash ile çizilir. `lib/ui/` altındaki modüller tek yönlü bağımlıdır; her biri yalnızca soldakileri kullanır:
+
+```
+style.sh → text.sh → term.sh → draw.sh → prompt.sh → widgets.sh → frontends/tui/
+renk       ölçü       terminal   çerçeve    sorular     döngü, menü,   ekranlar
+paleti     kesme      oturumu    kartlar                liste
+```
+
+| Modül | Sorumluluk |
+|---|---|
+| `style.sh` | 24 bit / 256 / 8 renk algılama; ekranlar renk kodu değil anlamlı ad kullanır (`U_ACC`, `U_MUTED`, `U_OK` ...) |
+| `text.sh` | Görünen genişlik (renk kodları sayılmaz), doldurma, kısaltma, renk koruyarak kesme |
+| `term.sh` | Terminal kipine dokunan tek yer: alternatif ekran, yankı kapalı tuş okuma, işlem için normal kipe geçiş, çıkışta koşulsuz geri yükleme |
+| `draw.sh` | Çerçeve tamponu ve yapı taşları (kart, bölüm, tuş ipuçları) |
+| `prompt.sh` | Evet/hayır, yazarak onay, "devam için Enter"; menü açıkken de doğru çalışır |
+| `widgets.sh` | Ortak etkileşim döngüsü (`ui_loop ÇİZ İŞLE`), menü ve çoklu seçim |
+
+Arayüz kuralları:
+
+1. **Çizim alt kabuk açmaz.** Çizimde kullanılan yardımcılar sonucu `REPLY`'ye yazar; `$(...)` her tuşta gecikme demektir. Durum bilgisi (bileşenler, tema) her tuşta değil, ekran açılırken ve bir işlemden sonra okunur (`UI_HEADER_STALE`).
+2. **Çerçeve sözleşmesi:** hiçbir satır terminal genişliğini, hiçbir çerçeve terminal yüksekliğini aşmaz; tuş ipuçları hep en altta görünür. `tests/unit/tui_layout.bats` her ekranı 40x12'den 200x60'a kadar altı boyutta denetler.
+3. **Çiz ve işle ayrıdır.** Ekranın çizim fonksiyonu terminal okumaz; `UI_DRAW_ONCE=1` ile testte tek kare çizilebilir. Tuş işleyici yalnızca durumu değiştirir.
+4. **İşlemler menü dışında çalışır.** Sistemi değiştiren ya da çıktı üreten her şey `tui_run` ile çağrılır: terminal normal kipe ve ana ekrana döner, çıktı kaydırılabilir geçmişte kalır.
+5. **Ekran seçenekleri sızmaz.** Alt başlık, alt bilgi, büyük logo gibi seçenekler parametreyle verilir (`ui_menu --subtitle ... --footer ... --hero`) ve `local` tanımlanır.
+6. **Yalnızca tek hücre genişliğinde simgeler** (emoji yok); aksi halde hizalama terminale göre kayar.
+
+Yeni bir menü ekranı eklemek:
+
+```bash
+tui_ornek() {
+    ui_menu --subtitle "Açıklama" "Başlık" \
+        "#Bölüm" "Birinci|Ne yaptığı|✦" "İkinci|Ne yaptığı|◎" || return 0
+    case "$UI_CHOICE" in
+        0) tui_run birinci_islem ;;
+        1) tui_run ikinci_islem ;;
+    esac
+}
+```
+
+Özel çizim gereken ekranlar (tema tarayıcı gibi) bir çizim ve bir tuş fonksiyonu yazıp `ui_loop` ile birleştirir.
+
 ## Mimari kurallar
 
 1. **Yan etki yalnızca `lib/actions/` içinde.** Başka bir yerde doğrudan `apt-get`, `sudo`, `chsh`, `gsettings set`, `dconf write`, `git config --global` kullanılamaz. `scripts/check_static.sh` bunu denetler.
@@ -101,7 +144,8 @@ comp_bat_verify() { has_cmd batcat || has_cmd bat; }
 | Katman | Nerede | Ne doğrular |
 |---|---|---|
 | Statik | `scripts/check_static.sh` | sözdizimi, ShellCheck, 600 satır, yan etki kuralı, `curl \| sh` yasağı |
-| Birim | `tests/unit/*.bats` | defter, bloklar, paketler, ayarlar, temalar, çalıştırıcı |
+| Birim | `tests/unit/*.bats` | defter, bloklar, paketler, ayarlar, temalar, çalıştırıcı, arayüz yapı taşları, her ekranın her boyutta yerleşimi |
+| Etkileşim | `tests/integration/tui_pty.bats` | tmux içinde gerçek terminalde tuşlarla gezinme, pencere boyutu değişimi, hızlı tuşta çöp olmaması, çıkışta ve Ctrl+C'de terminalin geri gelmesi |
 | Entegrasyon | `tests/integration/*.bats` | CLI üzerinden kur → kaldır → fotoğrafla aynı mı |
 | Uçtan uca | `tests/e2e/container.sh` | temiz Ubuntu 22.04/24.04 konteynerinde gerçek apt ve indirmelerle aynı döngü |
 

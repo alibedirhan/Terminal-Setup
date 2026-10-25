@@ -126,6 +126,8 @@ _ts_run_exit_hooks() {
 }
 
 _ts_on_interrupt() {
+    # Menü açıksa önce terminal normale dönsün; mesaj alternatif ekranda kaybolmasın
+    declare -F ui_term_leave >/dev/null && ui_term_leave
     printf '\n'
     log_warn "İptal edildi."
     exit 130
@@ -148,7 +150,9 @@ ts_init() {
 ts_load() {
     local f
     local engine=(
-        log.sh ui.sh ui_widgets.sh net.sh sudo.sh settings.sh ledger.sh baseline.sh
+        log.sh
+        ui/style.sh ui/text.sh ui/term.sh ui/draw.sh ui/prompt.sh ui/widgets.sh
+        net.sh sudo.sh settings.sh ledger.sh baseline.sh
         actions/pkg.sh actions/fs.sh actions/rc.sh actions/config.sh actions/legacy.sh
         undo.sh runner.sh themes.sh verify.sh uninstall.sh doctor.sh
     )

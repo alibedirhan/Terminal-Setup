@@ -123,7 +123,7 @@ Mimari, kurallar ve yeni bileşen/tema/terminal ekleme: [docs/ARCHITECTURE.md](d
 ## Kalite
 
 - Her push'ta CI: ShellCheck (sıfır uyarı), 600 satır sınırı, "sisteme yalnızca `lib/actions/` dokunur" kuralı.
-- 92 birim ve entegrasyon testi, sahte bir sistem üzerinde (gerçek sisteme dokunmaz, ağa çıkmaz).
+- 117 birim, entegrasyon ve etkileşim testi, sahte bir sistem üzerinde (gerçek sisteme dokunmaz, ağa çıkmaz).
 - Temiz Ubuntu 22.04 ve 24.04 konteynerlerinde gerçek gidiş-dönüş testi: tam kurulum → zsh oturumu → kaldırma → paket listesi, ev dizini, kabuk ve `/etc/shells` kurulum öncesiyle aynı mı?
 
 ## Katkı ve destek
