@@ -22,6 +22,7 @@ Birim ve entegrasyon testleri sahte bir sistemde çalışır; gerçek sisteminiz
 
 ```bash
 docker run --rm -v "$PWD:/src:ro" ubuntu:24.04 bash /src/tests/e2e/container.sh
+docker run --rm -v "$PWD:/src:ro" ubuntu:24.04 bash /src/tests/e2e/gnome.sh   # gerçek dconf ile tema
 ```
 
 CI bunların hepsini her push'ta çalıştırır.

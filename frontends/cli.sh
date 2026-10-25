@@ -17,6 +17,7 @@ Komutlar:
   install [--profile P] [--theme T] [--components a,b]
                                 Kur. Varsayılan profil: developer
   remove BİLEŞEN...             Bileşenleri kaldır
+  update [BİLEŞEN...]           Kurulan araçları son sürüme güncelle
   theme list                    Temaları listele
   theme preview TEMA            Temayı terminalde önizle
   theme apply TEMA              Temayı uygula
@@ -37,6 +38,7 @@ Seçenekler:
 
 Örnekler:
   ./terminal-setup.sh install --profile full --theme nord
+  ./terminal-setup.sh --dry-run update
   ./terminal-setup.sh --dry-run uninstall
   ./terminal-setup.sh theme preview dracula
 EOF
@@ -66,6 +68,7 @@ cli_main() {
             if ui_is_tty; then tui_main; else cli_usage; return 1; fi ;;
         install) cli_install "${args[@]}" ;;
         remove) cli_remove "${args[@]}" ;;
+        update) upgrade_run "${args[@]}" ;;
         theme) cli_theme "${args[@]}" ;;
         status) status_show ;;
         doctor) run_doctor "${args[@]}" ;;

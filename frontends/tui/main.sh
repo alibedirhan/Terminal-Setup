@@ -20,8 +20,9 @@ tui_main() {
             1) tui_theme_browser ;;
             2) tui_components ;;
             3) tui_run tui_status ;;
-            4) tui_uninstall ;;
-            5) tui_settings ;;
+            4) tui_run upgrade_run ;;
+            5) tui_uninstall ;;
+            6) tui_settings ;;
             *) break ;;
         esac
     done
@@ -36,6 +37,7 @@ tui_main_menu() {
         "Bileşenler|Araçları tek tek kur ya da kaldır|▦" \
         "#Yönetim" \
         "Durum ve teşhis|Neler kurulu, sorun var mı|◎" \
+        "Güncelle|Kurulan araçları son sürüme yükselt|↑" \
         "Kaldır|Görünümü sıfırla ya da tamamen kaldır|↺" \
         "Ayarlar|Varsayılan profil, güncelleme kontrolü|≡" \
         "Çıkış||×"

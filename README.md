@@ -22,7 +22,7 @@ Kurulumdan önce sizde olan bir paket (ör. tmux) ya da dosya (ör. kendi `.zshr
 | Grup | Bileşenler |
 |---|---|
 | Kabuk | Zsh (varsayılan kabuk yapılır), Oh My Zsh, Powerlevel10k, MesloLGS NF yazı tipi, komut önerisi ve sözdizimi renklendirme eklentileri |
-| Araçlar | fzf, zoxide, eza, bat, ripgrep, fd, delta, lazygit, btop, dust, duf, procs, atuin, tldr |
+| Araçlar | fzf, zoxide, eza, bat, ripgrep, fd, delta, lazygit, btop, dust, duf, procs, atuin, tldr (tealdeer) |
 | Ekstra | tmux (temalı durum çubuğu), örnek alias'lar ve mevcut `~/.bash_aliases` dosyanızın zsh'e bağlanması |
 | Temalar | Dracula, Nord, Gruvbox, Tokyo Night, Catppuccin, One Dark, Solarized |
 | Terminaller | GNOME Terminal, Ptyxis (Ubuntu 25.10+), Kitty, Alacritty |
@@ -59,6 +59,7 @@ Menünün yaptığı her şey etkileşimsiz de yapılabilir:
 ./terminal-setup.sh theme apply dracula                    # temayı uygula
 ./terminal-setup.sh theme reset                            # renkleri eski haline döndür
 ./terminal-setup.sh remove lazygit                         # tek bileşeni kaldır
+./terminal-setup.sh update                                 # kurulan araçları son sürüme güncelle
 ./terminal-setup.sh status                                 # neler kurulu
 ./terminal-setup.sh doctor                                 # sağlık kontrolü
 ./terminal-setup.sh --dry-run uninstall                    # kaldırınca ne olacağını gör
@@ -123,8 +124,9 @@ Mimari, kurallar ve yeni bileşen/tema/terminal ekleme: [docs/ARCHITECTURE.md](d
 ## Kalite
 
 - Her push'ta CI: ShellCheck (sıfır uyarı), 600 satır sınırı, "sisteme yalnızca `lib/actions/` dokunur" kuralı.
-- 117 birim, entegrasyon ve etkileşim testi, sahte bir sistem üzerinde (gerçek sisteme dokunmaz, ağa çıkmaz).
-- Temiz Ubuntu 22.04 ve 24.04 konteynerlerinde gerçek gidiş-dönüş testi: tam kurulum → zsh oturumu → kaldırma → paket listesi, ev dizini, kabuk ve `/etc/shells` kurulum öncesiyle aynı mı?
+- 131 birim, entegrasyon ve etkileşim testi, sahte bir sistem üzerinde (gerçek sisteme dokunmaz, ağa çıkmaz).
+- Temiz Ubuntu 22.04, 24.04 ve 26.04 konteynerlerinde gerçek gidiş-dönüş testi: tam kurulum → zsh oturumu → kaldırma → paket listesi, ev dizini, kabuk ve `/etc/shells` kurulum öncesiyle aynı mı?
+- Aynı üç sürümde gerçek dconf ile GNOME Terminal ve Ptyxis testi: tema ve yazı tipi anahtarları şemaya uyuyor mu, kullanıcının kendi ayarları korunuyor mu, kaldırınca dconf eskisiyle aynı mı?
 
 ## Katkı ve destek
 

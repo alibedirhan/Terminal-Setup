@@ -48,6 +48,7 @@ tmux: tmux
 btop: btop
 duf: duf
 tldr: tldr
+tealdeer: tldr
 unzip: unzip
 curl: curl
 EOF

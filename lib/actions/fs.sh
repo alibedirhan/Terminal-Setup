@@ -118,6 +118,7 @@ act_download() {
 # Git deposunu klonla: act_clone URL HEDEF
 act_clone() {
     local url="$1" dest="$2"
+    _act_recipe git "$url" "$dest"
     [[ -d "$dest/.git" ]] && return 0
     if is_dry_run; then
         log_plan "git clone $url $(ts_pretty_path "$dest")"
@@ -143,14 +144,12 @@ act_install_bin() {
     install -m 755 "$src" "$dest"
 }
 
-# GitHub release'inden tek bir çalıştırılabilir dosya kur.
+# GitHub release'inden tek bir çalıştırılabilir dosya kur. Kurulan sürüm
+# ~/.terminal-setup/versions'a yazılır (güncelleme karşılaştırması için).
 #   act_gh_binary owner/repo 'x86_64-deseni' 'aarch64-deseni' ikili [hedef-ad]
 act_gh_binary() {
-    local repo="$1" pat_x86="$2" pat_arm="$3" bin="$4" name="${5:-$4}"
-    local arch pattern tag asset work file
-
-    arch=$(sys_arch) || { log_err "Desteklenmeyen işlemci mimarisi: $(uname -m)"; return 1; }
-    [[ "$arch" == "x86_64" ]] && pattern="$pat_x86" || pattern="$pat_arm"
+    local repo="$1" pat_x86="$2" pat_arm="$3" bin="$4" name="${5:-$4}" tag
+    _act_recipe gh "$repo" "$pat_x86" "$pat_arm" "$bin" "$name"
 
     if is_dry_run; then
         log_plan "GitHub $repo -> $(ts_pretty_path "$TS_BIN_DIR/$name")"
@@ -158,6 +157,20 @@ act_gh_binary() {
     fi
 
     tag=$(gh_latest_tag "$repo") || { log_err "$repo: son sürüm bulunamadı"; return 1; }
+    _gh_fetch_bin "$repo" "$tag" "$pat_x86" "$pat_arm" "$bin" || return 1
+    act_install_bin "$REPLY" "$name" || return 1
+    tool_version_set "$name" "$tag"
+}
+
+# Release dosyasını indirip içinden ikiliyi çıkar; yolu REPLY'ye yazar.
+#   _gh_fetch_bin owner/repo etiket 'x86_64-deseni' 'aarch64-deseni' ikili
+_gh_fetch_bin() {
+    local repo="$1" tag="$2" pat_x86="$3" pat_arm="$4" bin="$5"
+    local arch pattern asset work file
+    REPLY=""
+
+    arch=$(sys_arch) || { log_err "Desteklenmeyen işlemci mimarisi: $(uname -m)"; return 1; }
+    [[ "$arch" == "x86_64" ]] && pattern="$pat_x86" || pattern="$pat_arm"
     asset=$(gh_find_asset "$repo" "$tag" "$pattern")
     [[ -n "$asset" ]] || { log_err "$repo $tag: $arch için dosya yok"; return 1; }
 
@@ -177,7 +190,7 @@ act_gh_binary() {
 
     file=$(find "$work/x" -type f -name "$bin" | head -1)
     [[ -n "$file" ]] || { log_err "$asset içinde '$bin' bulunamadı"; return 1; }
-    act_install_bin "$file" "$name"
+    REPLY="$file"
 }
 
 # Yazı tipi önbelleğini yenile (yazı tipi eklendiğinde/silindiğinde)
