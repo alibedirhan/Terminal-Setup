@@ -12,7 +12,7 @@ setup() {
     tar -czf "$REL/$NAME.tar.gz" -C "$REPO_ROOT/.." --exclude=.git --exclude=tests \
         --transform "s|^$(basename "$REPO_ROOT")|$NAME|" "$(basename "$REPO_ROOT")"
     (cd "$REL" && sha256sum "$NAME.tar.gz" > "$NAME.tar.gz.sha256")
-    export HOME="$BATS_TEST_TMPDIR/home"
+    export HOME="$BATS_TEST_TMPDIR/home" TS_LANG=tr
     mkdir -p "$HOME"
 }
 
@@ -37,4 +37,17 @@ setup() {
     run env TS_RELEASE="v0.0.0" TS_RELEASE_BASE="file://$REL" bash "$REPO_ROOT/install.sh" --version
     [ "$status" -ne 0 ]
     [[ "$output" == *"İndirilemedi"* ]]
+}
+
+@test "mesajlar programla aynı dil kuralına uyar" {
+    run env TS_RELEASE="v$VERSION" TS_RELEASE_BASE="file://$REL" TMPDIR="$BATS_TEST_TMPDIR" \
+        bash "$REPO_ROOT/install.sh" --lang en --version
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"SHA-256 verified"* ]]
+    run env -u TS_LANG LANG=en_US.UTF-8 TS_RELEASE="v$VERSION" TS_RELEASE_BASE="file://$REL" \
+        TMPDIR="$BATS_TEST_TMPDIR" bash "$REPO_ROOT/install.sh" --version
+    [[ "$output" == *"Downloading Terminal Setup"* ]]
+    run env -u TS_LANG LANG=tr_TR.UTF-8 TS_RELEASE="v$VERSION" TS_RELEASE_BASE="file://$REL" \
+        TMPDIR="$BATS_TEST_TMPDIR" bash "$REPO_ROOT/install.sh" --version
+    [[ "$output" == *"indiriliyor"* ]]
 }

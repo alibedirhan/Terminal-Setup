@@ -71,7 +71,12 @@ act_upgrade_git() {
         UPG_RESULT=skipped
         return 0
     fi
-    local_head=$(git -C "$dest" rev-parse HEAD 2>/dev/null)
+    local_head=$(git -C "$dest" rev-parse HEAD 2>/dev/null) || local_head=""
+    if [[ -z "$local_head" ]]; then
+        log_warn "%s geçerli bir git deposu değil; güncellenmedi" "$(ts_pretty_path "$dest")"
+        UPG_RESULT=skipped
+        return 0
+    fi
     remote_head=$(git ls-remote "$url" HEAD 2>> "$TS_LOG_FILE" | cut -f1)
     [[ -n "$remote_head" ]] || { log_err "%s: uzak depoya ulaşılamadı" "$url"; return 1; }
     UPG_FROM="${local_head:0:7}" UPG_TO="${remote_head:0:7}"

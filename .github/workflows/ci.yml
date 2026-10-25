@@ -29,9 +29,12 @@ jobs:
         run: |
           git clone --depth 1 --branch v1.11.0 https://github.com/bats-core/bats-core.git "$RUNNER_TEMP/bats"
           command -v tmux || { sudo apt-get update -qq && sudo apt-get install -y -qq tmux; }
-      - name: Testleri çalıştır
+      - name: Testleri ağsız çalıştır
+        # Testler ağa çıkmamalı (sahte sistem); ağ arayüzü olmayan bir ad
+        # alanında çalışır, böylece yanlışlıkla ağa çıkan test düşer.
         run: |
-          "$RUNNER_TEMP/bats/bin/bats" --print-output-on-failure tests/unit tests/integration
+          sudo unshare --net -- sudo -u "$USER" --preserve-env=PATH,HOME,RUNNER_TEMP \
+            "$RUNNER_TEMP/bats/bin/bats" --print-output-on-failure tests/unit tests/integration
 
   e2e:
     name: Gidiş-dönüş testi (${{ matrix.image }})

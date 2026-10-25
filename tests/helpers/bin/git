@@ -1,20 +1,37 @@
 #!/usr/bin/env bash
-# Test taklidi: "git clone" ağa çıkmadan sahte bir depo oluşturur; diğer
-# git komutları gerçek git'e iletilir.
-if [[ "${1:-}" == "clone" ]]; then
-    url="" dest=""
-    for a in "$@"; do
-        case "$a" in clone|--depth|--quiet|[0-9]) ;; *) [[ -z "$url" ]] && url="$a" || dest="$a" ;; esac
-    done
-    [[ -f "$FAKE_ROOT/clone-fail" ]] && exit 128
-    mkdir -p "$dest/.git"
-    case "$url" in
-        *ohmyzsh*) echo "# taklit" > "$dest/oh-my-zsh.sh"; mkdir -p "$dest/custom/themes" "$dest/custom/plugins" ;;
-        *powerlevel10k.git) echo "# taklit" > "$dest/powerlevel10k.zsh-theme" ;;
-        *) echo "# taklit" > "$dest/README" ;;
-    esac
-    exit 0
-fi
+# Test taklidi: ağa çıkan git komutları yerelde taklit edilir, diğerleri
+# gerçek git'e iletilir.
+#   clone      sahte içerikli gerçek bir yerel depo oluşturur; "uzak" HEAD
+#              $FAKE_ROOT/remotes/<ad> dosyasına yazılır
+#   ls-remote  o dosyadan okur (yoksa ulaşılamayan depo gibi davranır);
+#              file:// ve yerel yollar gerçek git'e gider
 self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 real=$(PATH=$(echo "$PATH" | tr ':' '\n' | grep -vxF "$self_dir" | paste -sd:) command -v git)
+rg() { "$real" -c user.name=test -c user.email=test@test -c init.defaultBranch=main "$@"; }
+
+case "${1:-}" in
+    clone)
+        url="" dest=""
+        for a in "$@"; do
+            case "$a" in clone|--depth|--quiet|[0-9]) ;; *) [[ -z "$url" ]] && url="$a" || dest="$a" ;; esac
+        done
+        [[ -f "$FAKE_ROOT/clone-fail" ]] && exit 128
+        mkdir -p "$dest"
+        case "$url" in
+            *ohmyzsh*) echo "# taklit" > "$dest/oh-my-zsh.sh"; mkdir -p "$dest/custom/themes" "$dest/custom/plugins" ;;
+            *powerlevel10k.git) echo "# taklit" > "$dest/powerlevel10k.zsh-theme" ;;
+            *) echo "# taklit" > "$dest/README" ;;
+        esac
+        rg init -q "$dest" && rg -C "$dest" add -A && rg -C "$dest" commit -qm taklit || exit 1
+        mkdir -p "$FAKE_ROOT/remotes"
+        rg -C "$dest" rev-parse HEAD > "$FAKE_ROOT/remotes/$(basename "$url" .git)"
+        exit 0 ;;
+    ls-remote)
+        # Yerel depolar (birim testleri) gerçek git'le okunur
+        [[ "${2:-}" == file://* || "${2:-}" == /* ]] && exec "$real" "$@"
+        name=$(basename "${2:-}" .git)
+        [[ -f "$FAKE_ROOT/remotes/$name" ]] || exit 128
+        printf '%s\tHEAD\n' "$(cat "$FAKE_ROOT/remotes/$name")"
+        exit 0 ;;
+esac
 exec "$real" "$@"
