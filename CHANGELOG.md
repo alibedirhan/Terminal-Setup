@@ -1,6 +1,6 @@
 # Changelog
 
-## [Yayınlanmadı]
+## [6.1.0] - 2026-10-25
 
 ### Eklendi
 - **İngilizce arayüz:** Sistem dili Türkçe değilse arayüz İngilizce açılır. Menüde "Ayarlar → Dil / Language", komut satırında `--lang en|tr`. Çeviriler `locale/en.sh`'de; eksik ya da Türkçe kalan metni testler yakalar.

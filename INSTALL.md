@@ -26,7 +26,7 @@ bash install.sh             # menüyü aç
 bash install.sh uninstall   # sonradan her şeyi geri al
 ```
 
-Belirli bir sürüm için: `TS_RELEASE=v6.0.0 bash install.sh`
+Belirli bir sürüm için: `TS_RELEASE=v6.1.0 bash install.sh`
 
 Güvenlik nedeniyle `curl ... | bash` biçimi önerilmez; betiği önce indirip okuyun.
 
