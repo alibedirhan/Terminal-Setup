@@ -85,7 +85,8 @@ cmd_pattern='(^|[;&|(])[[:space:]]*(sudo|apt-get|apt|snap|chsh)[[:space:]]'
 write_pattern='gsettings[[:space:]]+set|dconf[[:space:]]+(write|reset|load)|git[[:space:]]+config[[:space:]]+--global[[:space:]]+[^-[:space:]]|fc-cache[[:space:]]'
 for file in "${SH_FILES[@]}"; do
     case "$file" in
-        lib/actions/*|lib/sudo.sh|tests/*|scripts/*|install.sh) continue ;;
+        # locale/: yalnızca çeviri metinleri (komut adları metin olarak geçer)
+        lib/actions/*|lib/sudo.sh|tests/*|scripts/*|install.sh|locale/*) continue ;;
     esac
     is_legacy "$file" && continue
     hits=$(grep -nE "$cmd_pattern|$write_pattern" "$file" | grep -vE '^[0-9]+:[[:space:]]*#')

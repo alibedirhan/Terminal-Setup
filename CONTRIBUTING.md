@@ -35,7 +35,7 @@ CI bunların hepsini her push'ta çalıştırır.
 4. Hiçbir dosya 600 satırı geçmez. Büyüyen dosyayı sorumluluğa göre bölün.
 5. Yeni davranış için test ekleyin (`tests/unit` ya da `tests/integration`).
 6. `curl | sh` yok: harici betik önce dosyaya indirilir; mümkünse GitHub release'inden doğrudan ikili kullanılır.
-7. Kullanıcıya görünen metinler Türkçe, kısa ve somut.
+7. Kullanıcıya görünen metinler Türkçe, kısa ve somut yazılır ve `locale/en.sh`'ye İngilizce karşılığı eklenir. Değişken içeren metin printf biçimindedir: `log_err "Bilinmeyen bileşen: %s" "$id"` (metnin içine `$id` yazılmaz; anahtar sabit kalmalı). Eksik çeviriyi `tests/integration/english.bats` yakalar.
 
 ## Bileşen, tema ve terminal eklemek
 

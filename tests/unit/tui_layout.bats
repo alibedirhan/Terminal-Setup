@@ -107,3 +107,16 @@ check_screen() {
     [ ! -e "$TS_STATE_DIR/ledger" ]
     [ ! -e "$TS_STATE_DIR/baseline" ]
 }
+
+@test "İngilizce: her ekran her boyuta sığar, çevirisi eksik metin yok" {
+    TS_I18N_MISSING="$BATS_TEST_TMPDIR/missing"
+    i18n_init en
+    check_screen tui_main_menu
+    check_screen tui_install_wizard
+    check_screen tui_components
+    check_screen tui_theme_browser
+    check_screen tui_uninstall
+    check_screen tui_settings
+    [[ "$(frame_text)" == *"Settings"* ]]
+    if [[ -s "$TS_I18N_MISSING" ]]; then sort -u "$TS_I18N_MISSING"; return 1; fi
+}

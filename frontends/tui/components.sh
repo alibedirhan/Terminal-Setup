@@ -49,9 +49,20 @@ tui_components_apply() {
     local -a ext=("$@")
 
     ui_title "Değişiklikler"
-    ((${#inst[@]})) && ui_line "  ${U_OK}+${U_RST} $(ui_pad Kurulacak 16)${inst[*]}"
-    ((${#rem[@]})) && ui_line "  ${U_ERR}−${U_RST} $(ui_pad Kaldırılacak 16)${rem[*]}"
-    ((${#ext[@]})) && ui_line "  ${U_MUTED}• $(ui_pad Dokunulmayacak 16)${ext[*]} (sizde zaten vardı)"
+    if ((${#inst[@]})); then
+        _t "Kurulacak"; ui_padr "$TR" 16
+        ui_line "  ${U_OK}+${U_RST} ${REPLY}${inst[*]}"
+    fi
+    if ((${#rem[@]})); then
+        _t "Kaldırılacak"; ui_padr "$TR" 16
+        ui_line "  ${U_ERR}−${U_RST} ${REPLY}${rem[*]}"
+    fi
+    if ((${#ext[@]})); then
+        _t "Dokunulmayacak"; ui_padr "$TR" 16
+        local pad="$REPLY"
+        _t "(sizde zaten vardı)"
+        ui_line "  ${U_MUTED}• ${pad}${ext[*]} $TR"
+    fi
     if ((${#inst[@]} + ${#rem[@]} == 0)); then
         log_info "Değişiklik yok."
         return 0

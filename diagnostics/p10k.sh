@@ -5,13 +5,13 @@ diag_register p10k "Prompt ayarı"
 
 diag_p10k_check() {
     if [[ "$(component_state p10k)" != "ours" ]]; then
-        echo "Powerlevel10k kurulu değil"
+        diag_say "Powerlevel10k kurulu değil"
         return 0
     fi
     if [[ -f "$HOME/.p10k.zsh" ]]; then
-        echo "$(ts_pretty_path "$HOME/.p10k.zsh") mevcut"
+        diag_say "%s mevcut" "$(ts_pretty_path "$HOME/.p10k.zsh")"
         return 0
     fi
-    echo "Henüz yapılandırılmadı: zsh içinde 'p10k configure' çalıştırın"
+    diag_say "Henüz yapılandırılmadı: zsh içinde '%s' çalıştırın" "p10k configure"
     return 1
 }

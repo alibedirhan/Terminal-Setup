@@ -63,7 +63,7 @@ baseline_capture_to() {
 baseline_take() {
     baseline_exists && return 0
     if is_dry_run; then
-        log_plan "Başlangıç fotoğrafı alınacak: $(ts_pretty_path "$TS_BASELINE_DIR")"
+        log_plan "Başlangıç fotoğrafı alınacak: %s" "$(ts_pretty_path "$TS_BASELINE_DIR")"
         return 0
     fi
     log_step "Başlangıç fotoğrafı alınıyor (ilk kurulum)"
@@ -74,7 +74,7 @@ baseline_take() {
         echo "os=$(sys_os)"
         echo "user=$USER"
     } > "$TS_BASELINE_DIR/meta"
-    log_ok "Fotoğraf alındı: $(wc -l < "$TS_BASELINE_DIR/packages.txt") paket, giriş kabuğu $(cat "$TS_BASELINE_DIR/shell.txt")"
+    log_ok "Fotoğraf alındı: %s paket, giriş kabuğu %s" "$(wc -l < "$TS_BASELINE_DIR/packages.txt")" "$(cat "$TS_BASELINE_DIR/shell.txt")"
 }
 
 baseline_created_at() {

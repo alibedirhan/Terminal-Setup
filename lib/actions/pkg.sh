@@ -26,7 +26,7 @@ _pkg_apt() {
 pkg_update_once() {
     ((PKG_APT_UPDATED)) && return 0
     log_step "Paket listesi güncelleniyor"
-    _pkg_apt update || { log_err "apt-get update başarısız (log: $TS_LOG_FILE)"; return 1; }
+    _pkg_apt update || { log_err "apt-get update başarısız (log: %s)" "$TS_LOG_FILE"; return 1; }
     PKG_APT_UPDATED=1
 }
 
@@ -39,7 +39,7 @@ act_pkg() {
     ((${#missing[@]} == 0)) && return 0
 
     if is_dry_run; then
-        log_plan "apt-get install ${missing[*]}"
+        log_plan "apt-get install %s" "${missing[*]}"
         return 0
     fi
 
@@ -54,9 +54,9 @@ act_pkg() {
         ledger_add pkg "$name"
     done
 
-    log_step "apt: ${missing[*]}"
+    log_step "apt: %s" "${missing[*]}"
     if ! _pkg_apt install --no-install-recommends "${missing[@]}"; then
-        log_err "Paket kurulamadı: ${missing[*]} (log: $TS_LOG_FILE)"
+        log_err "Paket kurulamadı: %s (log: %s)" "${missing[*]}" "$TS_LOG_FILE"
         return 1
     fi
 
@@ -95,17 +95,17 @@ pkg_purge_owned() {
                 safe+=("$name")
             else
                 PKG_SKIPPED+=("$name")
-                log_warn "$name kaldırılmadı: şu paket(ler) ona bağlı: $(echo "$extra" | tr '\n' ' ')"
+                log_warn "%s kaldırılmadı: şu paket(ler) ona bağlı: %s" "$name" "$(echo "$extra" | tr '\n' ' ')"
             fi
         done
     fi
     ((${#safe[@]} == 0)) && return 0
 
     if is_dry_run; then
-        log_plan "apt-get purge ${safe[*]}"
+        log_plan "apt-get purge %s" "${safe[*]}"
         return 0
     fi
     sudo_begin || return 1
-    log_step "apt purge: ${#safe[@]} paket"
-    _pkg_apt purge "${safe[@]}" || { log_err "Paket kaldırma başarısız (log: $TS_LOG_FILE)"; return 1; }
+    log_step "apt purge: %s paket" "${#safe[@]}"
+    _pkg_apt purge "${safe[@]}" || { log_err "Paket kaldırma başarısız (log: %s)" "$TS_LOG_FILE"; return 1; }
 }

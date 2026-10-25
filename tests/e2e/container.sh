@@ -19,7 +19,8 @@ SNAP=/tmp/e2e-snap
 step() { printf '\n\033[1;36m=== %s ===\033[0m\n' "$*"; }
 fail() { printf '\n\033[1;31mBAŞARISIZ: %s\033[0m\n' "$*"; exit 1; }
 
-as_user() { su - "$USER_NAME" -c "cd $WORK && $*"; }
+# Çıktı Türkçe metinlerle denetlenir; konteynerin dili ne olursa olsun Türkçe
+as_user() { su - "$USER_NAME" -c "export TS_LANG=tr; cd $WORK && $*"; }
 
 step "Hazırlık"
 apt-get update -qq

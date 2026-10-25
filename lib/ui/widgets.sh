@@ -8,6 +8,7 @@
 # ui_loop ikisini birleştirir: terminal oturumunu, pencere boyutu
 # değişimini ve yeniden çizimi tek yerde yönetir.
 #
+# Başlık, alt başlık, etiket, açıklama ve bölüm adları çevrilir (lib/i18n.sh).
 # Öğe biçimi: "Etiket|Açıklama|Ek". Menüde Ek tek karakterlik bir simgedir
 # (✦ gibi), listede sağa yaslanan durum rozetidir. "#Başlık" seçilemeyen
 # bir bölüm başlığıdır ve sıra numaralarına dahil edilmez.
@@ -73,15 +74,18 @@ _ui_parse_items() {
     _UI_KIND=() _UI_LABEL=() _UI_DESC=() _UI_EXTRA=() _UI_N=0
     for it in "$@"; do
         if [[ "$it" == "#"* ]]; then
-            _UI_KIND+=(section) _UI_LABEL+=("${it#\#}") _UI_DESC+=("") _UI_EXTRA+=("")
+            _t "${it#\#}"
+            _UI_KIND+=(section) _UI_LABEL+=("$TR") _UI_DESC+=("") _UI_EXTRA+=("")
             continue
         fi
         _UI_KIND+=(item)
         _UI_N=$((_UI_N + 1))
-        _UI_LABEL+=("${it%%|*}")
+        _t "${it%%|*}"
+        _UI_LABEL+=("$TR")
         rest="${it#*|}"
         [[ "$rest" == "$it" ]] && rest=""
-        _UI_DESC+=("${rest%%|*}")
+        _t "${rest%%|*}"
+        _UI_DESC+=("$TR")
         if [[ "$rest" == *"|"* ]]; then _UI_EXTRA+=("${rest#*|}"); else _UI_EXTRA+=(""); fi
     done
 }
@@ -134,15 +138,20 @@ _ui_list_render() {
         ui_keys "enter" "seç" "↑↓" "gez" "q" "geri" "1-9" "kısayol"
     else
         ui_keys_str "enter" "onayla" "boşluk" "işaretle" "↑↓" "gez" "a" "hepsi" "q" "vazgeç"
-        ui_line "$REPLY${U_ACC}${nchecked}${U_RST}${U_MUTED} seçili"
+        _t "seçili"
+        ui_line "$REPLY${U_ACC}${nchecked}${U_RST}${U_MUTED} ${TR}"
     fi
 }
 
 _ui_list_head() {
     [[ -n "$UI_HEADER_FN" ]] && "$UI_HEADER_FN" "$UI_HERO"
     ui_line ""
-    ui_line "${U_ACC}◆${U_RST} ${U_BOLD}$1"
-    [[ -n "$UI_SUBTITLE" ]] && ui_line "  ${U_MUTED}${UI_SUBTITLE}"
+    _t "$1"
+    ui_line "${U_ACC}◆${U_RST} ${U_BOLD}${TR}"
+    if [[ -n "$UI_SUBTITLE" ]]; then
+        _t "$UI_SUBTITLE"
+        ui_line "  ${U_MUTED}${TR}"
+    fi
     ui_line ""
 }
 
@@ -190,10 +199,18 @@ _ui_list_window() {
         ((start > total - avail)) && start=$((total - avail))
         ((start < 0)) && start=0
         end=$((start + avail))
-        if ((start > 0)); then ui_line "${U_MUTED}  ↑ ${start} satır daha"; else ui_line ""; fi
+        if ((start > 0)); then
+            _t "%s satır daha" "$start"
+            ui_line "${U_MUTED}  ↑ $TR"
+        else
+            ui_line ""
+        fi
     fi
     for ((i = start; i < end; i++)); do ui_line "${lines[i]}"; done
-    ((end < total)) && ui_line "${U_MUTED}  ↓ $((total - end)) satır daha"
+    if ((end < total)); then
+        _t "%s satır daha" $((total - end))
+        ui_line "${U_MUTED}  ↓ $TR"
+    fi
     return 0
 }
 
@@ -256,10 +273,13 @@ _ui_menu_plain() {
     for it in "$@"; do
         [[ "$it" == "#"* ]] && continue
         n=$((n + 1))
-        printf '  %2d) %s\n' "$n" "${it%%|*}"
+        _t "${it%%|*}"
+        printf '  %2d) %s\n' "$n" "$TR"
     done
-    printf '   0) Geri\n'
-    printf 'Seçiminiz: '
+    _t "Geri"
+    printf '   0) %s\n' "$TR"
+    _t "Seçiminiz:"
+    printf '%s ' "$TR"
     IFS= read -r answer || return 1
     [[ "$answer" =~ ^[0-9]+$ ]] || return 1
     ((answer >= 1 && answer <= n)) || return 1
@@ -322,9 +342,11 @@ _ui_checklist_plain() {
     for it in "$@"; do
         [[ "$it" == "#"* ]] && continue
         n=$((n + 1))
-        printf '  %2d) %s\n' "$n" "${it%%|*}"
+        _t "${it%%|*}"
+        printf '  %2d) %s\n' "$n" "$TR"
     done
-    printf 'Numaraları boşlukla girin (örn. 1 3 4): '
+    _t "Numaraları boşlukla girin (örn. 1 3 4):"
+    printf '%s ' "$TR"
     IFS= read -r answer || return 1
     UI_SELECTED=()
     for num in $answer; do

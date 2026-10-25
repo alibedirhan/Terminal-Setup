@@ -31,7 +31,7 @@ ledger_init() {
     local header
     header=$(head -1 "$TS_LEDGER")
     if [[ "$header" != "$LEDGER_HEADER" ]]; then
-        log_err "Defter sürümü tanınmıyor: $header"
+        log_err "Defter sürümü tanınmıyor: %s" "$header"
         return 1
     fi
 }

@@ -71,15 +71,30 @@ _tui_status_refresh() {
         done
     fi
 
-    if [[ "$_TUI_ST_ZSH" == warn ]]; then ui_badge warn "Zsh (varsayılan değil)"; else ui_badge "$_TUI_ST_ZSH" "Zsh"; fi
+    if [[ "$_TUI_ST_ZSH" == warn ]]; then
+        _t "Zsh (varsayılan değil)"
+        ui_badge warn "$TR"
+    else
+        ui_badge "$_TUI_ST_ZSH" "Zsh"
+    fi
     pills="$REPLY   "
     ui_badge "$_TUI_ST_P10K" "Powerlevel10k"
     pills+="$REPLY   "
-    if [[ -n "$_TUI_ST_THEME_NAME" ]]; then ui_badge acc "Tema ${U_BOLD}${_TUI_ST_THEME_NAME}${U_RST}"
-    else ui_badge off "${U_MUTED}Tema yok${U_RST}"; fi
+    if [[ -n "$_TUI_ST_THEME_NAME" ]]; then
+        _t "Tema %s" "${U_BOLD}${_TUI_ST_THEME_NAME}${U_RST}"
+        ui_badge acc "$TR"
+    else
+        _t "Tema yok"
+        ui_badge off "${U_MUTED}${TR}${U_RST}"
+    fi
     pills+="$REPLY   "
-    if ((_TUI_ST_COUNT > 0)); then ui_badge info "${_TUI_ST_COUNT} kayıt"
-    else ui_badge off "${U_MUTED}kayıt yok${U_RST}"; fi
+    if ((_TUI_ST_COUNT > 0)); then
+        _t "%s kayıt" "$_TUI_ST_COUNT"
+        ui_badge info "$TR"
+    else
+        _t "kayıt yok"
+        ui_badge off "${U_MUTED}${TR}${U_RST}"
+    fi
     _TUI_ST_PILLS="$pills$REPLY"
 }
 
@@ -92,8 +107,12 @@ tui_header() {
         ui_line ""
         for line in "${_TUI_LOGO_CACHE[@]}"; do ui_center "$line"; done
         ui_line ""
-        ui_center "${U_MUTED}Terminalinizi güzelleştirir  ·  ${U_RST}${U_BOLD}her adımı geri alınabilir${U_RST}"
-        ui_center "${U_FAINT}sürüm ${TS_VERSION}  ·  github.com/alibedirhan/Terminal-Setup${U_RST}"
+        _t "her adımı geri alınabilir"
+        line="$TR"
+        _t "Terminalinizi güzelleştirir"
+        ui_center "${U_MUTED}${TR}  ·  ${U_RST}${U_BOLD}${line}${U_RST}"
+        _t "sürüm %s" "$TS_VERSION"
+        ui_center "${U_FAINT}${TR}  ·  github.com/alibedirhan/Terminal-Setup${U_RST}"
         ui_line ""
         ui_card_top ""
         ui_card_row "$_TUI_ST_PILLS"
@@ -108,26 +127,40 @@ tui_header() {
     fi
 }
 
+# Menü öğesinin (çevrilmiş) adını kalın yaz -> TR: _tui_bold "Kaldır"
+_tui_bold() {
+    _t "$1"
+    TR="${U_BOLD}${TR}${U_RST}"
+}
+
 # Ana menünün altındaki öneri kartı
 tui_hint() {
     local msg
     _tui_status_refresh
     if ((_TUI_ST_COUNT == 0)); then
-        msg="İlk kez mi? ${U_BOLD}Kurulum sihirbazı${U_RST} ile başlayın; her adım geri alınabilir."
+        _tui_bold "Kurulum sihirbazı"
+        _t "İlk kez mi? %s ile başlayın; her adım geri alınabilir." "$TR"
     elif ((_TUI_ST_BROKEN > 0)); then
-        msg="${U_WARN}${_TUI_ST_BROKEN} bileşen bozuk görünüyor.${U_RST} ${U_BOLD}Durum ve teşhis${U_RST} ekranına bakın."
+        _t "%s bileşen bozuk görünüyor." "$_TUI_ST_BROKEN"
+        msg="${U_WARN}${TR}${U_RST}"
+        _tui_bold "Durum ve teşhis"
+        _t "%s ekranına bakın." "$TR"
+        TR="$msg $TR"
     elif [[ -z "$_TUI_ST_THEME" ]]; then
-        msg="Kurulum tamam. ${U_BOLD}Tema dene${U_RST} ile 7 renk temasını canlı önizleyin."
+        _tui_bold "Tema dene"
+        _t "Kurulum tamam. %s ile 7 renk temasını canlı önizleyin." "$TR"
     else
-        msg="Her şey yolunda. Beğenmezseniz ${U_BOLD}Kaldır${U_RST} her şeyi geri alır."
+        _tui_bold "Kaldır"
+        _t "Her şey yolunda. Beğenmezseniz %s her şeyi geri alır." "$TR"
     fi
+    msg="$TR"
     ui_vlen "$msg"
     if ((UI_LEN > UI_W - 4)); then
         # Dar ekranda kart yerine tek satır
         ui_line "${U_ACC}✦${U_RST} $msg"
         return 0
     fi
-    ui_card_top "${U_ACC}✦${U_RST} Öneri"
+    ui_card_top "Öneri" "✦"
     ui_card_row "$msg"
     ui_card_bottom
 }

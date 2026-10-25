@@ -62,9 +62,11 @@ _tui_theme_draw() {
     _tui_theme_preview $((UI_ROWS - ${#UI_FRAME[@]} - 4))
     ui_line ""
     if [[ "${_tt_themes[_tt_idx]}" == "$_tt_current" ]]; then
-        ui_line "  ${U_OK}●${U_RST} Şu an uygulanan tema"
+        _t "Şu an uygulanan tema"
+        ui_line "  ${U_OK}●${U_RST} $TR"
     else
-        ui_line "  ${U_MUTED}Enter ile bu temayı terminalinize uygulayın.${U_RST}"
+        _t "Enter ile bu temayı terminalinize uygulayın."
+        ui_line "  ${U_MUTED}${TR}${U_RST}"
     fi
     ui_line ""
     ui_frame_footer
@@ -74,14 +76,17 @@ _tui_theme_draw() {
 
 # Başlık ve tema şeridi; alçak ekranda üst başlık atlanır
 _tui_theme_head() {
-    local count="${U_MUTED}$((_tt_idx + 1)) / ${#_tt_themes[@]}${U_RST}"
+    local count="${U_MUTED}$((_tt_idx + 1)) / ${#_tt_themes[@]}${U_RST}" title
+    _t "Tema dene"
+    title="${U_ACC}◆${U_RST} ${U_BOLD}${TR}${U_RST}  $count"
     if ((UI_ROWS >= 30)); then
         tui_header 0
         ui_line ""
-        ui_line "${U_ACC}◆${U_RST} ${U_BOLD}Tema dene${U_RST}  $count"
+        ui_line "$title"
     else
         ui_line ""
-        ui_line "${U_ACC}◆${U_RST} ${U_BOLD}Tema dene${U_RST}  $count   ${U_BOLD}${THEME[NAME]}${U_RST}  ${U_MUTED}${THEME[DESC]:-}"
+        _t "${THEME[DESC]:-}"
+        ui_line "$title   ${U_BOLD}${THEME[NAME]}${U_RST}  ${U_MUTED}${TR}"
     fi
     ui_line ""
     _tui_theme_chips "$_tt_idx" "${_tt_themes[@]}"

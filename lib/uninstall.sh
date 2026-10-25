@@ -20,7 +20,10 @@ uninstall_show_plan() {
     TS_DRY_RUN="$saved"
     ext=$(ledger_lines | awk -F'\t' '$2 == "note" && $3 ~ /^external:/ { sub(/^external:/, "", $3); print $3 }')
     if [[ -n "$ext" ]]; then
-        printf '\n%s\n' "${C_BOLD}Dokunulmayacak${C_RESET} (kurulumdan önce sizde vardı):"
+        _t "Dokunulmayacak"
+        printf '\n%s' "${C_BOLD}${TR}${C_RESET}"
+        _t "(kurulumdan önce sizde vardı):"
+        printf ' %s\n' "$TR"
         printf '  %s\n' $ext
     fi
 }
@@ -37,7 +40,8 @@ uninstall_all() {
 
     uninstall_show_plan
     if is_dry_run; then
-        printf '\n%s\n' "${C_DIM}Prova modu: hiçbir şey değiştirilmedi.${C_RESET}"
+        _t "Prova modu: hiçbir şey değiştirilmedi."
+        printf '\n%s\n' "${C_DIM}${TR}${C_RESET}"
         return 0
     fi
     printf '\n'
@@ -64,14 +68,14 @@ uninstall_all() {
         TS_LOG_FILE="$TS_ARCHIVE_DIR/terminal-setup.log"
         rm -rf -- "$TS_STATE_DIR"
     else
-        log_warn "Bazı kayıtlar geri alınamadı; defter korunuyor: $(ts_pretty_path "$TS_LEDGER")"
+        log_warn "Bazı kayıtlar geri alınamadı; defter korunuyor: %s" "$(ts_pretty_path "$TS_LEDGER")"
     fi
 
     printf '\n'
     log_ok "Kaldırma tamamlandı."
-    log_info "Arşiv: $(ts_pretty_path "$TS_ARCHIVE_DIR") (rapor, log ve kullanıcı verileri)"
+    log_info "Arşiv: %s (rapor, log ve kullanıcı verileri)" "$(ts_pretty_path "$TS_ARCHIVE_DIR")"
     if ((${#UNDO_ARCHIVED[@]} > 0)); then
-        log_info "Arşive taşınanlar: ${UNDO_ARCHIVED[*]}"
+        log_info "Arşive taşınanlar: %s" "${UNDO_ARCHIVED[*]}"
     fi
     log_info "Değişikliklerin tamamı için terminali kapatıp yeniden açın."
     return "$verdict"
@@ -90,7 +94,7 @@ appearance_reset() {
     if [[ -f "$HOME/.p10k.zsh" ]] && ledger_has userdata "$HOME/.p10k.zsh"; then
         if ui_confirm "Powerlevel10k prompt görünümü de sıfırlansın mı? (sihirbaz yeniden açılır)" h; then
             undo_userdata "$HOME/.p10k.zsh"
-            log_ok "Prompt ayarı arşive taşındı: $(ts_pretty_path "$TS_ARCHIVE_DIR")"
+            log_ok "Prompt ayarı arşive taşındı: %s" "$(ts_pretty_path "$TS_ARCHIVE_DIR")"
             log_info "Yeni bir terminal açtığınızda Powerlevel10k sihirbazı başlar."
         fi
     fi

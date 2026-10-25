@@ -11,7 +11,7 @@ comp_aliases_install() {
         [[ -f "$f" ]] && user_files+=("$f")
     done
     ((${#user_files[@]} == 0)) && return 0
-    log_info "Bulunan alias dosyaları: ${user_files[*]}"
+    log_info "Bulunan alias dosyaları: %s" "${user_files[*]}"
     ui_confirm "Bu dosyalar zsh'de de yüklensin mi?" e || return 0
     local content="# Kullanıcının kendi alias dosyaları (yalnızca okunur)"
     for f in "${user_files[@]}"; do

@@ -14,9 +14,10 @@
 VERIFY_ERRORS=0
 VERIFY_NOTES=0
 
-_verify_ok()   { printf '  %s %s\n' "${C_GREEN}✓${C_RESET}" "$*"; }
-_verify_err()  { printf '  %s %s\n' "${C_RED}✗${C_RESET}" "$*"; VERIFY_ERRORS=$((VERIFY_ERRORS + 1)); }
-_verify_note() { printf '  %s %s\n' "${U_INFO:-$C_YELLOW}•${C_RESET}" "$*"; VERIFY_NOTES=$((VERIFY_NOTES + 1)); }
+# Rapor satırları çevrilir: _verify_ok "Biçim %s" ARG...
+_verify_ok()   { _t "$@"; printf '  %s %s\n' "${C_GREEN}✓${C_RESET}" "$TR"; }
+_verify_err()  { _t "$@"; printf '  %s %s\n' "${C_RED}✗${C_RESET}" "$TR"; VERIFY_ERRORS=$((VERIFY_ERRORS + 1)); }
+_verify_note() { _t "$@"; printf '  %s %s\n' "${U_INFO:-$C_YELLOW}•${C_RESET}" "$TR"; VERIFY_NOTES=$((VERIFY_NOTES + 1)); }
 
 _verify_list() {
     local max=12 n=0 item
@@ -25,7 +26,10 @@ _verify_list() {
         n=$((n + 1))
         ((n <= max)) && printf '      %s\n' "$(ts_pretty_path "$item")"
     done
-    ((n > max)) && printf '      ... ve %d tane daha\n' "$((n - max))"
+    if ((n > max)); then
+        _t "... ve %s tane daha" "$((n - max))"
+        printf '      %s\n' "$TR"
+    fi
     return 0
 }
 
@@ -43,13 +47,14 @@ verify_against_baseline() {
     now="$TS_TMP/verify-now"
     baseline_capture_to "$now"
 
-    printf '%s\n' "${C_BOLD}Başlangıç fotoğrafıyla karşılaştırma${C_RESET} ($(baseline_created_at))"
+    _t "Başlangıç fotoğrafıyla karşılaştırma"
+    printf '%s\n' "${C_BOLD}${TR}${C_RESET} ($(baseline_created_at))"
 
     # 1. Defter
     if (( $(ledger_count) == 0 )); then
         _verify_ok "Defterde geri alınmamış kayıt yok"
     else
-        _verify_err "Defterde $(ledger_count) kayıt duruyor (kalıntı):"
+        _verify_err "Defterde %s kayıt duruyor (kalıntı):" "$(ledger_count)"
         ledger_lines | awk -F'\t' '{ print $1 ": " $2 " " $3 }' | _verify_list
     fi
 
@@ -63,9 +68,11 @@ verify_against_baseline() {
     local f
     for f in shell.txt gitconfig.txt dconf-gnome-terminal.txt dconf-ptyxis.txt; do
         if cmp -s "$base/$f" "$now/$f"; then
-            _verify_ok "${labels[$f]} kurulum öncesiyle aynı"
+            _t "${labels[$f]}"
+            _verify_ok "%s kurulum öncesiyle aynı" "$TR"
         else
-            _verify_err "${labels[$f]} farklı:"
+            _t "${labels[$f]}"
+            _verify_err "%s farklı:" "$TR"
             diff "$base/$f" "$now/$f" | grep -E '^[<>]' | head -8 | sed 's/^/      /'
         fi
     done
@@ -106,9 +113,11 @@ verify_against_baseline() {
 
     printf '\n'
     if ((VERIFY_ERRORS == 0)); then
-        printf '%s\n' "${C_GREEN}${C_BOLD}Sonuç: kalıntı yok.${C_RESET}"
+        _t "Sonuç: kalıntı yok."
+        printf '%s\n' "${C_GREEN}${C_BOLD}${TR}${C_RESET}"
         return 0
     fi
-    printf '%s\n' "${C_RED}${C_BOLD}Sonuç: $VERIFY_ERRORS fark bulundu.${C_RESET}"
+    _t "Sonuç: %s fark bulundu." "$VERIFY_ERRORS"
+    printf '%s\n' "${C_RED}${C_BOLD}${TR}${C_RESET}"
     return 1
 }

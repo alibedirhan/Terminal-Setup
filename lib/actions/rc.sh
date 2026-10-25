@@ -77,7 +77,7 @@ act_rc_block() {
         return 0
     fi
     if is_dry_run; then
-        log_plan "$(ts_pretty_path "$file") içine '$id' bloğu"
+        log_plan "%s içine '%s' bloğu" "$(ts_pretty_path "$file")" "$id"
         return 0
     fi
 
@@ -128,7 +128,7 @@ act_zsh_snippet() {
 # ----------------------------------------------------------------------------
 undo_rcblock() {
     local file="$1" id="$2"
-    is_dry_run && { log_plan "$(ts_pretty_path "$file"): '$id' bloğu çıkarılacak"; return 0; }
+    is_dry_run && { log_plan "%s: '%s' bloğu çıkarılacak" "$(ts_pretty_path "$file")" "$id"; return 0; }
     rc_strip_block "$file" "$id"
 }
 
@@ -139,14 +139,14 @@ undo_rcfile() {
     [[ ! -f "$file" && "$saved" == "NONE" ]] && return 0
     if is_dry_run; then
         # Planda diğer kayıtlar henüz geri alınmadığı için içerik karşılaştırılamaz
-        log_plan "$(ts_pretty_path "$file") kurulum öncesi haline dönecek"
+        log_plan "%s kurulum öncesi haline dönecek" "$(ts_pretty_path "$file")"
         return 0
     fi
     [[ -f "$file" ]] && current="$(rc_without_blocks "$file")"
     [[ "$saved" != "NONE" ]] && original="$(cat "$TS_FILES_DIR/$saved" 2>/dev/null)"
 
     if [[ -f "$file" && "$current" != "$original" ]]; then
-        log_info "$(ts_pretty_path "$file") kurulumdan sonra değişmiş; son hali arşivleniyor"
+        log_info "%s kurulumdan sonra değişmiş; son hali arşivleniyor" "$(ts_pretty_path "$file")"
         fs_archive "$file" "kopyala"
     fi
     if [[ "$saved" == "NONE" ]]; then

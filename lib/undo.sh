@@ -28,7 +28,7 @@ _undo_one() {
     local type="$1" a1="$2" a2="$3"
     [[ "$type" == "note" ]] && return 0
     if ! declare -F "undo_$type" >/dev/null; then
-        log_warn "Bilinmeyen defter kaydı: $type"
+        log_warn "Bilinmeyen defter kaydı: %s" "$type"
         return 1
     fi
     "undo_$type" "$a1" "$a2"
