@@ -1,5 +1,14 @@
 # Changelog
 
+## [Yayınlanmadı]
+
+### Eklendi
+- **`update` komutu** ve menüde "Güncelle": GitHub'dan kurulan araçlar son release'e, Oh My Zsh / Powerlevel10k / eklenti depoları son commit'e yükseltilir. Yalnızca Terminal Setup'ın kurduğu parçalar güncellenir; `--dry-run` ile önce plan görülebilir.
+- CI: Ubuntu 26.04 gidiş-dönüş testi; üç sürümde gerçek dconf ile GNOME Terminal ve Ptyxis testi.
+
+### Düzeltildi
+- Ubuntu 25.10 ve sonrasında `tldr` paketi depoda olmadığı için kurulum başarısız oluyordu; 24.04 ve sonrasında aynı komutu sağlayan `tealdeer` kurulur.
+
 ## [6.0.0] - 2026-10-23
 
 Mimari baştan yazıldı. Ana hedef: kurulan her şeyin iz bırakmadan geri alınabilmesi.

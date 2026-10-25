@@ -101,6 +101,17 @@ tui_ornek() {
 
 Özel çizim gereken ekranlar (tema tarayıcı gibi) bir çizim ve bir tuş fonksiyonu yazıp `ui_loop` ile birleştirir.
 
+## Güncelleme
+
+`update` komutu (`lib/upgrade.sh`) yalnızca script'in kurduğu parçaları yükseltir: GitHub'dan indirilen araçları son release'e, klonlanan depoları (Oh My Zsh, Powerlevel10k, eklentiler) son commit'e. apt paketleri sistemin işidir.
+
+Neyin güncelleneceği ayrıca yazılmaz, bileşen dosyalarından okunur: bileşenin kurulum fonksiyonu prova modunda `ACT_RECIPE_CAPTURE=1` ile çalıştırılır ve `act_gh_binary` / `act_clone` ne kurduklarını tarif olarak bırakır. Yeni bir GitHub aracı eklemek, güncellemesini de kendiliğinden getirir.
+
+- Kurulan sürümler `~/.terminal-setup/versions` dosyasında tutulur (`ad<TAB>etiket`).
+- Deftere satır eklenmez: yollar zaten script'e ait (`path`) kayıtlıdır; kaldırma sürümden bağımsız siler.
+- İkili dosya yanına kurulup yer değiştirilir; çalışan bir araç güncellenirken "Text file busy" olmaz.
+- İzlenen dosyaları elle değiştirilmiş bir depo güncellenmez.
+
 ## Mimari kurallar
 
 1. **Yan etki yalnızca `lib/actions/` içinde.** Başka bir yerde doğrudan `apt-get`, `sudo`, `chsh`, `gsettings set`, `dconf write`, `git config --global` kullanılamaz. `scripts/check_static.sh` bunu denetler.
@@ -147,6 +158,7 @@ comp_bat_verify() { has_cmd batcat || has_cmd bat; }
 | Birim | `tests/unit/*.bats` | defter, bloklar, paketler, ayarlar, temalar, çalıştırıcı, arayüz yapı taşları, her ekranın her boyutta yerleşimi |
 | Etkileşim | `tests/integration/tui_pty.bats` | tmux içinde gerçek terminalde tuşlarla gezinme, pencere boyutu değişimi, hızlı tuşta çöp olmaması, çıkışta ve Ctrl+C'de terminalin geri gelmesi |
 | Entegrasyon | `tests/integration/*.bats` | CLI üzerinden kur → kaldır → fotoğrafla aynı mı |
-| Uçtan uca | `tests/e2e/container.sh` | temiz Ubuntu 22.04/24.04 konteynerinde gerçek apt ve indirmelerle aynı döngü |
+| Uçtan uca | `tests/e2e/container.sh` | temiz Ubuntu 22.04/24.04/26.04 konteynerinde gerçek apt ve indirmelerle aynı döngü |
+| GNOME | `tests/e2e/gnome.sh` | gerçek dconf + gsettings: yazılan her anahtar şemada var ve doğru tipte mi, kullanıcının ayarları korunuyor mu, kaldırınca `dconf dump /` aynı mı |
 
 Birim ve entegrasyon testleri sahte bir sistemde çalışır (`tests/helpers/`): `apt-get`, `dpkg-query`, `sudo`, `chsh`, `dconf`, `git clone` ve `curl` taklitleri geçici bir dizinde durum tutar; gerçek sisteme dokunulmaz, ağa çıkılmaz.

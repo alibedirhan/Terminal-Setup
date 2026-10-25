@@ -19,16 +19,16 @@ Ubuntu'yu formatladıktan sonra terminali tek seferde kurar: Zsh, Oh My Zsh, Pow
 
 | Dizin | İçerik | Dosya |
 |---|---|---|
-| `lib/` | motor | 13 |
+| `lib/` | motor | 14 |
 | `lib/ui/` | arayüz: renk, ölçü, terminal, çizim, sorular, menü | 6 |
-| `lib/actions/` | sisteme dokunan tek katman (yap + geri al) | 5 |
+| `lib/actions/` | sisteme dokunan tek katman (yap + geri al + güncelle) | 6 |
 | `components/` | kabuk (5), araçlar (14), ekstra (2) | 21 |
 | `themes/` | renk paletleri | 7 |
 | `renderers/` | GNOME Terminal, Ptyxis, Kitty, Alacritty, tmux | 5 |
 | `frontends/` | komut satırı, durum ekranı, menü ekranları | 9 |
 | `diagnostics/` | sağlık kontrolleri | 8 |
 | `profiles/` | minimal, developer, full | 3 |
-| `tests/` | 117 bats testi (11 dosya) + Docker gidiş-dönüş betiği | 12 |
+| `tests/` | 131 bats testi (13 dosya) + Docker gidiş-dönüş ve GNOME betikleri | 15 |
 
 En büyük dosya 400 satırın altında; kural 600.
 
@@ -36,7 +36,8 @@ En büyük dosya 400 satırın altında; kural 600.
 
 - ShellCheck sıfır uyarı, 600 satır sınırı, "yan etki yalnızca `lib/actions/`" kuralı (`scripts/check_static.sh`)
 - Sahte sistem üzerinde bats testleri (`tests/unit`, `tests/integration`)
-- Temiz Ubuntu 22.04 ve 24.04 konteynerlerinde gerçek gidiş-dönüş testi (`tests/e2e/container.sh`)
+- Temiz Ubuntu 22.04, 24.04 ve 26.04 konteynerlerinde gerçek gidiş-dönüş testi (`tests/e2e/container.sh`)
+- Aynı sürümlerde gerçek dconf ile GNOME Terminal / Ptyxis testi (`tests/e2e/gnome.sh`)
 - Hepsi GitHub Actions'ta her push'ta çalışır
 
 ## Kararlar
