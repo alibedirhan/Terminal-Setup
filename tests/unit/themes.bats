@@ -41,6 +41,12 @@ add_terminal() {
     done
 }
 
+@test "tema listesi sıralı; eşi olan tema koyu haliyle önce gelir" {
+    run theme_list
+    [ "${lines[0]}" = catppuccin ]
+    [ "${lines[1]}" = catppuccin-latte ]
+}
+
 @test "olmayan tema reddedilir" {
     run theme_load olmayan
     [ "$status" -ne 0 ]
