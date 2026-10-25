@@ -1,4 +1,4 @@
-# Proje Özeti — Terminal Setup 6.1.1
+# Proje Özeti — Terminal Setup 6.2.0
 
 Son güncelleme: 23 Ekim 2026
 

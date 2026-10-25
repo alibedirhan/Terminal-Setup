@@ -1,6 +1,6 @@
 # Changelog
 
-## [Yayınlanmadı]
+## [6.2.0] - 2026-10-25
 
 ### Eklendi
 - **Araçlar da temaya uyar:** Tema değişince bat ve delta (söz dizimi teması), fzf (paletten renkler) ve btop (paletten üretilen tema) da değişir. Kullanıcının araç ayar dosyalarına dokunulmaz; btop.conf yoksa oluşturulur ve kullanıcı verisi sayılır.
