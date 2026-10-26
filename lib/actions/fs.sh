@@ -14,13 +14,17 @@
 
 # Asla silinmeyecek yollar (hatalı bir kayda karşı son savunma hattı)
 fs_is_protected() {
-    local p="${1%/}"
+    local p home_path temp_path
+    # ../ ve sembolik bağlantılar korunan dizin denetimini aşmamalı.
+    p=$(readlink -m -- "$1") || return 0
+    home_path=$(readlink -m -- "$HOME") || return 0
+    temp_path=$(readlink -m -- "${TMPDIR:-/tmp}") || return 0
     case "$p" in
-        ""|"/"|"$HOME"|"$HOME/.config"|"$HOME/.local"|"$HOME/.local/share" \
-            |"$HOME/.cache"|"$HOME/.local/state"|/usr|/usr/*|/etc|/etc/*|/bin|/bin/*)
+        ""|"/"|"$home_path"|"$home_path/.config"|"$home_path/.local"|"$home_path/.local/share" \
+            |"$home_path/.cache"|"$home_path/.local/state"|/usr|/usr/*|/etc|/etc/*|/bin|/bin/*)
             return 0 ;;
     esac
-    [[ "$p" != "$HOME"/* && "$p" != "${TMPDIR:-/tmp}"/* ]]
+    [[ "$p" != "$home_path"/* && "$p" != "$temp_path"/* ]]
 }
 
 # Oluşturulacak yolu bildir: yoksa deftere yazar
@@ -46,7 +50,7 @@ _fs_record_missing_parents() {
 
 # Kullanımla oluşacak veriyi bildir (şu an yoksa)
 act_userdata() {
-    [[ -e "$1" ]] && return 0
+    [[ -e "$1" || -L "$1" ]] && return 0
     _fs_record_missing_parents "$1"
     ledger_add userdata "$1"
 }
@@ -84,7 +88,7 @@ act_mkdir() {
 #   act_write_file YOL İÇERİK [mod]
 act_write_file() {
     local path="$1" content="$2" mode="${3:-644}"
-    if [[ -e "$path" ]] && ! ledger_has path "$path"; then
+    if [[ -e "$path" || -L "$path" ]] && ! ledger_has path "$path"; then
         log_err "Dosya kullanıcıya ait, üzerine yazılmadı: %s" "$(ts_pretty_path "$path")"
         return 1
     fi
@@ -103,7 +107,7 @@ act_write_file() {
 # arşive taşınır. act_seed_file YOL İÇERİK
 act_seed_file() {
     local path="$1" content="$2"
-    [[ -e "$path" ]] && return 0
+    [[ -e "$path" || -L "$path" ]] && return 0
     if is_dry_run; then
         log_plan "yaz %s" "$(ts_pretty_path "$path")"
         return 0
@@ -116,7 +120,7 @@ act_seed_file() {
 # İndirilen bir dosyayı yerleştir: act_download URL HEDEF
 act_download() {
     local url="$1" dest="$2" tmp
-    if [[ -e "$dest" ]] && ! ledger_has path "$dest"; then
+    if [[ -e "$dest" || -L "$dest" ]] && ! ledger_has path "$dest"; then
         return 0
     fi
     if is_dry_run; then
@@ -135,6 +139,10 @@ act_clone() {
     local url="$1" dest="$2"
     _act_recipe git "$url" "$dest"
     [[ -d "$dest/.git" ]] && return 0
+    if [[ -e "$dest" || -L "$dest" ]] && ! ledger_has path "$dest"; then
+        log_err "%s zaten var ve size ait; üzerine yazılmadı" "$(ts_pretty_path "$dest")"
+        return 1
+    fi
     if is_dry_run; then
         log_plan "git clone %s %s" "$url" "$(ts_pretty_path "$dest")"
         return 0
@@ -150,7 +158,7 @@ act_clone() {
 # Çalıştırılabilir dosyayı ~/.local/bin altına kur: act_install_bin KAYNAK AD
 act_install_bin() {
     local src="$1" name="$2" dest="$TS_BIN_DIR/$2"
-    if [[ -e "$dest" ]] && ! ledger_has path "$dest"; then
+    if [[ -e "$dest" || -L "$dest" ]] && ! ledger_has path "$dest"; then
         log_err "%s zaten var ve size ait; üzerine yazılmadı" "$(ts_pretty_path "$dest")"
         return 1
     fi
@@ -259,7 +267,13 @@ UNDO_ARCHIVED=()   # arşive taşınan/kopyalanan yollar (rapor için)
 # çağrılmamalıdır; TS_ARCHIVE_DIR'i ana kabukta ayarlar.
 undo_archive_init() {
     if [[ -z "$TS_ARCHIVE_DIR" ]]; then
-        TS_ARCHIVE_DIR="$HOME/terminal-setup-kaldirilan-$(ts_stamp)"
+        if is_dry_run; then
+            TS_ARCHIVE_DIR="$HOME/terminal-setup-kaldirilan-$(ts_stamp)"
+            return 0
+        fi
+        # Aynı saniyedeki ayrı işlemler eski arşivin üzerine yazmamalı.
+        TS_ARCHIVE_DIR=$(mktemp -d "$HOME/terminal-setup-kaldirilan-$(ts_stamp).XXXXXXXX") || return 1
+        return 0
     fi
     is_dry_run || mkdir -p "$TS_ARCHIVE_DIR"
 }
@@ -276,13 +290,13 @@ fs_archive() {
         fi
         return 0
     fi
-    undo_archive_init
+    undo_archive_init || return 1
     dest="$TS_ARCHIVE_DIR/$rel"
-    mkdir -p "$(dirname "$dest")"
+    mkdir -p "$(dirname "$dest")" || return 1
     if [[ "$mode" == "taşı" ]]; then
-        mv -- "$src" "$dest"
+        mv -- "$src" "$dest" || return 1
     else
-        cp -a -- "$src" "$dest"
+        cp -a -- "$src" "$dest" || return 1
     fi
     UNDO_ARCHIVED+=("$(ts_pretty_path "$src")")
 }

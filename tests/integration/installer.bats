@@ -4,6 +4,7 @@
 REPO_ROOT="$(cd "$(dirname "${BATS_TEST_FILENAME}")/../.." && pwd)"
 
 setup() {
+    unset LC_ALL LC_MESSAGES
     REL="$BATS_TEST_TMPDIR/release"
     mkdir -p "$REL"
     VERSION=$(cat "$REPO_ROOT/VERSION")
