@@ -84,17 +84,13 @@ render_png() { "$PYTHON" "$ROOT/scripts/demo/render.py" png "$OUT/$1" "$LAST"; }
 # Sahneler
 # ----------------------------------------------------------------------------
 
-# 1. Ana menü (Türkçe ve İngilizce)
-start_menu tr "Ne yapmak istersiniz?"
-snap 0
-render_png ana-menu.png
-SCENE=()
+# 1. İngilizce README için ana menü (Türkçe README menü turu GIF'ini kullanır)
 start_menu en "What would you like to do?"
 snap 0
 render_png main-menu.png
 SCENE=()
 
-# 2. Tema dene: yedi temada gezinme (Türkçe ve İngilizce)
+# 2. Tema dene: tüm temalarda gezinme (Türkçe ve İngilizce)
 theme_tour() {
     start_menu "$1" "$2"
     keys 2

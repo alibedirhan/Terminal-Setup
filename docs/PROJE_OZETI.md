@@ -1,10 +1,21 @@
 # Proje Özeti — Terminal Setup 6.2.0
 
-Son güncelleme: 23 Ekim 2026
+Son güncelleme: 26 Ekim 2026
+
+## Nerede kaldık?
+
+- **v6.0:** Başlangıç fotoğrafı, değişiklik defteri, geri alınabilir kurulum ve bağımlılıksız menü tamamlandı.
+- **v6.1:** İngilizce arayüz, kurulu araçları güncelleme ve üç Ubuntu sürümünde GNOME testleri eklendi.
+- **v6.2.0:** Araç temaları, kısayollar, açılış ipuçları, zsh hız ölçümü, fzf-tab, beş yeni tema, Ghostty/WezTerm, Starship ve yazı tipi seçimi eklendi. [Sürüm yayımlandı](https://github.com/alibedirhan/Terminal-Setup/releases/tag/v6.2.0).
+- **En son değişiklik (25 Ekim):** Tema listesi sıralandı ve hizalandı; açık/koyu eşler yan yana getirildi, README görselleri yenilendi. `main` dalına [#7](https://github.com/alibedirhan/Terminal-Setup/pull/7) ile alındı (`7916aee`); [CI başarılı](https://github.com/alibedirhan/Terminal-Setup/actions/runs/40210461042).
+- **Sürüm farkı:** Son tema listesi düzeltmesi `main` dalında, yayımlanan v6.2.0 paketinde henüz yok. Yeni bir düzeltme sürümüne dahil edilebilir.
+- **Açık işler:** 26 Ekim kontrolünde GitHub'da açık issue veya PR bulunmuyor. Video çekimi için [hazırlık listesi](VIDEO_HAZIRLIK.md) var; çekimin tamamlandığına dair depoda kayıt yok.
+
+Sürüm geçmişi: [CHANGELOG.md](../CHANGELOG.md). Geliştirme ve test komutları: [katkı rehberi](../.github/CONTRIBUTING.md).
 
 ## Ne yapar?
 
-Ubuntu'yu formatladıktan sonra terminali tek seferde kurar: Zsh, Oh My Zsh, Powerlevel10k, MesloLGS NF, 14 komut satırı aracı, tmux ve 12 renk teması. Yaptığı her şeyi kaydeder ve tek komutla, kurulumdan önceki haline döner.
+Ubuntu'yu formatladıktan sonra terminali tek seferde kurar: Zsh, Oh My Zsh, Powerlevel10k ya da Starship, Nerd Font yazı tipleri, 14 komut satırı aracı, tmux ve 12 renk teması. Yaptığı her şeyi kaydeder ve tek komutla, kurulumdan önceki haline döner.
 
 ## Temel fikir
 
@@ -31,6 +42,8 @@ Ubuntu'yu formatladıktan sonra terminali tek seferde kurar: Zsh, Oh My Zsh, Pow
 | `profiles/` | minimal, developer, full | 3 |
 | `tests/` | 171 bats testi (18 dosya) + Docker gidiş-dönüş ve GNOME betikleri | 20 |
 
+Kurulum ve proje belgeleri `docs/` altında; katkı, destek ve güvenlik belgeleri GitHub'ın tanıdığı `.github/` dizininde tutulur. `release/` yalnızca paket üretildiğinde oluşur ve Git'e eklenmez. Yerel Claude izinleri de Git dışında tutulur.
+
 En büyük dosya 400 satırın altında; kural 600.
 
 ## Kalite kapıları
@@ -50,6 +63,6 @@ En büyük dosya 400 satırın altında; kural 600.
 | Desteklenen sürümler | Ubuntu 22.04, 24.04, 26.04; x86_64 ve ARM64 | LTS sürümleri |
 | GitHub araçları | Release ikilileri, `~/.local/bin` | sudo, rustup, snap gerekmez; kaldırması tek dosya |
 | Kullanıcı verisi | Silinmez, arşive taşınır | Geri alınamaz kayıp olmasın |
-| Dil (arayüz) | Türkçe | Hedef kitle |
+| Dil (arayüz) | Türkçe ve İngilizce | Sistem diline göre otomatik, menüden değiştirilebilir |
 
-Ayrıntılı mimari: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+Ayrıntılı mimari: [ARCHITECTURE.md](ARCHITECTURE.md)

@@ -50,9 +50,9 @@ The menu is driven with the arrow keys:
 
 In "Try themes" every theme is previewed in a terminal window drawn with its own colors:
 
-![Try themes: browsing the seven themes](docs/images/theme-browser.gif)
+![Try themes: browsing the 12 themes](docs/images/theme-browser.gif)
 
-To run a verified release without cloning (checked with SHA-256), see [INSTALL.md](INSTALL.md).
+To run a verified release without cloning (checked with SHA-256), see the [installation guide](docs/INSTALL.md).
 
 ## Language
 
@@ -103,6 +103,15 @@ Only an archive folder, `~/terminal-setup-kaldirilan-DATE/`, is left behind. It 
 - An English interface test: the whole flow runs in English; a single untranslated or leftover Turkish string fails it.
 
 Architecture and how to add components, themes or terminals: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) (Turkish).
+
+Recent development and current status: [project summary](docs/PROJE_OZETI.md) (Turkish).
+
+## Contributing and support
+
+- [Contributing](.github/CONTRIBUTING.md) — development and tests (Turkish)
+- [Support](.github/SUPPORT.md) — reporting problems (Turkish)
+- [Security](.github/SECURITY.md) — security principles and reporting vulnerabilities (Turkish)
+- [Changelog](CHANGELOG.md) — release notes
 
 ## License
 

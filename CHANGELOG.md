@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+
+### Değişti
+- Kurulum rehberi ve proje özeti `docs/` altına; katkı, destek ve güvenlik belgeleri `.github/` altına taşındı. Belge bağlantıları güncellendi, kullanılmayan Türkçe ana menü görseli kaldırıldı.
+- Yerel Claude ayarları ve Python önbellekleri `.gitignore` kapsamına alındı; geliştirme özeti ve video hazırlık listesi kurulum paketinden çıkarıldı.
+
+### Düzeltildi
+- Tema listesinde açık/koyu eşler yan yana ve koyu tema önce gösterilir; uzun tema adları komut satırında hizalıdır. README görselleri yenilendi.
+
 ## [6.2.0] - 2026-10-25
 
 ### Eklendi

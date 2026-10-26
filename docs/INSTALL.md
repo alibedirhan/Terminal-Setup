@@ -68,7 +68,7 @@ Sorun devam ederse: `bash scripts/collect_logs.sh` ile log paketi oluşturup [is
 ./terminal-setup.sh theme reset           # yalnızca renkleri geri al
 ```
 
-Ayrıntılar için [README.md](README.md#kaldırma).
+Ayrıntılar için [README.md](../README.md#kaldırma).
 
 ## v5'ten geçiş
 

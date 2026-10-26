@@ -2,6 +2,8 @@
 
 Terminal Setup paket kurar, kullanıcı ayar dosyalarına ve terminal profiline dokunur. Bu yüzden şu ilkelerle çalışır:
 
+Dosyalar ve kaldırma davranışı: [Kullanıcı verisi ve güvenlik notları](../docs/GUVENLIK_NOTLARI.md).
+
 ## İlkeler
 
 - **Root olarak çalışmaz.** Yönetici yetkisi yalnızca apt ve `chsh` için, `sudo` üzerinden istenir.
