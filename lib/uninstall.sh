@@ -48,13 +48,13 @@ uninstall_all() {
     ui_type_confirm "kaldır" || { log_info "İptal edildi."; return 1; }
 
     sudo_begin || return 1
-    undo_archive_init
+    undo_archive_init || return 1
     UNDO_FAILED=0
     log_step "Değişiklikler geri alınıyor"
-    ledger_lines | undo_lines
+    undo_lines < <(ledger_lines)
     undo_rcfile_gc
     # İkinci tur: ortak dizinler ve core'a devredilen kayıtlar
-    ledger_lines | undo_lines
+    undo_lines < <(ledger_lines)
     undo_rcfile_gc
 
     printf '\n'
@@ -87,13 +87,13 @@ appearance_reset() {
         log_info "Uygulanmış bir tema yok."
     else
         log_step "Tema geri alınıyor"
-        undo_component theme
-        settings_set theme ""
+        undo_component theme || return 1
+        settings_set theme "" || return 1
         log_ok "Terminal renkleri kurulum öncesine döndü."
     fi
     if [[ -f "$HOME/.p10k.zsh" ]] && ledger_has userdata "$HOME/.p10k.zsh"; then
         if ui_confirm "Powerlevel10k prompt görünümü de sıfırlansın mı? (sihirbaz yeniden açılır)" h; then
-            undo_userdata "$HOME/.p10k.zsh"
+            undo_userdata "$HOME/.p10k.zsh" || return 1
             log_ok "Prompt ayarı arşive taşındı: %s" "$(ts_pretty_path "$TS_ARCHIVE_DIR")"
             log_info "Yeni bir terminal açtığınızda Powerlevel10k sihirbazı başlar."
         fi

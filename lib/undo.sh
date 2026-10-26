@@ -106,6 +106,9 @@ undo_rcfile_gc() {
 
 # Bir bileşenin tüm kayıtlarını geri al
 undo_component() {
-    ledger_lines "$1" | undo_lines
+    UNDO_FAILED=0
+    # Alt kabuk, hata sayısını ve arşiv bilgilerini çağırandan gizlememeli.
+    undo_lines < <(ledger_lines "$1")
     is_dry_run || undo_rcfile_gc
+    ((UNDO_FAILED == 0))
 }

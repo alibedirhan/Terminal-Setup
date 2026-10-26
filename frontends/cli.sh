@@ -51,16 +51,23 @@ Seçenekler:
 EOF
 }
 
+cli_require_value() {
+    [[ -n "${2:-}" && "$2" != -* ]] && return 0
+    log_err "Seçenek için değer gerekli: %s" "$1"
+    return 2
+}
+
 cli_main() {
     local args=() lang="" info=""
+    i18n_init
     while (($#)); do
         case "$1" in
             -n|--dry-run) TS_DRY_RUN=1 ;;
             -y|--yes) TS_ASSUME_YES=1 ;;
             --debug) TS_DEBUG=1 ;;
             --no-color) C_RED="" C_GREEN="" C_YELLOW="" C_BLUE="" C_CYAN="" C_MAGENTA="" C_BOLD="" C_DIM="" C_RESET="" ;;
-            --lang) lang="${2:-}"; shift ;;
-            --lang=*) lang="${1#--lang=}" ;;
+            --lang) cli_require_value "$1" "${2:-}" || return 2; lang="$2"; shift ;;
+            --lang=*) cli_require_value --lang "${1#--lang=}" || return 2; lang="${1#--lang=}" ;;
             -h|--help) info=help ;;
             -V|--version) info=version ;;
             *) args+=("$1") ;;
@@ -98,12 +105,12 @@ cli_main() {
 }
 
 cli_install() {
-    local profile="" theme="" components="" ids=() rc=0
+    local profile="" theme="" components="" ids=()
     while (($#)); do
         case "$1" in
-            --profile) profile="${2:-}"; shift ;;
-            --theme) theme="${2:-}"; shift ;;
-            --components) components="${2:-}"; shift ;;
+            --profile) cli_require_value "$1" "${2:-}" || return 2; profile="$2"; shift ;;
+            --theme) cli_require_value "$1" "${2:-}" || return 2; theme="$2"; shift ;;
+            --components) cli_require_value "$1" "${2:-}" || return 2; components="$2"; shift ;;
             *) log_err "Bilinmeyen seçenek: %s" "$1"; return 2 ;;
         esac
         shift
@@ -119,12 +126,15 @@ cli_install() {
         mapfile -t ids < <(profile_components "$profile") || return 2
         ((${#ids[@]})) || return 2
     fi
-    runner_install "${ids[@]}" || rc=1
+    runner_install "${ids[@]}" || return 1
     if [[ -n "$theme" ]]; then
-        theme_apply "$theme" || log_warn "Tema uygulanamadı; daha sonra '%s' deneyin." "theme apply $theme"
+        theme_apply "$theme" || {
+            log_warn "Tema uygulanamadı; daha sonra '%s' deneyin." "theme apply $theme"
+            return 1
+        }
     fi
     install_next_steps
-    return "$rc"
+    return 0
 }
 
 # Kurulumdan sonra kullanıcıya ne yapacağını söyle

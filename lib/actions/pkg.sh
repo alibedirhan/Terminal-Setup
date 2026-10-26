@@ -46,35 +46,41 @@ act_pkg() {
     sudo_begin || return 1
     pkg_update_once || return 1
 
-    local before="$TS_TMP/pkgs-before" after="$TS_TMP/pkgs-after"
+    local before="$TS_TMP/pkgs-before" after="$TS_TMP/pkgs-after" rc=0
     baseline_list_packages > "$before"
 
     # Niyet önce yazılır: kurulum yarıda kesilse bile kaldırma bunları bilir.
     for name in "${missing[@]}"; do
-        ledger_add pkg "$name"
+        ledger_add pkg "$name" || return 1
     done
 
     log_step "apt: %s" "${missing[*]}"
-    if ! _pkg_apt install --no-install-recommends "${missing[@]}"; then
+    _pkg_apt install --no-install-recommends "${missing[@]}" || rc=$?
+
+    # apt hata verse de kurmuş olabileceği bağımlılıklar geri alınabilmeli.
+    baseline_list_packages > "$after"
+    while IFS= read -r name; do
+        [[ -z "$name" ]] || ledger_add pkg "$name" || return 1
+    done < <(comm -13 "$before" "$after")
+    if ((rc != 0)); then
         log_err "Paket kurulamadı: %s (log: %s)" "${missing[*]}" "$TS_LOG_FILE"
         return 1
     fi
-
-    baseline_list_packages > "$after"
-    while IFS= read -r name; do
-        [[ -n "$name" ]] && ledger_add pkg "$name"
-    done < <(comm -13 "$before" "$after")
 }
 
 # Simülasyonda kaldırılacak paket adları (mimari eki atılmış)
 _pkg_simulate_purge() {
-    LC_ALL=C apt-get -s purge "$@" 2>/dev/null \
-        | awk '/^(Purg|Remv) / { sub(/:.*/, "", $2); print $2 }' | sort -u
+    local plan
+    plan=$(LC_ALL=C apt-get -s purge "$@" 2>/dev/null) || {
+        log_err "Paket kaldırma planı doğrulanamadı; hiçbir paket kaldırılmadı."
+        return 1
+    }
+    awk '/^(Purg|Remv) / { sub(/:.*/, "", $2); print $2 }' <<< "$plan" | sort -u
 }
 
 # Deftere ait paketleri güvenli biçimde kaldır: pkg_purge_owned paket...
 pkg_purge_owned() {
-    local owned=("$@") installed=() safe=() name extra
+    local owned=("$@") installed=() safe=() name extra plan
     PKG_SKIPPED=()
     for name in "${owned[@]}"; do
         pkg_installed "$name" && installed+=("$name")
@@ -84,13 +90,15 @@ pkg_purge_owned() {
     local owned_file="$TS_TMP/pkgs-owned"
     printf '%s\n' "${owned[@]}" | sort -u > "$owned_file"
 
-    extra=$(_pkg_simulate_purge "${installed[@]}" | comm -23 - "$owned_file")
+    plan=$(_pkg_simulate_purge "${installed[@]}") || return 1
+    extra=$(comm -23 <(printf '%s\n' "$plan") "$owned_file")
     if [[ -z "$extra" ]]; then
         safe=("${installed[@]}")
     else
         # Toplu silme yabancı paket götürüyor; paketleri tek tek dene
         for name in "${installed[@]}"; do
-            extra=$(_pkg_simulate_purge "$name" | comm -23 - "$owned_file")
+            plan=$(_pkg_simulate_purge "$name") || return 1
+            extra=$(comm -23 <(printf '%s\n' "$plan") "$owned_file")
             if [[ -z "$extra" ]]; then
                 safe+=("$name")
             else

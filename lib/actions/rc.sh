@@ -60,10 +60,10 @@ act_snapshot() {
     if [[ -f "$file" ]]; then
         mkdir -p "$TS_FILES_DIR" || { TS_CURRENT_COMPONENT="$owner"; return 1; }
         saved="$(ledger_count)-$(basename "$file")"
-        cp -p "$file" "$TS_FILES_DIR/$saved"
-        ledger_add rcfile "$file" "$saved"
+        cp -p "$file" "$TS_FILES_DIR/$saved" || { TS_CURRENT_COMPONENT="$owner"; return 1; }
+        ledger_add rcfile "$file" "$saved" || { TS_CURRENT_COMPONENT="$owner"; return 1; }
     else
-        ledger_add rcfile "$file" "NONE"
+        ledger_add rcfile "$file" "NONE" || { TS_CURRENT_COMPONENT="$owner"; return 1; }
     fi
     TS_CURRENT_COMPONENT="$owner"
 }
@@ -83,8 +83,8 @@ act_rc_block() {
 
     act_snapshot "$file" || return 1
     act_mkdir "$(dirname "$file")" || return 1
-    [[ -f "$file" ]] || : > "$file"
-    rc_strip_block "$file" "$id"
+    [[ -f "$file" ]] || { : > "$file" || return 1; }
+    rc_strip_block "$file" "$id" || return 1
 
     tmp="$file.ts-tmp"
     {
@@ -101,7 +101,7 @@ act_rc_block() {
             printf '%s\n' "$content"
             rc_marker_end "$id"; echo
         fi
-    } > "$tmp" && cat "$tmp" > "$file" && rm -f "$tmp"
+    } > "$tmp" && cat "$tmp" > "$file" && rm -f "$tmp" || return 1
 
     _rc_record_block "$file" "$id"
 }
@@ -147,7 +147,7 @@ undo_rcfile() {
 
     if [[ -f "$file" && "$current" != "$original" ]]; then
         log_info "%s kurulumdan sonra değişmiş; son hali arşivleniyor" "$(ts_pretty_path "$file")"
-        fs_archive "$file" "kopyala"
+        fs_archive "$file" "kopyala" || return 1
     fi
     if [[ "$saved" == "NONE" ]]; then
         rm -f -- "$file"

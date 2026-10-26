@@ -83,8 +83,10 @@ tui_install_confirmed() {
     ui_confirm "Kurulum başlasın mı?" e || return 0
 
     printf '\n'
-    runner_install "$@"
-    [[ -n "$theme" ]] && theme_apply "$theme"
+    runner_install "$@" || return 1
+    if [[ -n "$theme" ]]; then
+        theme_apply "$theme" || return 1
+    fi
     tui_offer_p10k_wizard
     install_next_steps
 }
