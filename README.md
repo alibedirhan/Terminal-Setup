@@ -50,11 +50,11 @@ Menü ok tuşlarıyla gezilir:
 
 "Tema dene" ekranında her tema, kendi renkleriyle çizilmiş bir terminal penceresinde önizlenir:
 
-![Tema dene: yedi tema arasında gezinme](docs/images/tema-dene.gif)
+![Tema dene: 12 tema arasında gezinme](docs/images/tema-dene.gif)
 
 Arayüz hiçbir ek programa ihtiyaç duymaz. 24 bit, 256 ve 8 renkli terminallerde çalışır, `NO_COLOR` tanımlıysa renk kullanmaz; küçük pencerelerde sade başlığa geçer, uzun listeler kayar.
 
-Depoyu klonlamadan, sürümü SHA-256 ile doğrulayarak çalıştırmak için [INSTALL.md](INSTALL.md)'ye bakın.
+Depoyu klonlamadan, sürümü SHA-256 ile doğrulayarak çalıştırmak için [kurulum rehberine](docs/INSTALL.md) bakın.
 
 ## Komut satırından
 
@@ -128,12 +128,16 @@ components/         25 bileşen, her biri 10-40 satırlık tek dosya
 themes/             12 renk paleti (yalnızca veri)
 renderers/          paleti terminallere ve araçlara çeviren 9 renderer
 frontends/          menü (tui/) ve komut satırı (cli.sh)
-diagnostics/        8 sağlık kontrolü
+diagnostics/        9 sağlık kontrolü
 profiles/           minimal, developer, full
 tests/              birim, entegrasyon ve Docker gidiş-dönüş testleri
+docs/               kurulum, mimari, proje özeti ve tanıtım görselleri
+.github/            CI, katkı, destek ve güvenlik belgeleri
 ```
 
 Mimari, kurallar ve yeni bileşen/tema/terminal ekleme: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+Son geliştirmeler ve kaldığımız nokta: [proje özeti](docs/PROJE_OZETI.md).
 
 ## Kalite
 
@@ -145,9 +149,9 @@ Mimari, kurallar ve yeni bileşen/tema/terminal ekleme: [docs/ARCHITECTURE.md](d
 
 ## Katkı ve destek
 
-- [CONTRIBUTING.md](CONTRIBUTING.md) — geliştirme ve test
-- [SUPPORT.md](SUPPORT.md) — sorun bildirme
-- [SECURITY.md](SECURITY.md) — güvenlik
+- [Katkı rehberi](.github/CONTRIBUTING.md) — geliştirme ve test
+- [Destek](.github/SUPPORT.md) — sorun bildirme
+- [Güvenlik](.github/SECURITY.md) — güvenlik ilkeleri ve açık bildirme
 - [CHANGELOG.md](CHANGELOG.md) — sürüm notları
 
 ## Lisans

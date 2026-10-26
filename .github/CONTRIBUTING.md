@@ -1,6 +1,6 @@
 # Katkıda Bulunma
 
-Önce [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)'yi okuyun: katmanlar, defter kayıt türleri ve mimari kurallar orada.
+Önce [mimariyi](../docs/ARCHITECTURE.md) okuyun: katmanlar, defter kayıt türleri ve mimari kurallar orada. Aşağıdaki komutlar depo kökünde çalıştırılır.
 
 ## Geliştirme ortamı
 
@@ -45,7 +45,7 @@ bash scripts/demo/record.sh    # docs/images/*.png, *.gif
 
 ## Bileşen, tema ve terminal eklemek
 
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#bileşen-eklemek) içinde örneklerle anlatılıyor. Kısaca:
+[Mimari belgesinde](../docs/ARCHITECTURE.md#bileşen-eklemek) örneklerle anlatılıyor. Kısaca:
 
 - Bileşen: `components/<kategori>/<ad>.sh` — `component_register`, `comp_<ad>_install`, `comp_<ad>_verify`
 - Tema: `themes/<ad>.theme` — 16 renk + ön/arka plan
