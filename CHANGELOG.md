@@ -10,12 +10,13 @@
 - Tema listesinde açık/koyu eşler yan yana ve koyu tema önce gösterilir; uzun tema adları komut satırında hizalıdır. README görselleri yenilendi.
 - Eksik `--profile`, `--theme`, `--components` ve `--lang` değerleri hata koduyla reddedilir; yanlışlıkla varsayılan kurulum başlamaz.
 - Kurulum başarısızsa CLI ve sihirbaz tema uygulamasına devam etmez; CLI tema hatasını başarı olarak bildirmez.
+- Temiz sistemde prova modu, kurulumla gelecek araçlara tema uygulamayı denemek yerine tema planını gösterir.
 - Arşivleme ya da orijinal dosyayı yedekleme başarısızsa kullanıcı ayarının üzerine yazılmaz, kaynak veri ve geri alma kaydı korunur. Blok yazma hataları çağırana iletilir.
 - Aynı saniyedeki ayrı kaldırma işlemleri benzersiz arşiv dizinleri kullanır; önceki kullanıcı verisinin üzerine yazılmaz.
 - Kaldırma işleminin hata sayısı ve arşiv bilgileri alt kabukta kaybolmaz; başarısız tema sıfırlaması başarı sayılmaz ve seçili tema korunur.
 - Paket kaldırma simülasyonu başarısızsa hiçbir paket kaldırılmaz. Hata veren apt kurulumunun getirdiği bağımlılıklar da değişiklik defterine eklenir.
 - Kullanıcıya ait bozuk sembolik bağlantılar değiştirilmez; önceden var olan boş klasöre depo klonlanmaz. `..` ya da sembolik bağlantı içeren yollar silme korumasından önce çözülür.
-- Başlatıcının dil testi, çağıran terminalin `LC_ALL` / `LC_MESSAGES` ayarlarından bağımsız çalışır. Bu hata senaryoları için 22 regresyon testi eklendi.
+- Başlatıcının dil testi, çağıran terminalin `LC_ALL` / `LC_MESSAGES` ayarlarından bağımsız çalışır. Bu hata senaryoları için 23 regresyon testi eklendi.
 
 ## [6.2.0] - 2026-10-25
 

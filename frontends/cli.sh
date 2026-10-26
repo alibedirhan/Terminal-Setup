@@ -127,14 +127,23 @@ cli_install() {
         ((${#ids[@]})) || return 2
     fi
     runner_install "${ids[@]}" || return 1
-    if [[ -n "$theme" ]]; then
-        theme_apply "$theme" || {
-            log_warn "Tema uygulanamadı; daha sonra '%s' deneyin." "theme apply $theme"
-            return 1
-        }
-    fi
+    install_apply_theme "$theme" || return 1
     install_next_steps
     return 0
+}
+
+# Prova, kurulumla gelecek araçların şimdiden bulunmasını gerektirmez.
+install_apply_theme() {
+    local theme="$1"
+    [[ -n "$theme" ]] || return 0
+    if is_dry_run; then
+        log_plan "Kurulumdan sonra uygulanacak tema: %s" "$theme"
+        return 0
+    fi
+    theme_apply "$theme" || {
+        log_warn "Tema uygulanamadı; daha sonra '%s' deneyin." "theme apply $theme"
+        return 1
+    }
 }
 
 # Kurulumdan sonra kullanıcıya ne yapacağını söyle

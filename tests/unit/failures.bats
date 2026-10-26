@@ -192,3 +192,14 @@ setup() {
     [ "$(cat "$first/veri")" = "ilk veri" ]
     [ "$(cat "$TS_ARCHIVE_DIR/veri")" = "ikinci veri" ]
 }
+
+@test "temiz sistemde prova modu henüz kurulmamış araçlara tema uygulamaz" {
+    RENDERER_IDS=()
+    TS_DRY_RUN=1 TS_ASSUME_YES=1
+    run cli_install --components btop --theme nord
+    [ "$status" -eq 0 ]
+    [ ! -e "$TS_LEDGER" ]
+    run tui_install_confirmed nord btop
+    [ "$status" -eq 0 ]
+    [ ! -e "$TS_LEDGER" ]
+}

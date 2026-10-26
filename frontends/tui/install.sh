@@ -84,9 +84,7 @@ tui_install_confirmed() {
 
     printf '\n'
     runner_install "$@" || return 1
-    if [[ -n "$theme" ]]; then
-        theme_apply "$theme" || return 1
-    fi
+    install_apply_theme "$theme" || return 1
     tui_offer_p10k_wizard
     install_next_steps
 }

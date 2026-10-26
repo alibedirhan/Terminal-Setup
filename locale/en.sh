@@ -18,6 +18,7 @@ I18N_EN=(
     ["Bilinmeyen komut: %s"]="Unknown command: %s"
     ["Bilinmeyen seçenek: %s"]="Unknown option: %s"
     ["Seçenek için değer gerekli: %s"]="Option requires a value: %s"
+    ["Kurulumdan sonra uygulanacak tema: %s"]="Theme to apply after installation: %s"
     ["Paket kaldırma planı doğrulanamadı; hiçbir paket kaldırılmadı."]="Could not verify the package removal plan; no packages were removed."
     ["Bilinmeyen liste: %s"]="Unknown list: %s"
     ["Bilinmeyen bileşen: %s"]="Unknown component: %s"
