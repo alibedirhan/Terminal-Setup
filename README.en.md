@@ -2,7 +2,7 @@
 
 A setup tool that makes the Ubuntu terminal beautiful and useful in one go — and **can undo everything it does**. It installs Zsh, Oh My Zsh, Powerlevel10k (or Starship), 12 color themes, 14 modern command-line tools and tmux from a single menu; the theme you pick is applied to bat, delta, fzf and btop too, not just the terminal. If you don't like the result, one command returns the system to its pre-install state; nothing you had before is touched.
 
-![Version](https://img.shields.io/badge/version-6.2.1-blue.svg)
+![Version](https://img.shields.io/badge/version-6.2.2-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/Ubuntu-22.04%20%7C%2024.04%20%7C%2026.04-orange.svg)
 ![CI](https://github.com/alibedirhan/Terminal-Setup/actions/workflows/ci.yml/badge.svg)

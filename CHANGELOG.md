@@ -1,6 +1,6 @@
 # Changelog
 
-## [Yayınlanmadı]
+## [6.2.2] - 2026-10-31
 
 Gerçek bir Ubuntu 24.04 GNOME masaüstünde (Oh My Zsh'i kullanıcının kendisinin kurduğu, 600'den fazla yazı tipli bir sistem) yapılan kurulum–kaldırma testinde bulunan hatalar.
 

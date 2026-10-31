@@ -1,4 +1,4 @@
-# Proje Özeti — Terminal Setup 6.2.1
+# Proje Özeti — Terminal Setup 6.2.2
 
 Son güncelleme: 31 Ekim 2026
 
@@ -9,7 +9,7 @@ Son güncelleme: 31 Ekim 2026
 - **v6.2.0:** Araç temaları, kısayollar, açılış ipuçları, zsh hız ölçümü, fzf-tab, beş yeni tema, Ghostty/WezTerm, Starship ve yazı tipi seçimi eklendi. [Sürüm yayımlandı](https://github.com/alibedirhan/Terminal-Setup/releases/tag/v6.2.0).
 - **Tema listesi (25 Ekim):** Tema listesi sıralandı ve hizalandı; açık/koyu eşler yan yana getirildi, README görselleri yenilendi. `main` dalına [#7](https://github.com/alibedirhan/Terminal-Setup/pull/7) ile alındı (`7916aee`); [CI başarılı](https://github.com/alibedirhan/Terminal-Setup/actions/runs/40210461042).
 - **v6.2.1 (26 Ekim):** Tema listesi düzeltmesini ve depo düzenini içerir. Eksik komut seçenekleri, başarısız arşiv/yedekleme, paket simülasyonu ve yarım kalan kurulum, sembolik bağlantılar ve kaldırma hataları için korumalar eklendi. Test sayısı 194'e çıktı.
-- **Gerçek sistem testi (31 Ekim):** Bu Ubuntu 24.04 GNOME masaüstünde yalıtılmış durum klasörüyle tam kurulum, tema değiştirme ve kaldırma yapıldı; sistem bağımsız bir fotoğrafla karşılaştırılarak eski haline döndürüldü. Kullanıcının kendi Oh My Zsh'iyle fzf-tab/Ctrl+R çakışması, `pipefail` + `grep -q` yazı tipi teşhisi, gereksiz sudo isteyen kaldırma ve yanıltıcı zsh hız mesajı düzeltildi; 10 regresyon testi eklendi (204).
+- **v6.2.2 (31 Ekim) — gerçek sistem testi:** Bu Ubuntu 24.04 GNOME masaüstünde yalıtılmış durum klasörüyle tam kurulum, tema değiştirme ve kaldırma yapıldı; sistem bağımsız bir fotoğrafla karşılaştırılarak eski haline döndürüldü. Kullanıcının kendi Oh My Zsh'iyle fzf-tab/Ctrl+R çakışması, `pipefail` + `grep -q` yazı tipi teşhisi, gereksiz sudo isteyen kaldırma ve yanıltıcı zsh hız mesajı düzeltildi; 10 regresyon testi eklendi (204).
 - **Açık işler:** 26 Ekim kontrolünde GitHub'da açık issue veya PR bulunmuyor. Video çekimi için [hazırlık listesi](VIDEO_HAZIRLIK.md) var; çekimin tamamlandığına dair depoda kayıt yok.
 
 Sürüm geçmişi: [CHANGELOG.md](../CHANGELOG.md). Geliştirme ve test komutları: [katkı rehberi](../.github/CONTRIBUTING.md).
