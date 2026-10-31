@@ -56,7 +56,11 @@ bileşen <TAB> tür <TAB> arg1 [<TAB> arg2]
 # <<< terminal-setup:zsh <<<
 ```
 
-`init.zsh`, `zsh.d/` altındaki parçaları sıra numarasıyla yükler (`05-p10k-instant`, `15-ohmyzsh-base`, `40-ohmyzsh-load`, `60-fzf` ...).
+`init.zsh`, `zsh.d/` altındaki parçaları sıra numarasıyla yükler (`10-base`, `18-fzf-tab`, `20-zsh-plugins`, `60-fzf`, `90-starship`, `98-zsh-highlight` ...).
+
+**Zsh temeli** (`zsh/base.zsh`, zsh bileşeninin `10-base` parçası): Oh My Zsh'in sessizce sağladığı varsayılanların özü. Geçmiş ayarları; `auto_cd` ve dizin yığını; `compinit` (önbellek `~/.cache/terminal-setup`, günde bir kez tam denetim); tamamlama stilleri; tuşlar (↑ önek araması, Home/End/Delete, Ctrl+ok, Shift+Tab, Ctrl+X Ctrl+E); pencere başlığı; **OSC 7** (bulunulan dizin terminale bildirilir, yeni sekme aynı dizinde açılır; yol UTF-8 baytlarıyla URL kodlanır, `İ` → `%C4%B0`). Ubuntu bu bildirimi yalnızca bash için yapar.
+
+v7 profilleri Oh My Zsh kurmaz. Eklentiler (`zsh-plugins`, `fzf-tab`) Oh My Zsh kullanılmıyorsa `~/.local/share/terminal-setup/plugins` altına klonlanıp doğrudan yüklenir: fzf-tab `compinit`'ten sonra (18), öneriler 20'de, sözdizimi renklendirme bütün widget'lar tanımlandıktan sonra (98). Oh My Zsh kullanılıyorsa (script kurduysa ya da kullanıcının `.zshrc`'si yüklüyorsa) eklentiler onun klasörüne ve `plugins` listesine eklenir; liste sonradan yeniden yazılırsa ilk istemde doğrudan yüklenir (`zsh_late_load`).
 
 Oh My Zsh'i kullanıcı kurmuşsa onu blok değil, `~/.zshrc`'deki kendi satırları ve bloktan *sonra* yükler. Bu durumda `plugins=(...)` ataması parçaların eklediği eklentileri düşürür, Oh My Zsh'in `key-bindings.zsh` dosyası da Ctrl+R'yi düz aramaya bağlar. `zsh_late_load` ve `zsh_late_rebind` (`lib/actions/rc.sh`) parçaya, ilk istemde bir kez çalışıp kendini silen bir `precmd` kancası ekler: eklenti hâlâ yüklenmemişse doğrudan yüklenir; Ctrl+R düz aramadaysa geri alınır, kullanıcının seçtiği widget'a dokunulmaz. Oh My Zsh'i script kurduysa kancalar bir şey yapmaz (`tests/unit/zsh_late.bats`).
 

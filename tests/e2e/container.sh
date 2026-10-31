@@ -105,6 +105,11 @@ as_user "TERM=xterm-256color POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true scri
 if grep -iE "command not found|no such file|error" /tmp/zsh.log; then
     fail "zsh başlangıcında hata mesajı var"
 fi
+# Oh My Zsh'siz temel: OSC 7 gönderilir (yeni sekme aynı dizinde), Oh My Zsh kurulmaz
+grep -q $'\e]7;file://' /tmp/zsh.log || fail "zsh OSC 7 göndermedi (yeni sekme aynı dizinde açılmaz)"
+[[ ! -e "/home/$USER_NAME/.oh-my-zsh" ]] || fail "varsayılan profil Oh My Zsh kurdu"
+[[ -f "/home/$USER_NAME/.local/share/terminal-setup/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] ||
+    fail "eklentiler veri klasörüne kurulmadı"
 echo "echo merhaba" | as_user "cat >> \$HOME/.zsh_history"
 
 step "İkinci kurulum hiçbir şeyi değiştirmemeli"

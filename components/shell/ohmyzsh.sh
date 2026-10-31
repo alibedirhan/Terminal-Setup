@@ -15,6 +15,12 @@ plugins=(git colored-man-pages)' || return 1
     act_zsh_snippet 40 ohmyzsh-load '[[ -r "$ZSH/oh-my-zsh.sh" ]] && source "$ZSH/oh-my-zsh.sh"'
 }
 
+# Oh My Zsh kullanılıyor mu (script kurduysa ya da kullanıcının .zshrc'si yüklüyorsa)?
+# Eklentiler buna göre Oh My Zsh'in listesine eklenir ya da doğrudan yüklenir.
+ohmyzsh_in_use() {
+    comp_ohmyzsh_verify 2>/dev/null
+}
+
 # Kullanıcının kendi Oh My Zsh kurulumu (.zshrc'si onu yüklüyorsa) dış
 # kurulum sayılır ve dokunulmaz.
 comp_ohmyzsh_verify() {

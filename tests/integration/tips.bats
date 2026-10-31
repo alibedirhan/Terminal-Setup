@@ -82,7 +82,8 @@ setup() {
     run ts install --components fzf-tab
     [ "$status" -eq 0 ]
     [ -f "$HOME/.config/terminal-setup/zsh.d/18-fzf-tab.zsh" ]
-    [ -d "$HOME/.oh-my-zsh/custom/plugins/fzf-tab" ]
+    [ -d "$HOME/.local/share/terminal-setup/plugins/fzf-tab" ]
+    [ ! -d "$HOME/.oh-my-zsh" ]
     command -v fzf
 }
 

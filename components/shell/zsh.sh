@@ -26,9 +26,12 @@ comp_zsh_install() {
     act_write_file "$TS_CONFIG_DIR/init.zsh" "$(_zsh_init_content)" || return 1
     act_rc_block "$HOME/.zshrc" zsh "# Terminal Setup ayarlarını yükler. Bu bloğu düzenlemeyin.
 [[ -r \"$TS_CONFIG_DIR/init.zsh\" ]] && source \"$TS_CONFIG_DIR/init.zsh\"" top || return 1
+    # Temel: geçmiş, tamamlama, tuşlar, başlık, OSC 7 (Oh My Zsh gerekmez)
+    act_zsh_snippet 10 base "$(cat "$TS_ROOT/zsh/base.zsh")" || return 1
     # Kullanımla oluşan dosyalar: geçmiş arşivlenir, tamamlama önbelleği silinir
     act_userdata "$HOME/.zsh_history"
     act_glob "$HOME/.zcompdump*"
+    act_glob "${XDG_CACHE_HOME:-$HOME/.cache}/terminal-setup"
     zsh_path=$(command -v zsh || echo /usr/bin/zsh)
     act_login_shell "$zsh_path"
 }
