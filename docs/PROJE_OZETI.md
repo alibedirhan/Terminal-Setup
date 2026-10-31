@@ -17,7 +17,7 @@ Sürüm geçmişi: [CHANGELOG.md](../CHANGELOG.md). Geliştirme ve test komutlar
 
 ## Ne yapar?
 
-Ubuntu'yu formatladıktan sonra terminali tek seferde kurar: Zsh, Oh My Zsh, Starship ya da Powerlevel10k, Nerd Font yazı tipleri, 14 komut satırı aracı, tmux ve 12 renk teması. Yaptığı her şeyi kaydeder ve tek komutla, kurulumdan önceki haline döner.
+Ubuntu'yu formatladıktan sonra terminali tek seferde kurar: Zsh, Starship (isteğe bağlı Oh My Zsh ve Powerlevel10k), Nerd Font yazı tipleri, 14 komut satırı aracı, tmux ve 12 renk teması. Yaptığı her şeyi kaydeder ve tek komutla, kurulumdan önceki haline döner.
 
 ## Temel fikir
 
@@ -42,7 +42,7 @@ Ubuntu'yu formatladıktan sonra terminali tek seferde kurar: Zsh, Oh My Zsh, Sta
 | `frontends/` | komut satırı, durum ekranı, menü ekranları | 9 |
 | `diagnostics/` | sağlık kontrolleri (zsh açılış süresi dahil) | 9 |
 | `profiles/` | minimal, developer, full | 3 |
-| `tests/` | 229 bats testi (25 dosya) + Docker gidiş-dönüş ve GNOME betikleri | 22 |
+| `tests/` | 234 bats testi (26 dosya) + Docker gidiş-dönüş ve GNOME betikleri | 22 |
 
 Kurulum ve proje belgeleri `docs/` altında; katkı, destek ve güvenlik belgeleri GitHub'ın tanıdığı `.github/` dizininde tutulur. `release/` yalnızca paket üretildiğinde oluşur ve Git'e eklenmez. Yerel Claude izinleri de Git dışında tutulur.
 

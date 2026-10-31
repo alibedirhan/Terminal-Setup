@@ -20,6 +20,7 @@ TS_STATE_DIR="${TS_STATE_DIR:-$HOME/.terminal-setup}"        # defter, fotoğraf
 TS_CONFIG_DIR="${TS_CONFIG_DIR:-$HOME/.config/terminal-setup}" # zsh/tmux parçaları
 TS_BIN_DIR="${TS_BIN_DIR:-$HOME/.local/bin}"                   # indirilen araçlar
 TS_FONT_DIR="${TS_FONT_DIR:-$HOME/.local/share/fonts}"
+TS_DATA_DIR="${TS_DATA_DIR:-$HOME/.local/share/terminal-setup}" # zsh eklentileri (Oh My Zsh yoksa)
 
 TS_LEDGER="$TS_STATE_DIR/ledger"
 TS_BASELINE_DIR="$TS_STATE_DIR/baseline"

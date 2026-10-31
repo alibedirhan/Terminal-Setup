@@ -1,6 +1,5 @@
 # Açıklama: Her şey: geliştirici + sistem araçları, atuin, tldr ve tmux
 zsh
-ohmyzsh
 fonts
 starship
 zsh-plugins

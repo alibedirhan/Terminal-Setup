@@ -1,6 +1,6 @@
 # Terminal Setup
 
-A setup tool that makes the Ubuntu terminal beautiful and useful in one go — and **can undo everything it does**. It installs Zsh, Oh My Zsh, Starship (or Powerlevel10k), 12 color themes, 14 modern command-line tools and tmux from a single menu; the theme you pick is applied to bat, delta, fzf and btop too, not just the terminal. If you don't like the result, one command returns the system to its pre-install state; nothing you had before is touched.
+A setup tool that makes the Ubuntu terminal beautiful and useful in one go — and **can undo everything it does**. It installs Zsh, Starship, 12 color themes, 14 modern command-line tools and tmux from a single menu; the theme you pick is applied to bat, delta, fzf and btop too, not just the terminal. If you don't like the result, one command returns the system to its pre-install state; nothing you had before is touched.
 
 ![Version](https://img.shields.io/badge/version-6.2.2-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -23,7 +23,7 @@ A package you already had (e.g. tmux) or a file you already had (e.g. your own `
 
 | Group | Components |
 |---|---|
-| Shell | Zsh (made the default shell), Oh My Zsh, Starship (a prompt that follows the theme and personality; Powerlevel10k optional), the MesloLGS NF font, autosuggestion and syntax-highlighting plugins, fzf-tab (searchable Tab completion) |
+| Shell | Zsh (made the default shell; history, completion and key settings without needing Oh My Zsh), Starship (a prompt that follows the theme and personality), optional Oh My Zsh and Powerlevel10k, the MesloLGS NF font, autosuggestion and syntax-highlighting plugins, fzf-tab (searchable Tab completion) |
 | Tools | fzf, zoxide, eza, bat, ripgrep, fd, delta, lazygit, btop, dust, duf, procs, atuin, tldr (tealdeer) |
 | Extras | tmux (themed status bar), handy aliases, your existing `~/.bash_aliases` loaded in zsh, optional JetBrains Mono and Fira Code Nerd Fonts |
 | Themes | Dark: Catppuccin Mocha, Dracula, Everforest, Gruvbox, Kanagawa, Nord, One Dark, Rosé Pine, Solarized, Tokyo Night. Light: Catppuccin Latte, Gruvbox Light |
@@ -98,7 +98,7 @@ Only an archive folder, `~/terminal-setup-kaldirilan-DATE/`, is left behind. It 
 ## Quality
 
 - CI on every push: ShellCheck (zero warnings), a 600-line file limit, and the rule that only `lib/actions/` may change the system.
-- 229 unit, integration and interaction tests on a fake system (they never touch the real system or the network).
+- 234 unit, integration and interaction tests on a fake system (they never touch the real system or the network).
 - Real round-trip tests in clean Ubuntu 22.04, 24.04 and 26.04 containers: full install → zsh session → uninstall → are packages, home directory, shell and `/etc/shells` identical to before?
 - Real GNOME Terminal and Ptyxis tests with dconf on the same three releases.
 - An English interface test: the whole flow runs in English; a single untranslated or leftover Turkish string fails it.

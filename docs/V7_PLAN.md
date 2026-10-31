@@ -16,8 +16,8 @@ Kararlar, gerçek bir Ubuntu 24.04 GNOME masaüstünde yapılan üç prototipe d
 |---|---|---|
 | 1 | **Renk rolleri ve okunabilirlik garantisi** | [#11](https://github.com/alibedirhan/Terminal-Setup/pull/11) |
 | 2 | **Tema kişilikleri**: `STYLE=` anahtarı; modern, arctic, vivid, retro, soft, neon | ayrı PR |
-| 3 | **Starship varsayılan prompt**: ayar dosyası palet ve kişilikten üretilir; Powerlevel10k seçenek | bu dal |
-| 4 | **Oh My Zsh'siz zsh temeli**: eklentiler doğrudan yüklenir | — |
+| 3 | **Starship varsayılan prompt**: ayar dosyası palet ve kişilikten üretilir; Powerlevel10k seçenek | ayrı PR |
+| 4 | **Oh My Zsh'siz zsh temeli**: eklentiler doğrudan yüklenir | bu dal |
 | 5 | **Araçlar kişiliğe uyar**: eza, bat, fzf, btop, tmux, lazygit | — |
 | 6 | **Sistem dili**: bütün metinler sistemin diliyle | — |
 

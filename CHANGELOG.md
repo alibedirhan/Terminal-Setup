@@ -5,6 +5,7 @@
 Terminal Setup 7 başladı: [plan](docs/V7_PLAN.md).
 
 ### Değişti
+- **Oh My Zsh'siz zsh temeli.** Profiller artık Oh My Zsh kurmaz; Oh My Zsh isteğe bağlı bileşen olarak kalır. Sağladığı varsayılanlar küçük bir temel parçadan gelir: geçmiş, dizin ayarları, tamamlama (önbellekli `compinit`, menüden seçme, büyük/küçük harf duyarsız), tuşlar (↑ önek araması, Home/End/Delete, Ctrl+ok, Ctrl+X Ctrl+E), pencere başlığı ve **OSC 7**: GNOME Terminal ve Ptyxis'te yeni sekme aynı dizinde açılır (Ubuntu bunu yalnızca bash için yapıyor; Türkçe karakterli yollar doğru kodlanır). Eklentiler Oh My Zsh yoksa kendi klasörlerinden doğrudan ve doğru sırayla yüklenir; Oh My Zsh varsa onun listesine eklenir. Çıplak zsh + temel 16–31 ms'de açılıyor.
 - **Varsayılan prompt Starship.** Üç profil de Powerlevel10k yerine Starship kurar; Powerlevel10k isteğe bağlı bileşen olarak kalır (projenin kendi notuna göre bakımı çok sınırlı, yeni özellik gelmiyor). Starship'in ayarı temanın renk rollerinden ve kişiliğinden üretilir, tema ya da kişilik değişince yeniden yazılır: altı kişilik altı farklı prompt biçimi verir (sade, tek satır, dolgu etiketler, hap etiketler, köşeli parantezler, ▸ oklar). Prompt projeyi tanır: git durumu, Node sürümü, Python sanal ortamı, Rust, Go, komut süresi ve hata kodu. Mevcut kurulumlardaki Powerlevel10k'ye dokunulmaz. Menüdeki durum etiketi hangi prompt'un kurulu olduğunu gösterir; yazı tipi teşhisi Starship'i de dikkate alır.
 - Statik kontrol kaynakta ham Nerd Font karakterini reddeder; bu karakterler kaçış dizisiyle yazılır.
 
