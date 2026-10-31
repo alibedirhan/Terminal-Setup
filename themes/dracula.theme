@@ -13,6 +13,8 @@ BORDER="#6272A4"
 # bat ve delta söz dizimi teması (yerleşik karşılığı yoksa: ansi)
 BAT_THEME="Dracula"
 # açık ya da koyu; PAIR: diğer tondaki eşi (Ptyxis sistemin tonunu izler)
+# Kişilik (styles/): prompt, kenar ve araçların biçimi
+STYLE="vivid"
 VARIANT="dark"
 COLOR0="#21222C"
 COLOR1="#FF5555"

@@ -190,6 +190,24 @@ Sınırın altında kalan renkli rol ön plana doğru gerektiği kadar kaydırı
 
 Hesap tek bir awk çağrısıdır ve gawk eklentisi kullanmaz; Ubuntu'nun varsayılanı mawk'tır. `tests/unit/palette.bats` her temada bütün sınırları ve mawk ile aynı sonucu denetler.
 
+## Kişilikler
+
+Tema = palet + kişilik. Palet renkleri, kişilik biçimi belirler: prompt simgesi ve yerleşimi, segment biçimi, kenar stili, büyük/küçük harf, ayırıcı, liste simgeleri, tarih biçimi, bat çerçevesi, git simgeleri. Kişilikler `styles/<ad>.style` veri dosyalarıdır; temalar gibi kaynak olarak yüklenmez, her değer `STYLE_CHOICES` listesiyle denetlenir (`lib/styles.sh`).
+
+| Anahtar | Değerler |
+|---|---|
+| `PROMPT_SYMBOL` | prompt ve fzf imleci (`❯ › λ $ ▶`) |
+| `PROMPT_LAYOUT` | `two-line`, `one-line` |
+| `SEGMENTS` | `plain`, `minimal`, `powerline`, `pills`, `brackets`, `arrows` |
+| `BORDER` | `rounded`, `sharp`, `heavy`, `double`, `none` (ince sol çizgi) |
+| `TITLE_CASE`, `TEXT_CASE` | `normal`, `lower`, `upper` (Türkçede i/İ, ı/I doğru dönüşür) |
+| `SEPARATOR`, `DATE_FORMAT`, `BAT_STYLE` | ayırıcı, `+strftime` biçimi, bat `--style` değeri |
+| `ICONS`, `GIT_SYMBOLS` | `on`/`off`; `unicode`, `ascii`, `minimal` |
+
+Temanın kişiliği `STYLE=` anahtarıdır. Kullanıcı başka birini seçebilir (`style set retro`, ayar: `style`); `auto` temanınkine döner. `theme_load` geçerli kişiliği `STYLE[...]` dizisine yükler; tüketiciler oradan okur. Şu an fzf kenarı, imleci ve istemi kişilikten gelir; prompt, karşılama kartı ve araçlar v7'nin sonraki adımlarında bağlanır ([plan](V7_PLAN.md)).
+
+Yeni kişilik: `styles/` altına bir dosya; kod gerekmez. `tests/unit/styles.bats` her dosyayı ve her temanın bağlantısını denetler.
+
 ## Terminal eklemek
 
 `renderers/<ad>.sh`: `renderer_register <ad> "Ad" [terminal|tool]`, `rend_<ad>_available`, `rend_<ad>_apply` ve isteğe bağlı `rend_<ad>_font`. Terminal renderer'ları temanın 16 rengini `THEME[...]`'dan, araç renderer'ları metin renklerini `ROLE[...]`'dan okur; değişiklikler `act_*` ile yapılır.

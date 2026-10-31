@@ -13,6 +13,8 @@ BORDER="#D5C4A1"
 # bat ve delta söz dizimi teması (yerleşik karşılığı yoksa: ansi)
 BAT_THEME="gruvbox-light"
 # açık ya da koyu; PAIR: diğer tondaki eşi (Ptyxis sistemin tonunu izler)
+# Kişilik (styles/): prompt, kenar ve araçların biçimi
+STYLE="retro"
 VARIANT="light"
 PAIR="gruvbox"
 COLOR0="#FBF1C7"

@@ -1,0 +1,15 @@
+# Terminal Setup kişiliği: temanın biçimi (renkler temadan gelir)
+# Biçim: ANAHTAR="değer". Değerler lib/styles.sh içinde denetlenir.
+NAME="Arctic"
+DESC="Kutusuz ve ferah, ince sol çizgi, küçük harf, tek satırlı prompt"
+PROMPT_SYMBOL="›"
+PROMPT_LAYOUT="one-line"
+SEGMENTS="minimal"
+BORDER="none"
+TITLE_CASE="lower"
+TEXT_CASE="lower"
+SEPARATOR=" "
+ICONS="on"
+DATE_FORMAT="+%d.%m.%y %H:%M"
+BAT_STYLE="plain"
+GIT_SYMBOLS="minimal"

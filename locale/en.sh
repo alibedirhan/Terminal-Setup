@@ -537,6 +537,21 @@ I18N_EN=(
     ["%s resmi olarak desteklenmiyor (Ubuntu 22.04/24.04/26.04)"]="%s is not officially supported (Ubuntu 22.04/24.04/26.04)"
     ["Terminal"]="Terminal"
     ["Desteklenen terminal yok; temalar uygulanamaz"]="No supported terminal; themes can't be applied"
+    # Kişilikler (styles/)
+    ["kişilik: %s"]="personality: %s"
+    ["Kişilik bulunamadı: %s"]="Personality not found: %s"
+    ["%s: %s geçersiz (%s)"]="%s: %s is invalid (%s)"
+    ["%s: PROMPT_SYMBOL ya da DATE_FORMAT geçersiz"]="%s: PROMPT_SYMBOL or DATE_FORMAT is invalid"
+    ["Kişilik adı gerekli (ya da auto)"]="Personality name required (or auto)"
+    ["Kişilik bulunamadı: %s (seçenekler: %s)"]="Personality not found: %s (choices: %s)"
+    ["Kişilik kaydedildi; bir tema uygulandığında kullanılacak."]="Personality saved; it will be used when a theme is applied."
+    ["Bilinmeyen kişilik komutu: %s"]="Unknown personality command: %s"
+    ["Yuvarlak kenarlar, renk geçişi, iki satırlı prompt"]="Rounded corners, gradient, two-line prompt"
+    ["Kutusuz ve ferah, ince sol çizgi, küçük harf, tek satırlı prompt"]="No boxes, airy, thin left rule, lowercase, one-line prompt"
+    ["Dolgu renkli ok etiketler, kalın çerçeve, λ"]="Filled arrow tags, heavy frame, λ"
+    ["Köşeli etiketler, büyük harf, simgesiz liste, $ işareti"]="Bracket tags, uppercase, no list icons, $ sign"
+    ["Pastel hap etiketler, yumuşak boşluklar"]="Pastel pill tags, soft spacing"
+    ["Çift çizgili çerçeve, ▸ ayırıcılar, ▶"]="Double-line frame, ▸ separators, ▶"
 )
 
 cli_usage_en() {
@@ -555,13 +570,15 @@ Commands:
   theme preview THEME           Preview a theme in the terminal
   theme apply THEME             Apply a theme
   theme reset                   Restore the pre-install look
+  style list                    List personalities (the shape of a theme)
+  style set NAME|auto           Choose a personality; auto: the theme's own
   status                        Show what is installed
   tips [--shell on|off]         Shortcuts of the installed tools (or the startup tip)
   font list | font set NAME     List or choose fonts (meslo, jetbrains, firacode)
   doctor [--fix]                Health check (and fix)
   uninstall [--appearance]      Remove everything (or only reset the look)
   verify [--strict]             Compare the system with the baseline snapshot
-  list [components|profiles|themes]
+  list [components|profiles|themes|styles]
 
 Options:
   -n, --dry-run    Change nothing, only show the plan

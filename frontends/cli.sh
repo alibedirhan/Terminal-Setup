@@ -26,13 +26,15 @@ Komutlar:
   theme preview TEMA            Temayı terminalde önizle
   theme apply TEMA              Temayı uygula
   theme reset                   Görünümü kurulum öncesine döndür
+  style list                    Kişilikleri listele (temanın biçimi)
+  style set AD|auto             Kişilik seç; auto: temanın kendi kişiliği
   status                        Neyin kurulu olduğunu göster
   tips [--shell on|off]         Kurulan araçların kısayolları (ya da açılış ipucu)
   font list | font set AD       Yazı tiplerini listele ya da seç (meslo, jetbrains, firacode)
   doctor [--fix]                Sağlık kontrolü (ve düzeltme)
   uninstall [--appearance]      Tamamen kaldır (ya da sadece görünümü sıfırla)
   verify [--strict]             Sistemi başlangıç fotoğrafıyla karşılaştır
-  list [components|profiles|themes]
+  list [components|profiles|themes|styles]
 
 Seçenekler:
   -n, --dry-run    Hiçbir şeyi değiştirme, yalnızca planı göster
@@ -91,6 +93,7 @@ cli_main() {
         remove) cli_remove "${args[@]}" ;;
         update) upgrade_run "${args[@]}" ;;
         theme) cli_theme "${args[@]}" ;;
+        style) cli_style "${args[@]}" ;;
         status) status_show ;;
         tips) cli_tips "${args[@]}" ;;
         font) cli_font "${args[@]}" ;;
@@ -202,7 +205,7 @@ cli_theme() {
                 theme_load "$t" >/dev/null || continue
                 [[ "$t" == "$current" ]] && printf '* ' || printf '  '
                 _t "${THEME[DESC]:-}"
-                printf '%-18s %s\n' "$t" "$TR"
+                printf '%-18s %-7s %s\n' "$t" "${THEME[STYLE]:-$STYLE_DEFAULT}" "$TR"
             done ;;
         preview) [[ -n "$name" ]] || { log_err "Tema adı gerekli"; return 2; }; theme_preview "$name" ;;
         apply)
@@ -211,6 +214,41 @@ cli_theme() {
             theme_apply "$name" ;;
         reset) appearance_reset ;;
         *) log_err "Bilinmeyen tema komutu: %s" "$sub"; return 2 ;;
+    esac
+}
+
+# Kişilikler: style list | style set AD | style set auto
+cli_style() {
+    local sub="${1:-list}" name="${2:-}" theme s mark themes t
+    theme=$(settings_get theme)
+    [[ -n "$theme" ]] && theme_load "$theme" >/dev/null 2>&1
+    case "$sub" in
+        list)
+            style_effective; local current="$REPLY"
+            for s in $(style_list); do
+                style_load "$s" >/dev/null || continue
+                themes=""
+                for t in $(theme_list); do
+                    grep -qx "STYLE=\"$s\"" "$TS_ROOT/themes/$t.theme" && themes+="$t "
+                done
+                mark="  "; [[ "$s" == "$current" ]] && mark="* "
+                _t "${STYLE[DESC]}"
+                printf '%s%-8s %s  %s\n' "$mark" "$s" "$TR" "${C_DIM}(${themes% })${C_RESET}"
+            done ;;
+        set)
+            [[ -n "$name" ]] || { log_err "Kişilik adı gerekli (ya da auto)"; return 2; }
+            if [[ "$name" != auto ]] && ! style_exists "$name"; then
+                log_err "Kişilik bulunamadı: %s (seçenekler: %s)" "$name" "$(style_list | tr '\n' ' ')auto"
+                return 2
+            fi
+            settings_set style "$name" || return 1
+            if [[ -z "$theme" ]]; then
+                log_ok "Kişilik kaydedildi; bir tema uygulandığında kullanılacak."
+                return 0
+            fi
+            runner_prepare_light || return 1
+            theme_apply "$theme" ;;
+        *) log_err "Bilinmeyen kişilik komutu: %s" "$sub"; return 2 ;;
     esac
 }
 
@@ -232,6 +270,7 @@ cli_list() {
                 printf '%-10s %s\n' "$p" "$TR"
             done ;;
         themes) cli_theme list ;;
+        styles) cli_style list ;;
         *) log_err "Bilinmeyen liste: %s" "$what"; return 2 ;;
     esac
 }

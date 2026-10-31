@@ -1,0 +1,15 @@
+# Terminal Setup kişiliği: temanın biçimi (renkler temadan gelir)
+# Biçim: ANAHTAR="değer". Değerler lib/styles.sh içinde denetlenir.
+NAME="Soft"
+DESC="Pastel hap etiketler, yumuşak boşluklar"
+PROMPT_SYMBOL="❯"
+PROMPT_LAYOUT="two-line"
+SEGMENTS="pills"
+BORDER="rounded"
+TITLE_CASE="normal"
+TEXT_CASE="normal"
+SEPARATOR="·"
+ICONS="on"
+DATE_FORMAT="+%d.%m.%y %H:%M"
+BAT_STYLE="numbers,grid,header"
+GIT_SYMBOLS="unicode"

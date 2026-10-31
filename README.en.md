@@ -66,6 +66,7 @@ Everything the menu does also works non-interactively:
 ./terminal-setup.sh install --profile full --theme nord   # install
 ./terminal-setup.sh theme preview dracula                  # preview a theme in the terminal
 ./terminal-setup.sh theme apply dracula                    # apply a theme
+./terminal-setup.sh style set retro                        # choose a personality (auto: the theme's)
 ./terminal-setup.sh theme reset                            # restore the original colors
 ./terminal-setup.sh remove lazygit                         # remove one component
 ./terminal-setup.sh update                                 # upgrade installed tools
@@ -97,7 +98,7 @@ Only an archive folder, `~/terminal-setup-kaldirilan-DATE/`, is left behind. It 
 ## Quality
 
 - CI on every push: ShellCheck (zero warnings), a 600-line file limit, and the rule that only `lib/actions/` may change the system.
-- 211 unit, integration and interaction tests on a fake system (they never touch the real system or the network).
+- 219 unit, integration and interaction tests on a fake system (they never touch the real system or the network).
 - Real round-trip tests in clean Ubuntu 22.04, 24.04 and 26.04 containers: full install → zsh session → uninstall → are packages, home directory, shell and `/etc/shells` identical to before?
 - Real GNOME Terminal and Ptyxis tests with dconf on the same three releases.
 - An English interface test: the whole flow runs in English; a single untranslated or leftover Turkish string fails it.

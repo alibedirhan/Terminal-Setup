@@ -18,6 +18,7 @@ declare -gA RENDERER_NAME=()
 declare -gA RENDERER_KIND=()   # terminal: renkleri terminale; tool: bir araca (bat, btop)
 
 THEME_REQUIRED_KEYS=(NAME BACKGROUND FOREGROUND CURSOR SELECTION_BG SELECTION_FG ACCENT BORDER)
+# İsteğe bağlı: STYLE (kişilik, styles/*.style), BAT_THEME, VARIANT, PAIR, DESC
 TS_FONT_NAME="MesloLGS NF"
 TS_FONT_SIZE=11
 
@@ -65,6 +66,8 @@ theme_load() {
         [[ "${THEME[COLOR$i]:-}" =~ ^#[0-9A-Fa-f]{6}$ ]] || { log_err "%s: %s geçersiz" "$name" "COLOR$i"; return 1; }
     done
     palette_roles || { log_err "%s: renk rolleri hesaplanamadı" "$name"; return 1; }
+    style_effective
+    style_load "$REPLY"
 }
 
 # "#RRGGBB" -> "R;G;B" (true-color kaçış kodları için)
@@ -111,8 +114,10 @@ _tp_row() {
 }
 
 theme_preview_title() {
-    _t "${THEME[DESC]:-}"
-    ui_line "  ${U_BOLD}${THEME[NAME]}${U_RST}  ${U_MUTED}${TR}${U_RST}"
+    local desc
+    _t "${THEME[DESC]:-}"; desc="$TR"
+    _t "kişilik: %s" "${STYLE[NAME]:-}"
+    ui_line "  ${U_BOLD}${THEME[NAME]}${U_RST}  ${U_MUTED}${desc} · ${TR}${U_RST}"
 }
 
 # theme_preview_window [GENİŞLİK] — tema yüklü olmalı
