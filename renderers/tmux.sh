@@ -14,10 +14,11 @@ rend_tmux_available() {
 
 rend_tmux_apply() {
     act_write_file "$TS_CONFIG_DIR/tmux-theme.conf" "# Terminal Setup: ${THEME[NAME]}
-set -g status-style bg='${THEME[BACKGROUND]}',fg='${THEME[FOREGROUND]}'
-set -g window-status-current-style bg='${THEME[ACCENT]}',fg='${THEME[BACKGROUND]}',bold
-set -g pane-border-style fg='${THEME[BORDER]}'
-set -g pane-active-border-style fg='${THEME[ACCENT]}'
-set -g message-style bg='${THEME[BORDER]}',fg='${THEME[FOREGROUND]}'
-set -g mode-style bg='${THEME[SELECTION_BG]}',fg='${THEME[SELECTION_FG]}'"
+set -g status-style bg='${ROLE[bg]}',fg='${ROLE[fg]}'
+set -g window-status-style fg='${ROLE[muted]}'
+set -g window-status-current-style bg='${ROLE[accent]}',fg='${ROLE[bg]}',bold
+set -g pane-border-style fg='${ROLE[border]}'
+set -g pane-active-border-style fg='${ROLE[accent]}'
+set -g message-style bg='${ROLE[sel]}',fg='${ROLE[sel_fg]}'
+set -g mode-style bg='${ROLE[sel]}',fg='${ROLE[sel_fg]}'"
 }

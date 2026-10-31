@@ -64,6 +64,7 @@ theme_load() {
     for ((i = 0; i < 16; i++)); do
         [[ "${THEME[COLOR$i]:-}" =~ ^#[0-9A-Fa-f]{6}$ ]] || { log_err "%s: %s geçersiz" "$name" "COLOR$i"; return 1; }
     done
+    palette_roles || { log_err "%s: renk rolleri hesaplanamadı" "$name"; return 1; }
 }
 
 # "#RRGGBB" -> "R;G;B" (true-color kaçış kodları için)
@@ -96,8 +97,8 @@ declare -gA TPF=() TPB=()
 _tp_load_colors() {
     local key h
     TPF=() TPB=()
-    for key in BACKGROUND FOREGROUND CURSOR ACCENT BORDER COLOR{0..15}; do
-        h="${THEME[$key]#\#}"
+    for key in BACKGROUND FOREGROUND CURSOR ACCENT BORDER COLOR{0..15} muted; do
+        if [[ "$key" == muted ]]; then h="${ROLE[muted]#\#}"; else h="${THEME[$key]#\#}"; fi
         printf -v "TPF[$key]" '\033[38;2;%d;%d;%dm' "0x${h:0:2}" "0x${h:2:2}" "0x${h:4:2}"
         printf -v "TPB[$key]" '\033[48;2;%d;%d;%dm' "0x${h:0:2}" "0x${h:2:2}" "0x${h:4:2}"
     done
@@ -118,7 +119,7 @@ theme_preview_title() {
 theme_preview_window() {
     local w="${1:-64}" bg fg dim acc edge title n rst=$'\033[0m'
     _tp_load_colors
-    bg="${TPB[BACKGROUND]}" fg="${TPF[FOREGROUND]}" dim="${TPF[COLOR8]}" acc="${TPF[ACCENT]}"
+    bg="${TPB[BACKGROUND]}" fg="${TPF[FOREGROUND]}" dim="${TPF[muted]}" acc="${TPF[ACCENT]}"
     # Başlık çubuğu; üst kenar yarım blokla yumuşatılır
     ui_repeat "▄" "$w"
     ui_line "  ${TPF[BORDER]}$REPLY$rst"

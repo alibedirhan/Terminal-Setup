@@ -172,9 +172,27 @@ comp_bat_verify() { has_cmd batcat || has_cmd bat; }
 | `VARIANT` | `dark` ya da `light` |
 | `PAIR` | diğer tondaki eşi (`catppuccin` ↔ `catppuccin-latte`). Ptyxis paletine iki ton birlikte yazılır, terminal sistemin tonunu izler. |
 
+## Renk rolleri
+
+Temanın 16 rengi terminale olduğu gibi gider; temanın kimliği korunur. Terminal Setup'ın kendi çizdiği her şey (fzf, btop, tmux, tema önizlemesi) ise numaralı renkleri değil rolleri kullanır. `theme_load` rolleri `ROLE[...]` dizisine hesaplar (`lib/palette.sh`):
+
+| Rol | Kaynak | Garanti (WCAG 2 kontrastı, arka plana karşı) |
+|---|---|---|
+| `fg`, `bg`, `border`, `cursor` | temadan olduğu gibi | `fg` en az 4.5:1 (testte denetlenir) |
+| `accent` | `ACCENT` | en az 3:1 |
+| `accent2`, `info`, `ok`, `warn`, `err` | `COLOR5`, `COLOR6`, `COLOR2`, `COLOR3`, `COLOR1` | en az 3:1 |
+| `muted` | hesaplanır: arka plandan ön plana 4.5:1'e ulaşan ilk karışım | en az 4.5:1 |
+| `sel`, `sel_fg` | `SELECTION_BG`, `SELECTION_FG` | seçim zemininde en az 4.5:1 |
+
+Sınırın altında kalan renkli rol ön plana doğru gerektiği kadar kaydırılır. Seçim yazısı yetmiyorsa önce ön plan ya da arka plan rengi denenir, o da yetmiyorsa seçim zemini açılır.
+
+`muted` temadan alınmaz, çünkü temaların "soluk" rengi (`COLOR8`) çoğu zaman okunmaz: 12 temanın 9'unda 3:1'in altında, Solarized'da 1,0:1. Sabit bir karışım oranı da yetmez: %55 karışım One Dark'ta 3,1:1, Nord'da 4,0:1 verir.
+
+Hesap tek bir awk çağrısıdır ve gawk eklentisi kullanmaz; Ubuntu'nun varsayılanı mawk'tır. `tests/unit/palette.bats` her temada bütün sınırları ve mawk ile aynı sonucu denetler.
+
 ## Terminal eklemek
 
-`renderers/<ad>.sh`: `renderer_register <ad> "Ad" [terminal|tool]`, `rend_<ad>_available`, `rend_<ad>_apply` ve isteğe bağlı `rend_<ad>_font`. Renkler `THEME[...]` dizisinden okunur, değişiklikler `act_*` ile yapılır.
+`renderers/<ad>.sh`: `renderer_register <ad> "Ad" [terminal|tool]`, `rend_<ad>_available`, `rend_<ad>_apply` ve isteğe bağlı `rend_<ad>_font`. Terminal renderer'ları temanın 16 rengini `THEME[...]`'dan, araç renderer'ları metin renklerini `ROLE[...]`'dan okur; değişiklikler `act_*` ile yapılır.
 
 Tür `terminal` (varsayılan) ya da `tool`'dur. Araç renderer'ları (tmux, bat/delta/fzf, btop) temayı bir araca uygular; durum ekranında ve teşhiste terminal sayılmazlar. Kullanıcının araç ayar dosyalarına dokunulmaz: bat/delta/fzf, Terminal Setup'ın kendi zsh parçasındaki ortam değişkenleriyle (`BAT_THEME`, `FZF_DEFAULT_OPTS`) ayarlanır.
 

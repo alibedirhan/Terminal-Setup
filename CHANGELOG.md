@@ -1,5 +1,12 @@
 # Changelog
 
+## [Yayınlanmadı]
+
+Terminal Setup 7 başladı: [plan](docs/V7_PLAN.md).
+
+### Eklendi
+- **Renk rolleri ve okunabilirlik garantisi.** Temanın 16 rengi değişmez; Terminal Setup'ın çizdiği her şey (fzf, btop, tmux, tema önizlemesi) anlamı olan rolleri kullanır. Soluk yazı her tema için 4.5:1 kontrasta ulaşacak şekilde hesaplanır; renkli roller en az 3:1, seçili satır en az 4.5:1 olur. Daha önce fzf başlıkları ve btop'un pasif yazıları 12 temanın 9'unda okunması güç renkteydi (Solarized'da arka planla aynı renk). Her temada bütün sınırlar testle denetlenir.
+
 ## [6.2.2] - 2026-10-31
 
 Gerçek bir Ubuntu 24.04 GNOME masaüstünde (Oh My Zsh'i kullanıcının kendisinin kurduğu, 600'den fazla yazı tipli bir sistem) yapılan kurulum–kaldırma testinde bulunan hatalar.

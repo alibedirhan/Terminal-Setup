@@ -10,6 +10,7 @@ Son güncelleme: 31 Ekim 2026
 - **Tema listesi (25 Ekim):** Tema listesi sıralandı ve hizalandı; açık/koyu eşler yan yana getirildi, README görselleri yenilendi. `main` dalına [#7](https://github.com/alibedirhan/Terminal-Setup/pull/7) ile alındı (`7916aee`); [CI başarılı](https://github.com/alibedirhan/Terminal-Setup/actions/runs/40210461042).
 - **v6.2.1 (26 Ekim):** Tema listesi düzeltmesini ve depo düzenini içerir. Eksik komut seçenekleri, başarısız arşiv/yedekleme, paket simülasyonu ve yarım kalan kurulum, sembolik bağlantılar ve kaldırma hataları için korumalar eklendi. Test sayısı 194'e çıktı.
 - **v6.2.2 (31 Ekim) — gerçek sistem testi:** Bu Ubuntu 24.04 GNOME masaüstünde yalıtılmış durum klasörüyle tam kurulum, tema değiştirme ve kaldırma yapıldı; sistem bağımsız bir fotoğrafla karşılaştırılarak eski haline döndürüldü. Kullanıcının kendi Oh My Zsh'iyle fzf-tab/Ctrl+R çakışması, `pipefail` + `grep -q` yazı tipi teşhisi, gereksiz sudo isteyen kaldırma ve yanıltıcı zsh hız mesajı düzeltildi; 10 regresyon testi eklendi (204).
+- **v7 başladı (31 Ekim):** Üç prototipten sonra "uyumlu terminal" planı onaylandı: renk rolleri, tema kişilikleri, Starship, Oh My Zsh'siz temel. Ayrıntı: [V7_PLAN.md](V7_PLAN.md).
 - **Açık işler:** 26 Ekim kontrolünde GitHub'da açık issue veya PR bulunmuyor. Video çekimi için [hazırlık listesi](VIDEO_HAZIRLIK.md) var; çekimin tamamlandığına dair depoda kayıt yok.
 
 Sürüm geçmişi: [CHANGELOG.md](../CHANGELOG.md). Geliştirme ve test komutları: [katkı rehberi](../.github/CONTRIBUTING.md).
@@ -41,7 +42,7 @@ Ubuntu'yu formatladıktan sonra terminali tek seferde kurar: Zsh, Oh My Zsh, Pow
 | `frontends/` | komut satırı, durum ekranı, menü ekranları | 9 |
 | `diagnostics/` | sağlık kontrolleri (zsh açılış süresi dahil) | 9 |
 | `profiles/` | minimal, developer, full | 3 |
-| `tests/` | 204 bats testi (21 dosya) + Docker gidiş-dönüş ve GNOME betikleri | 22 |
+| `tests/` | 211 bats testi (22 dosya) + Docker gidiş-dönüş ve GNOME betikleri | 22 |
 
 Kurulum ve proje belgeleri `docs/` altında; katkı, destek ve güvenlik belgeleri GitHub'ın tanıdığı `.github/` dizininde tutulur. `release/` yalnızca paket üretildiğinde oluşur ve Git'e eklenmez. Yerel Claude izinleri de Git dışında tutulur.
 
