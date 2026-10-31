@@ -111,7 +111,7 @@ _rc_record_block() {
     local entry
     is_dry_run && return 0
     entry=$(printf '%s\t%s\t%s\t%s' "$TS_CURRENT_COMPONENT" rcblock "$1" "$2")
-    ledger_lines | grep -qxF "$entry" && return 0
+    ledger_lines | grep -xF -- "$entry" >/dev/null && return 0
     ledger_init && printf '%s\n' "$entry" >> "$TS_LEDGER"
 }
 
@@ -121,6 +121,49 @@ act_zsh_snippet() {
     local order="$1" name="$2" content="$3"
     act_write_file "$TS_CONFIG_DIR/zsh.d/$order-$name.zsh" \
         "# $name — Terminal Setup tarafından yönetilir"$'\n'"$content"
+}
+
+# Parçalar ~/.zshrc'nin başında yüklenir. Oh My Zsh'i kullanıcının kendi
+# satırları sonradan yüklüyorsa plugins=(...) bizim eklentilerimizi listeden
+# düşürür ve key-bindings.zsh Ctrl+R'yi düz aramaya geri bağlar. Aşağıdaki
+# iki üretici, .zshrc bittikten sonra (ilk istemde bir kez) eksik kalanı
+# tamamlayan zsh kodu yazar; Oh My Zsh'i script kurduysa hiçbir şey yapmaz.
+
+# Eklenti yüklenmemişse doğrudan yükle:
+#   zsh_late_load AD 'ATLAMA_KOŞULU' DOSYA [SONRA_ÇALIŞACAK_KOMUT]
+zsh_late_load() {
+    local fn="_ts_late_$1" skip="$2" file after="${4:-}"
+    printf -v file '%q' "$3"
+    cat <<ZSH
+autoload -Uz add-zsh-hook
+$fn() {
+    add-zsh-hook -d precmd $fn
+    (( $skip )) && return
+    [[ -r $file ]] || return
+    source $file${after:+; $after}
+}
+add-zsh-hook precmd $fn
+ZSH
+}
+
+# Ctrl+R düz aramaya (ya da devralınabilir bir widget'a) bağlıysa WIDGET'a bağla.
+# Kullanıcının kendi seçtiği başka bir widget'a dokunulmaz.
+#   zsh_late_rebind AD WIDGET [DEVRALINAN_WIDGET...]
+zsh_late_rebind() {
+    local fn="_ts_late_$1" widget="$2" from
+    shift 2
+    from=$(IFS='|'; printf '%s' "history-incremental-search-backward${*:+|$*}")
+    cat <<ZSH
+autoload -Uz add-zsh-hook
+$fn() {
+    add-zsh-hook -d precmd $fn
+    (( \$+widgets[$widget] )) || return
+    case \${\$(bindkey -M emacs '^R')[2]} in
+        ($from) bindkey -M emacs '^R' $widget ;;
+    esac
+}
+add-zsh-hook precmd $fn
+ZSH
 }
 
 # ----------------------------------------------------------------------------

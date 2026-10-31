@@ -84,7 +84,7 @@ ledger_components() {
 }
 
 ledger_component_has_entries() {
-    ledger_lines "$1" | grep -q .
+    ledger_lines "$1" | grep . >/dev/null
 }
 
 # Tam olarak eşleşen ilk satırı defterden sil
@@ -104,3 +104,8 @@ ledger_file_has_blocks() {
 
 # Kayıt sayısı
 ledger_count() { ledger_lines | wc -l; }
+
+# Geri almak yönetici yetkisi isteyen bir kayıt (paket, giriş kabuğu) var mı?
+ledger_needs_root() {
+    ledger_lines | awk -F'\t' '$2 == "pkg" || $2 == "shell" { found=1 } END { exit !found }'
+}

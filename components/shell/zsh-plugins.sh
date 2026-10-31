@@ -12,7 +12,11 @@ comp_zsh_plugins_install() {
     act_clone https://github.com/zsh-users/zsh-autosuggestions.git "$ZSH_PLUGIN_DIR/zsh-autosuggestions" || return 1
     act_clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_PLUGIN_DIR/zsh-syntax-highlighting" || return 1
     # syntax-highlighting listenin sonunda olmalı
-    act_zsh_snippet 20 zsh-plugins 'plugins+=(zsh-autosuggestions zsh-syntax-highlighting)'
+    act_zsh_snippet 20 zsh-plugins "plugins+=(zsh-autosuggestions zsh-syntax-highlighting)
+$(zsh_late_load zsh_autosuggest '$+functions[_zsh_autosuggest_start]' \
+    "$ZSH_PLUGIN_DIR/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh" _zsh_autosuggest_start)
+$(zsh_late_load zsh_highlight '$+functions[_zsh_highlight]' \
+    "$ZSH_PLUGIN_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh")"
 }
 
 comp_zsh_plugins_verify() {

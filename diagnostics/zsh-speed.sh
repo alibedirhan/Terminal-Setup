@@ -14,11 +14,14 @@ _zsh_start_ms() {
     REPLY=$(((e - s) / 1000))
 }
 
-# En yavaş iki parça: "40-ohmyzsh-load 210 ms, 70-atuin 60 ms" -> REPLY
+# Parçaların toplamı ve en yavaş ikisi:
+#   REPLY="40-ohmyzsh-load 210 ms, 70-atuin 60 ms", ZSH_PARTS_MS=275
 _zsh_slowest_parts() {
-    REPLY=$(TS_ZSH_TIMING=1 zsh -i -c exit 2>&1 < /dev/null > /dev/null |
-        awk '$1 == "ts-timing" { print $3, $2 }' | sort -rn | head -2 |
-        awk '{ printf "%s%s %d ms", (NR > 1 ? ", " : ""), $2, $1 }')
+    local timings
+    timings=$(TS_ZSH_TIMING=1 zsh -i -c exit 2>&1 < /dev/null > /dev/null |
+        awk '$1 == "ts-timing" { print $3, $2 }' | sort -rn)
+    ZSH_PARTS_MS=$(awk '{ t += $1 } END { print t + 0 }' <<< "$timings")
+    REPLY=$(head -2 <<< "$timings" | awk 'NF { printf "%s%s %d ms", (NR > 1 ? ", " : ""), $2, $1 }')
 }
 
 diag_zshspeed_check() {
@@ -40,7 +43,11 @@ diag_zshspeed_check() {
         return 0
     fi
     _zsh_slowest_parts
-    if [[ -n "$REPLY" ]]; then
+    # Sürenin çoğu bizim parçalarda değilse kullanıcıyı onlara yönlendirme
+    if [[ -n "$REPLY" ]] && ((ZSH_PARTS_MS * 2 < best)); then
+        diag_say "%s ms, yavaş. Terminal Setup parçaları yalnızca %s ms; kalan süre ~/.zshrc içindeki diğer satırlardan" \
+            "$best" "$ZSH_PARTS_MS"
+    elif [[ -n "$REPLY" ]]; then
         diag_say "%s ms, yavaş. En çok zaman alan: %s" "$best" "$REPLY"
     else
         diag_say "%s ms, yavaş (%s ms üstü)" "$best" "$ZSH_SLOW_MS"

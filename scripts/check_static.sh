@@ -44,12 +44,12 @@ is_legacy() {
 mapfile -t SH_FILES < <(git ls-files --cached --others --exclude-standard -- '*.sh' '*.bash' | sort)
 mapfile -t BATS_FILES < <(git ls-files --cached --others --exclude-standard -- '*.bats' | sort)
 
-echo "[1/5] Bash sözdizimi (${#SH_FILES[@]} dosya)"
+echo "[1/6] Bash sözdizimi (${#SH_FILES[@]} dosya)"
 for file in "${SH_FILES[@]}"; do
     bash -n "$file" 2>/dev/null || fail "Sözdizimi hatası: $file"
 done
 
-echo "[2/5] ShellCheck"
+echo "[2/6] ShellCheck"
 if command -v "$SHELLCHECK" >/dev/null 2>&1; then
     check_targets=()
     for file in "${SH_FILES[@]}"; do
@@ -64,7 +64,7 @@ else
     fail "ShellCheck bulunamadı ($SHELLCHECK)"
 fi
 
-echo "[3/5] Dosya boyutu (en fazla $MAX_LINES satır)"
+echo "[3/6] Dosya boyutu (en fazla $MAX_LINES satır)"
 for file in "${SH_FILES[@]}" "${BATS_FILES[@]}"; do
     lines=$(wc -l < "$file")
     if ((lines > MAX_LINES)); then
@@ -76,7 +76,7 @@ for file in "${SH_FILES[@]}" "${BATS_FILES[@]}"; do
     fi
 done
 
-echo "[4/5] Yan etki kuralı (yalnızca lib/actions/)"
+echo "[4/6] Yan etki kuralı (yalnızca lib/actions/)"
 # Sistemi değiştiren komut kalıpları: komut konumunda (satır başı ya da
 # ; & | ( sonrası) sudo/apt/snap/chsh, ya da herhangi bir yerde ayar yazan
 # alt komutlar. Okuma amaçlı kullanımlar (dconf read, git config --get)
@@ -96,12 +96,25 @@ for file in "${SH_FILES[@]}"; do
     fi
 done
 
-echo "[5/5] Borulu kurulum yasağı (curl|sh)"
+echo "[5/6] Borulu kurulum yasağı (curl|sh)"
 for file in "${SH_FILES[@]}"; do
     [[ "$file" == "scripts/check_static.sh" ]] && continue
     if grep -nE '(curl|wget)[^|]*\|[[:space:]]*(sudo[[:space:]]+)?(ba)?sh([[:space:]]|$)' "$file" \
         | grep -vE '^[0-9]+:[[:space:]]*#' | grep -q .; then
         fail "$file: curl/wget çıktısı kabuğa borulanıyor"
+    fi
+done
+
+echo "[6/6] pipefail altında | grep -q yasağı"
+# grep -q ilk eşleşmede çıkar; borunun solundaki komut SIGPIPE ile ölür ve
+# pipefail tüm hattı başarısız sayar (çok satırlı fc-list'te her seferinde).
+# Bunun yerine: ... | grep KALIP >/dev/null
+for file in "${SH_FILES[@]}"; do
+    case "$file" in tests/*|scripts/*) continue ;; esac
+    hits=$(grep -nE '\|[[:space:]]*grep[[:space:]]+(-[a-zA-Z]*q|--quiet)' "$file" | grep -vE '^[0-9]+:[[:space:]]*#')
+    if [[ -n "$hits" ]]; then
+        printf '%s\n' "$hits" | sed "s|^|  $file:|" >&2
+        fail "$file: borulu grep -q (pipefail altında yanlış sonuç verir)"
     fi
 done
 

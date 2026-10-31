@@ -64,6 +64,13 @@ setup() {
     [[ "$output" == *"Zsh açılışı"*"yavaş. En çok zaman alan: 40-ohmyzsh-load 300 ms"* ]]
 }
 
+@test "zsh yavaşlığı bizim parçalarda değilse doctor bunu söyler" {
+    ts install --components zsh
+    printf '#!/bin/sh\nsleep 0.35\n[ -n "${TS_ZSH_TIMING+x}" ] && echo "ts-timing 70-atuin 12" >&2\nexit 0\n' > "$FAKE_ROOT/pkgbin/zsh"
+    run ts doctor < /dev/null
+    [[ "$output" == *"Terminal Setup parçaları yalnızca 12 ms; kalan süre ~/.zshrc"* ]]
+}
+
 @test "zsh hızlı açılırsa süre bilgi olarak gösterilir" {
     ts install --components zsh
     printf '#!/bin/sh\nexit 0\n' > "$FAKE_ROOT/pkgbin/zsh"

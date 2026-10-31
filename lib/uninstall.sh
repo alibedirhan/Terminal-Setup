@@ -47,7 +47,10 @@ uninstall_all() {
     printf '\n'
     ui_type_confirm "kaldır" || { log_info "İptal edildi."; return 1; }
 
-    sudo_begin || return 1
+    # Şifre baştan, yalnızca gerekiyorsa sorulur; sudo'suz kurulum sudo'suz kaldırılır
+    if ledger_needs_root; then
+        sudo_begin || return 1
+    fi
     undo_archive_init || return 1
     UNDO_FAILED=0
     log_step "Değişiklikler geri alınıyor"

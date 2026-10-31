@@ -441,6 +441,7 @@ I18N_EN=(
     ["%s ms"]="%s ms"
     ["%s ms, yavaş. En çok zaman alan: %s"]="%s ms, slow. Slowest parts: %s"
     ["%s ms, yavaş (%s ms üstü)"]="%s ms, slow (over %s ms)"
+    ["%s ms, yavaş. Terminal Setup parçaları yalnızca %s ms; kalan süre ~/.zshrc içindeki diğer satırlardan"]="%s ms, slow. Terminal Setup parts take only %s ms; the rest comes from other lines in ~/.zshrc"
     ["ölçülemedi (bash 5 gerekir)"]="could not measure (needs bash 5)"
     ["Zsh bileşeni kurulu değil"]="Zsh component not installed"
     ["Gri öneriyi kabul et"]="Accept the gray suggestion"

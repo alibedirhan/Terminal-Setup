@@ -4,7 +4,7 @@
 diag_register fonts "Yazı tipi"
 
 diag_fonts_check() {
-    if fc-list 2>/dev/null | grep -q "MesloLGS NF"; then
+    if fc-list 2>/dev/null | grep "MesloLGS NF" >/dev/null; then
         diag_say "MesloLGS NF kurulu"
         return 0
     fi

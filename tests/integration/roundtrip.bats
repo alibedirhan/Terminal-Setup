@@ -174,3 +174,19 @@ home_listing() {
     run ts --dry-run install --components tldr
     [[ "$output" == *"apt-get install tldr"* ]]
 }
+
+@test "paket kurmayan kurulum sudo istemeden kaldırılır" {
+    # Gereken paketler zaten kurulu: kurulum yalnızca kullanıcı dosyalarına dokunur
+    printf 'git\ncurl\nca-certificates\ngit-man\n' >> "$FAKE_ROOT/dpkg.txt"
+    run ts install --components fzf
+    [ "$status" -eq 0 ]
+    run grep -P '\t(pkg|shell)\t' "$HOME/.terminal-setup/ledger"
+    [ "$status" -ne 0 ]
+    mkdir -p "$FAKE_ROOT/nosudo"
+    printf '#!/bin/sh\necho "sudo $*" >> "%s"\nexit 1\n' "$FAKE_ROOT/sudo.log" > "$FAKE_ROOT/nosudo/sudo"
+    chmod +x "$FAKE_ROOT/nosudo/sudo"
+    PATH="$FAKE_ROOT/nosudo:$PATH" run ts uninstall
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"Sonuç: kalıntı yok."* ]]
+    [ ! -e "$FAKE_ROOT/sudo.log" ]
+}

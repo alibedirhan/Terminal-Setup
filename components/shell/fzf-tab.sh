@@ -15,7 +15,8 @@ comp_fzf_tab_install() {
     act_zsh_snippet 18 fzf-tab "plugins+=(fzf-tab)
 zstyle ':completion:*' menu no
 zstyle ':fzf-tab:*' switch-group '<' '>'
-(( \$+commands[eza] )) && zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always \$realpath'"
+(( \$+commands[eza] )) && zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always \$realpath'
+$(zsh_late_load fzf_tab '$+functions[enable-fzf-tab] || ! $+functions[compdef]' "$FZF_TAB_DIR/fzf-tab.plugin.zsh")"
 }
 
 comp_fzf_tab_verify() {
