@@ -16,7 +16,7 @@ PKG_SKIPPED=()   # pkg_purge_owned: güvenlik nedeniyle atlanan paketler
 APT_OPTS=(-y -q -o DPkg::Lock::Timeout=120)
 
 pkg_installed() {
-    dpkg-query -W -f='${db:Status-Abbrev}' "$1" 2>/dev/null | grep -q '^ii'
+    dpkg-query -W -f='${db:Status-Abbrev}' "$1" 2>/dev/null | grep '^ii' >/dev/null
 }
 
 _pkg_apt() {

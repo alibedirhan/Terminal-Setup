@@ -20,5 +20,5 @@ plugins=(git colored-man-pages)' || return 1
 comp_ohmyzsh_verify() {
     [[ -f "$OMZ_DIR/oh-my-zsh.sh" ]] || return 1
     [[ -f "$TS_CONFIG_DIR/zsh.d/40-ohmyzsh-load.zsh" ]] && return 0
-    [[ -f "$HOME/.zshrc" ]] && rc_without_blocks "$HOME/.zshrc" | grep -q 'oh-my-zsh.sh'
+    [[ -f "$HOME/.zshrc" ]] && rc_without_blocks "$HOME/.zshrc" | grep 'oh-my-zsh.sh' >/dev/null
 }

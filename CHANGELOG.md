@@ -1,5 +1,15 @@
 # Changelog
 
+## [6.2.2] - 2026-10-31
+
+Gerçek bir Ubuntu 24.04 GNOME masaüstünde (Oh My Zsh'i kullanıcının kendisinin kurduğu, 600'den fazla yazı tipli bir sistem) yapılan kurulum–kaldırma testinde bulunan hatalar.
+
+### Düzeltildi
+- **Oh My Zsh'i `~/.zshrc` kendisi yüklüyorsa** fzf-tab yüklenmiyor, atuin ve fzf'in Ctrl+R'si Oh My Zsh'in düz geçmiş aramasına geri dönüyordu: kullanıcının `plugins=(...)` satırı bizim eklentilerimizi listeden düşürüyor, `key-bindings.zsh` Ctrl+R'yi yeniden bağlıyordu. Parçalar artık ilk istemde bir kez eksik kalan eklentiyi doğrudan yükler ve düz aramaya dönmüş Ctrl+R'yi geri alır; kullanıcının kendi seçtiği widget'a dokunulmaz. Mevcut kurulumda düzeltmeyi almak için ilgili bileşenleri kaldırıp yeniden kurun (`remove fzf-tab zsh-plugins fzf atuin`, ardından `install`).
+- `doctor`, MesloLGS NF kuruluyken "yok" diyordu: çok satırlı `fc-list` çıktısında `grep -q` erken çıkınca `pipefail` hattı başarısız sayıyordu. Aynı kalıp Alacritty yazı tipi ayarında, Oh My Zsh algılamasında ve defter sorgularında da düzeltildi; statik kontrol artık borulu `grep -q` kullanımını reddeder.
+- Paket ya da giriş kabuğu değiştirmeyen bir kurulumun kaldırılması gereksiz yere yönetici şifresi istiyor, şifre verilemezse hiç başlamıyordu. Şifre artık yalnızca defterde paket veya kabuk kaydı varsa sorulur.
+- `doctor` zsh açılışı yavaşken sürenin çoğu Terminal Setup parçalarından gelmiyorsa bunu söyler; daha önce 1,4 saniyelik açılışta "en çok zaman alan: atuin 12 ms" diyerek yanlış yere yönlendiriyordu.
+
 ## [6.2.1] - 2026-10-26
 
 ### Değişti

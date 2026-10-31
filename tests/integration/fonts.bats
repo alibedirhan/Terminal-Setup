@@ -46,3 +46,17 @@ setup() {
     [ "$status" -eq 0 ]
     [ ! -e "$HOME/.local/share/fonts" ]
 }
+
+@test "doctor, uzun yazı tipi listesinde MesloLGS NF'yi bulur (pipefail + SIGPIPE)" {
+    mkdir -p "$FAKE_ROOT/manyfonts"
+    # Gerçek sistemlerdeki gibi yüzlerce yazı tipi: grep -q erken çıkınca
+    # fc-list SIGPIPE alır ve pipefail hattı başarısız sayardı.
+    cat > "$FAKE_ROOT/manyfonts/fc-list" <<'EOF'
+#!/bin/sh
+echo "/f/MesloLGS NF Regular.ttf: MesloLGS NF:style=Regular"
+awk 'BEGIN { for (i = 0; i < 200000; i++) print "/usr/share/fonts/f" i ".ttf: F" i }'
+EOF
+    chmod +x "$FAKE_ROOT/manyfonts/fc-list"
+    PATH="$FAKE_ROOT/manyfonts:$PATH" run ts doctor < /dev/null
+    [[ "$output" == *"MesloLGS NF kurulu"* ]]
+}

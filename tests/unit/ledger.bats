@@ -68,3 +68,14 @@ setup() {
     ledger_add pkg bat
     [ ! -f "$TS_LEDGER" ]
 }
+
+@test "yalnızca paket ve giriş kabuğu kayıtları yönetici yetkisi ister" {
+    TS_CURRENT_COMPONENT=fzf
+    ledger_add path "$HOME/.local/bin/fzf"
+    ledger_add dconf /org/demo NONE
+    run ledger_needs_root
+    [ "$status" -ne 0 ]
+    TS_CURRENT_COMPONENT=zsh
+    ledger_add shell /bin/bash
+    ledger_needs_root
+}

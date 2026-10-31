@@ -15,7 +15,7 @@ comp_fzf_install() {
         export FZF_DEFAULT_COMMAND="fdfind --type f --hidden --follow --exclude .git"
         export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
     fi
-fi'
+fi'$'\n'"$(zsh_late_rebind fzf fzf-history-widget)"
 }
 
 comp_fzf_verify() { has_cmd fzf; }

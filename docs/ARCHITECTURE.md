@@ -58,6 +58,8 @@ bileşen <TAB> tür <TAB> arg1 [<TAB> arg2]
 
 `init.zsh`, `zsh.d/` altındaki parçaları sıra numarasıyla yükler (`05-p10k-instant`, `15-ohmyzsh-base`, `40-ohmyzsh-load`, `60-fzf` ...).
 
+Oh My Zsh'i kullanıcı kurmuşsa onu blok değil, `~/.zshrc`'deki kendi satırları ve bloktan *sonra* yükler. Bu durumda `plugins=(...)` ataması parçaların eklediği eklentileri düşürür, Oh My Zsh'in `key-bindings.zsh` dosyası da Ctrl+R'yi düz aramaya bağlar. `zsh_late_load` ve `zsh_late_rebind` (`lib/actions/rc.sh`) parçaya, ilk istemde bir kez çalışıp kendini silen bir `precmd` kancası ekler: eklenti hâlâ yüklenmemişse doğrudan yüklenir; Ctrl+R düz aramadaysa geri alınır, kullanıcının seçtiği widget'a dokunulmaz. Oh My Zsh'i script kurduysa kancalar bir şey yapmaz (`tests/unit/zsh_late.bats`).
+
 ## Arayüz katmanı
 
 Menü bağımlılıksız saf bash ile çizilir. `lib/ui/` altındaki modüller tek yönlü bağımlıdır; her biri yalnızca soldakileri kullanır:

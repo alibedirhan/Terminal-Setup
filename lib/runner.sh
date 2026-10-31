@@ -63,7 +63,7 @@ component_verify() {
 #        external (script kurmadı ama sistemde var) | absent
 component_state() {
     local id="$1" has_entries=0
-    ledger_lines "$id" | awk -F'\t' '$2 != "note"' | grep -q . && has_entries=1
+    ledger_lines "$id" | awk -F'\t' '$2 != "note"' | grep . >/dev/null && has_entries=1
     if component_verify "$id"; then
         ((has_entries)) && echo ours || echo external
     else

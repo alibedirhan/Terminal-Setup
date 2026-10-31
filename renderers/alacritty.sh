@@ -37,7 +37,7 @@ text = \"${THEME[SELECTION_FG]}\"
     for ((i = 0; i < 8; i++)); do
         content+=$'\n'"${names[i]} = \"${THEME[COLOR$((i + 8))]}\""
     done
-    if fc-list 2>/dev/null | grep -q "$TS_FONT_NAME"; then
+    if fc-list 2>/dev/null | grep -F -- "$TS_FONT_NAME" >/dev/null; then
         content+=$'\n\n'"[font]"$'\n'"size = $TS_FONT_SIZE"$'\n'"normal = { family = \"$TS_FONT_NAME\" }"
     fi
     act_write_file "$ALACRITTY_DIR/terminal-setup-theme.toml" "$content" &&
