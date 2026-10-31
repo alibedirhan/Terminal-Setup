@@ -27,7 +27,10 @@ _clitools_fzf_colors() {
 }
 
 rend_clitools_apply() {
-    _clitools_fzf_colors
+    local colors
+    _clitools_fzf_colors; colors="$REPLY"
+    # Kişilik: kenar, imleç ve istem simgesi. Çift tırnak içinde $ kaçırılır ($ simgeli retro)
+    style_fzf_opts
     act_zsh_snippet 65 theme-tools "export BAT_THEME='${THEME[BAT_THEME]:-ansi}'
-export FZF_DEFAULT_OPTS=\"\${FZF_DEFAULT_OPTS:-} --color=$REPLY\""
+export FZF_DEFAULT_OPTS=\"\${FZF_DEFAULT_OPTS:-} --color=$colors ${REPLY//\$/\\\$}\""
 }

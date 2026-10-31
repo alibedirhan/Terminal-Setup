@@ -1,0 +1,15 @@
+# Terminal Setup kişiliği: temanın biçimi (renkler temadan gelir)
+# Biçim: ANAHTAR="değer". Değerler lib/styles.sh içinde denetlenir.
+NAME="Retro"
+DESC="Köşeli etiketler, büyük harf, simgesiz liste, $ işareti"
+PROMPT_SYMBOL="$"
+PROMPT_LAYOUT="two-line"
+SEGMENTS="brackets"
+BORDER="sharp"
+TITLE_CASE="upper"
+TEXT_CASE="upper"
+SEPARATOR="|"
+ICONS="off"
+DATE_FORMAT="+%Y-%m-%d %H:%M"
+BAT_STYLE="numbers"
+GIT_SYMBOLS="ascii"

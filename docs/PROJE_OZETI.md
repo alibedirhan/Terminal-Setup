@@ -42,7 +42,7 @@ Ubuntu'yu formatladıktan sonra terminali tek seferde kurar: Zsh, Oh My Zsh, Pow
 | `frontends/` | komut satırı, durum ekranı, menü ekranları | 9 |
 | `diagnostics/` | sağlık kontrolleri (zsh açılış süresi dahil) | 9 |
 | `profiles/` | minimal, developer, full | 3 |
-| `tests/` | 211 bats testi (22 dosya) + Docker gidiş-dönüş ve GNOME betikleri | 22 |
+| `tests/` | 219 bats testi (23 dosya) + Docker gidiş-dönüş ve GNOME betikleri | 22 |
 
 Kurulum ve proje belgeleri `docs/` altında; katkı, destek ve güvenlik belgeleri GitHub'ın tanıdığı `.github/` dizininde tutulur. `release/` yalnızca paket üretildiğinde oluşur ve Git'e eklenmez. Yerel Claude izinleri de Git dışında tutulur.
 

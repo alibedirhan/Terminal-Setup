@@ -13,6 +13,8 @@ BORDER="#073642"
 # bat ve delta söz dizimi teması (yerleşik karşılığı yoksa: ansi)
 BAT_THEME="Solarized (dark)"
 # açık ya da koyu; PAIR: diğer tondaki eşi (Ptyxis sistemin tonunu izler)
+# Kişilik (styles/): prompt, kenar ve araçların biçimi
+STYLE="retro"
 VARIANT="dark"
 COLOR0="#073642"
 COLOR1="#DC322F"

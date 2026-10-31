@@ -13,6 +13,8 @@ BORDER="#5C6370"
 # bat ve delta söz dizimi teması (yerleşik karşılığı yoksa: ansi)
 BAT_THEME="OneHalfDark"
 # açık ya da koyu; PAIR: diğer tondaki eşi (Ptyxis sistemin tonunu izler)
+# Kişilik (styles/): prompt, kenar ve araçların biçimi
+STYLE="modern"
 VARIANT="dark"
 COLOR0="#282C34"
 COLOR1="#E06C75"

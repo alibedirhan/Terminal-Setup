@@ -56,3 +56,21 @@ setup() {
     ts install --components zsh --theme tokyo-night
     grep -qx "export BAT_THEME='ansi'" "$SNIP"
 }
+
+@test "style komutu: listeler, seçer, temayı yeniden uygular, auto ile döner" {
+    ts install --components zsh --theme nord
+    run ts style list
+    [ "$status" -eq 0 ]
+    [ "$(grep -c . <<< "$output")" -eq 6 ]
+    [[ "$output" == *"* arctic"* ]]
+    local snip="$HOME/.config/terminal-setup/zsh.d/65-theme-tools.zsh"
+    grep -q -- "--border=left" "$snip"
+    run ts style set neon
+    [ "$status" -eq 0 ]
+    grep -q -- "--border=double" "$snip"
+    grep -qx "style=neon" "$HOME/.terminal-setup/settings"
+    run ts style set auto
+    grep -q -- "--border=left" "$snip"
+    run ts style set olmayan
+    [ "$status" -eq 2 ]
+}
