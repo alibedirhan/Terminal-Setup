@@ -2,7 +2,7 @@
 zsh
 ohmyzsh
 fonts
-p10k
+starship
 zsh-plugins
 fzf-tab
 aliases

@@ -44,12 +44,12 @@ is_legacy() {
 mapfile -t SH_FILES < <(git ls-files --cached --others --exclude-standard -- '*.sh' '*.bash' | sort)
 mapfile -t BATS_FILES < <(git ls-files --cached --others --exclude-standard -- '*.bats' | sort)
 
-echo "[1/6] Bash sözdizimi (${#SH_FILES[@]} dosya)"
+echo "[1/7] Bash sözdizimi (${#SH_FILES[@]} dosya)"
 for file in "${SH_FILES[@]}"; do
     bash -n "$file" 2>/dev/null || fail "Sözdizimi hatası: $file"
 done
 
-echo "[2/6] ShellCheck"
+echo "[2/7] ShellCheck"
 if command -v "$SHELLCHECK" >/dev/null 2>&1; then
     check_targets=()
     for file in "${SH_FILES[@]}"; do
@@ -64,7 +64,7 @@ else
     fail "ShellCheck bulunamadı ($SHELLCHECK)"
 fi
 
-echo "[3/6] Dosya boyutu (en fazla $MAX_LINES satır)"
+echo "[3/7] Dosya boyutu (en fazla $MAX_LINES satır)"
 for file in "${SH_FILES[@]}" "${BATS_FILES[@]}"; do
     lines=$(wc -l < "$file")
     if ((lines > MAX_LINES)); then
@@ -76,7 +76,7 @@ for file in "${SH_FILES[@]}" "${BATS_FILES[@]}"; do
     fi
 done
 
-echo "[4/6] Yan etki kuralı (yalnızca lib/actions/)"
+echo "[4/7] Yan etki kuralı (yalnızca lib/actions/)"
 # Sistemi değiştiren komut kalıpları: komut konumunda (satır başı ya da
 # ; & | ( sonrası) sudo/apt/snap/chsh, ya da herhangi bir yerde ayar yazan
 # alt komutlar. Okuma amaçlı kullanımlar (dconf read, git config --get)
@@ -96,7 +96,7 @@ for file in "${SH_FILES[@]}"; do
     fi
 done
 
-echo "[5/6] Borulu kurulum yasağı (curl|sh)"
+echo "[5/7] Borulu kurulum yasağı (curl|sh)"
 for file in "${SH_FILES[@]}"; do
     [[ "$file" == "scripts/check_static.sh" ]] && continue
     if grep -nE '(curl|wget)[^|]*\|[[:space:]]*(sudo[[:space:]]+)?(ba)?sh([[:space:]]|$)' "$file" \
@@ -105,7 +105,7 @@ for file in "${SH_FILES[@]}"; do
     fi
 done
 
-echo "[6/6] pipefail altında | grep -q yasağı"
+echo "[6/7] pipefail altında | grep -q yasağı"
 # grep -q ilk eşleşmede çıkar; borunun solundaki komut SIGPIPE ile ölür ve
 # pipefail tüm hattı başarısız sayar (çok satırlı fc-list'te her seferinde).
 # Bunun yerine: ... | grep KALIP >/dev/null
@@ -117,6 +117,16 @@ for file in "${SH_FILES[@]}"; do
         fail "$file: borulu grep -q (pipefail altında yanlış sonuç verir)"
     fi
 done
+
+echo "[7/7] Ham Nerd Font karakteri yasağı"
+# Özel kullanım alanı karakterleri (U+E000–U+F8FF) kaynakta kaçış dizisiyle
+# yazılır (\\ue0b0); ham hâlleri düzenleyicilerde ve araçlarda kaybolabiliyor.
+pua_files=$(git ls-files --cached --others --exclude-standard | grep -vE '\.(png|gif|jpg)$' |
+    while IFS= read -r f; do LC_ALL=C grep -lP '\xEE[\x80-\xBF][\x80-\xBF]|\xEF[\x80-\xA3][\x80-\xBF]' "$f" 2>/dev/null; done)
+if [[ -n "$pua_files" ]]; then
+    printf '  %s\n' $pua_files >&2
+    fail "kaynakta ham Nerd Font karakteri var; kaçış dizisi (\\uXXXX) kullanın"
+fi
 
 echo
 if ((failures > 0)); then

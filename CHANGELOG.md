@@ -4,6 +4,10 @@
 
 Terminal Setup 7 başladı: [plan](docs/V7_PLAN.md).
 
+### Değişti
+- **Varsayılan prompt Starship.** Üç profil de Powerlevel10k yerine Starship kurar; Powerlevel10k isteğe bağlı bileşen olarak kalır (projenin kendi notuna göre bakımı çok sınırlı, yeni özellik gelmiyor). Starship'in ayarı temanın renk rollerinden ve kişiliğinden üretilir, tema ya da kişilik değişince yeniden yazılır: altı kişilik altı farklı prompt biçimi verir (sade, tek satır, dolgu etiketler, hap etiketler, köşeli parantezler, ▸ oklar). Prompt projeyi tanır: git durumu, Node sürümü, Python sanal ortamı, Rust, Go, komut süresi ve hata kodu. Mevcut kurulumlardaki Powerlevel10k'ye dokunulmaz. Menüdeki durum etiketi hangi prompt'un kurulu olduğunu gösterir; yazı tipi teşhisi Starship'i de dikkate alır.
+- Statik kontrol kaynakta ham Nerd Font karakterini reddeder; bu karakterler kaçış dizisiyle yazılır.
+
 ### Eklendi
 - **Tema kişilikleri.** Tema artık palet ve kişilikten oluşur. Altı kişilik (modern, arctic, vivid, retro, soft, neon) `styles/` altında veri dosyası olarak durur. Kişilik; prompt simgesini, kenar stilini, büyük/küçük harfi, ayırıcıları, liste simgelerini ve tarih biçimini belirler. Her tema `STYLE=` ile bir kişiliğe bağlıdır. `style list` ve `style set AD|auto` ile başka bir kişilik seçilebilir, örneğin Nord renkleriyle retro. İlk tüketici fzf'tir (kenar, imleç, istem); prompt ve araçlar sonraki adımlarda bağlanacak.
 - **Renk rolleri ve okunabilirlik garantisi.** Temanın 16 rengi değişmez; Terminal Setup'ın çizdiği her şey (fzf, btop, tmux, tema önizlemesi) anlamı olan rolleri kullanır. Soluk yazı her tema için 4.5:1 kontrasta ulaşacak şekilde hesaplanır; renkli roller en az 3:1, seçili satır en az 4.5:1 olur. Daha önce fzf başlıkları ve btop'un pasif yazıları 12 temanın 9'unda okunması güç renkteydi (Solarized'da arka planla aynı renk). Her temada bütün sınırlar testle denetlenir.

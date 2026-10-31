@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Teşhis: Powerlevel10k var ama MesloLGS NF yazı tipi yok
+# Teşhis: prompt (Starship ya da Powerlevel10k) var ama MesloLGS NF yazı tipi yok
 
 diag_register fonts "Yazı tipi"
 
@@ -8,7 +8,7 @@ diag_fonts_check() {
         diag_say "MesloLGS NF kurulu"
         return 0
     fi
-    if [[ "$(component_state p10k)" == "ours" ]]; then
+    if [[ "$(component_state starship)" == "ours" || "$(component_state p10k)" == "ours" ]]; then
         diag_say "MesloLGS NF yok; prompt ikonları kare görünür"
         return 1
     fi

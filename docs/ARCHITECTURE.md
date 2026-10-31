@@ -204,7 +204,9 @@ Tema = palet + kişilik. Palet renkleri, kişilik biçimi belirler: prompt simge
 | `SEPARATOR`, `DATE_FORMAT`, `BAT_STYLE` | ayırıcı, `+strftime` biçimi, bat `--style` değeri |
 | `ICONS`, `GIT_SYMBOLS` | `on`/`off`; `unicode`, `ascii`, `minimal` |
 
-Temanın kişiliği `STYLE=` anahtarıdır. Kullanıcı başka birini seçebilir (`style set retro`, ayar: `style`); `auto` temanınkine döner. `theme_load` geçerli kişiliği `STYLE[...]` dizisine yükler; tüketiciler oradan okur. Şu an fzf kenarı, imleci ve istemi kişilikten gelir; prompt, karşılama kartı ve araçlar v7'nin sonraki adımlarında bağlanır ([plan](V7_PLAN.md)).
+Temanın kişiliği `STYLE=` anahtarıdır. Kullanıcı başka birini seçebilir (`style set retro`, ayar: `style`); `auto` temanınkine döner. `theme_load` geçerli kişiliği `STYLE[...]` dizisine yükler; tüketiciler oradan okur. Kişilikten okuyanlar: Starship prompt'u, fzf (kenar, imleç, istem). Karşılama kartı ve diğer araçlar v7'nin sonraki adımlarında bağlanır ([plan](V7_PLAN.md)).
+
+**Starship** (`renderers/starship.sh`, araç renderer'ı): ayar dosyası `~/.config/terminal-setup/starship.toml` rollerden ve kişilikten üretilir, tema ya da kişilik değişince yeniden yazılır; Starship onu `STARSHIP_CONFIG` ile okur, kullanıcının `~/.config/starship.toml`'una dokunulmaz. `SEGMENTS` prompt biçimini seçer (`plain`, `minimal`, `powerline`, `pills`, `brackets`, `arrows`). Tema uygulanmamışsa renkler terminalin kendi 16 renginin adlarından gelir. Nerd Font karakterleri dosyaya TOML kaçışı olarak yazılır; kaynakta ham Nerd Font karakteri bulunamaz (statik kontrol 7). Uçtan uca testte her kişilik gerçek Starship ile denetlenir.
 
 Yeni kişilik: `styles/` altına bir dosya; kod gerekmez. `tests/unit/styles.bats` her dosyayı ve her temanın bağlantısını denetler.
 

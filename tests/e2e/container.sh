@@ -55,11 +55,23 @@ as_user "./terminal-setup.sh --yes install --profile full --theme nord" || fail 
 [[ "$(getent passwd "$USER_NAME" | cut -d: -f7)" == */zsh ]] || fail "varsayılan kabuk zsh olmadı"
 
 step "Araçlar çalışıyor mu?"
-for cmd in zsh fzf zoxide eza batcat rg fdfind delta lazygit btop dust duf procs atuin tldr tmux; do
+for cmd in zsh starship fzf zoxide eza batcat rg fdfind delta lazygit btop dust duf procs atuin tldr tmux; do
     as_user "export PATH=\$HOME/.local/bin:\$PATH; command -v $cmd >/dev/null" || fail "$cmd bulunamadı"
     printf '  ✓ %s\n' "$cmd"
 done
 [[ "$(as_user 'git config --global --get core.pager')" == "delta" ]] || fail "delta git'e bağlanmadı"
+
+step "Starship ayarı her kişilikte geçerli mi? (gerçek starship)"
+cfg="/home/$USER_NAME/.config/terminal-setup/starship.toml"
+grep -q 'palette = "terminal_setup"' "$cfg" || fail "Starship ayarı temadan üretilmedi"
+for s in $(ls "$WORK"/styles | sed 's/\.style$//') auto; do
+    as_user "./terminal-setup.sh --yes style set $s" > /dev/null || fail "kişilik seçilemedi: $s"
+    as_user "export PATH=\$HOME/.local/bin:\$PATH; cd $WORK; STARSHIP_CONFIG=$cfg starship prompt --status=1 --cmd-duration=3000" \
+        > /tmp/prompt.out 2> /tmp/prompt.err || fail "starship prompt hata verdi: $s"
+    [[ -s /tmp/prompt.err ]] && { cat /tmp/prompt.err; fail "starship ayarında uyarı: $s"; }
+    [[ -s /tmp/prompt.out ]] || fail "starship boş prompt çizdi: $s"
+    printf '  ✓ %s\n' "$s"
+done
 
 step "Tema araçlara uygulandı mı?"
 snippet="/home/$USER_NAME/.config/terminal-setup/zsh.d/65-theme-tools.zsh"
