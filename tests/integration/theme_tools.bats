@@ -74,3 +74,31 @@ setup() {
     run ts style set olmayan
     [ "$status" -eq 2 ]
 }
+
+@test "tmux, lazygit ve eza kişiliği izler; kaldırınca iz kalmaz" {
+    local cfg="$HOME/.config/terminal-setup"
+    ts install --components zsh,tmux,lazygit,eza --theme nord
+    grep -qx "set -g pane-border-lines single" "$cfg/tmux-theme.conf"
+    grep -qx "  border: hidden" "$cfg/lazygit.yml"
+    grep -q "LG_CONFIG_FILE" "$cfg/zsh.d/65-theme-lazygit.zsh"
+    grep -q -- "--icons=auto" "$SNIP"
+
+    ts style set retro
+    grep -q "\[#I:#W\]" "$cfg/tmux-theme.conf"
+    grep -qx "  border: single" "$cfg/lazygit.yml"
+    grep -q -- "--icons=never" "$SNIP"
+    grep -qx "export BAT_STYLE='numbers'" "$SNIP"
+
+    run ts theme reset
+    [ "$status" -eq 0 ]
+    [ ! -e "$SNIP" ]
+    ts uninstall
+    [ ! -e "$cfg" ]
+}
+
+@test "tema uygulandıktan sonra kurulan lazygit temayı hemen alır" {
+    ts install --components zsh --theme dracula
+    ts install --components lazygit
+    grep -qx "  border: single" "$HOME/.config/terminal-setup/lazygit.yml"
+    grep -q "Kişilik: vivid  Tema: Dracula" "$HOME/.config/terminal-setup/lazygit.yml"
+}

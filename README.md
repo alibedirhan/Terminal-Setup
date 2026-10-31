@@ -1,6 +1,6 @@
 # Terminal Setup
 
-Ubuntu terminalini tek seferde güzel ve kullanışlı hale getiren, **yaptığı her şeyi geri alabilen** kurulum aracı. Zsh, Starship, 12 renk teması, 14 modern komut satırı aracı ve tmux'u bir menüden kurar; seçtiğiniz tema terminalle birlikte bat, delta, fzf ve btop'a da uygulanır. Beğenmezseniz tek komutla kurulumdan önceki haline döner; kurulumdan önce sizde olan hiçbir şeye dokunmaz.
+Ubuntu terminalini tek seferde güzel ve kullanışlı hale getiren, **yaptığı her şeyi geri alabilen** kurulum aracı. Zsh, Starship, 12 renk teması, 14 modern komut satırı aracı ve tmux'u bir menüden kurar; seçtiğiniz tema terminalle birlikte prompt'a ve araçlara da (bat, delta, fzf, eza, tmux, lazygit, btop) uygulanır. Beğenmezseniz tek komutla kurulumdan önceki haline döner; kurulumdan önce sizde olan hiçbir şeye dokunmaz.
 
 ![Version](https://img.shields.io/badge/version-6.2.2-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -28,7 +28,7 @@ Kurulumdan önce sizde olan bir paket (ör. tmux) ya da dosya (ör. kendi `.zshr
 | Ekstra | tmux (temalı durum çubuğu), örnek alias'lar ve mevcut `~/.bash_aliases` dosyanızın zsh'e bağlanması, isteğe bağlı JetBrains Mono ve Fira Code Nerd Font |
 | Temalar | Koyu: Catppuccin Mocha, Dracula, Everforest, Gruvbox, Kanagawa, Nord, One Dark, Rosé Pine, Solarized, Tokyo Night. Açık: Catppuccin Latte, Gruvbox Light |
 | Terminaller | GNOME Terminal, Ptyxis (Ubuntu 25.10+), Kitty, Alacritty, Ghostty, WezTerm |
-| Araç renkleri | bat ve delta (söz dizimi teması), fzf, btop ve tmux da seçilen temaya uyar |
+| Araçlar temaya uyar | Renkler: bat ve delta (söz dizimi teması), fzf, eza, tmux, lazygit, btop. Biçim temanın kişiliğinden: fzf ve lazygit kenarları, tmux durum çubuğu, eza simgeleri ve tarih biçimi, bat çerçevesi |
 
 Üç hazır profil vardır: **minimal** (kabuk), **developer** (kabuk + geliştirici araçları, varsayılan) ve **full** (her şey).
 

@@ -208,7 +208,22 @@ Tema = palet + kişilik. Palet renkleri, kişilik biçimi belirler: prompt simge
 | `SEPARATOR`, `DATE_FORMAT`, `BAT_STYLE` | ayırıcı, `+strftime` biçimi, bat `--style` değeri |
 | `ICONS`, `GIT_SYMBOLS` | `on`/`off`; `unicode`, `ascii`, `minimal` |
 
-Temanın kişiliği `STYLE=` anahtarıdır. Kullanıcı başka birini seçebilir (`style set retro`, ayar: `style`); `auto` temanınkine döner. `theme_load` geçerli kişiliği `STYLE[...]` dizisine yükler; tüketiciler oradan okur. Kişilikten okuyanlar: Starship prompt'u, fzf (kenar, imleç, istem). Karşılama kartı ve diğer araçlar v7'nin sonraki adımlarında bağlanır ([plan](V7_PLAN.md)).
+Temanın kişiliği `STYLE=` anahtarıdır. Kullanıcı başka birini seçebilir (`style set retro`, ayar: `style`); `auto` temanınkine döner. `theme_load` geçerli kişiliği `STYLE[...]` dizisine yükler; tüketiciler oradan okur. Kişilikten Starship prompt'u ve araçlar okur. Karşılama kartı v7.1'de bağlanır ([plan](V7_PLAN.md)).
+
+| Araç | Kişilikten | Nasıl |
+|---|---|---|
+| fzf | kenar, imleç, istem | `FZF_DEFAULT_OPTS` |
+| eza | simgeler (`ICONS`), tarih (`DATE_FORMAT`); tarih ve noktalama rengi `muted` rolünden | takma adlar `TS_EZA_OPTS` dizisini okur; `EZA_COLORS` |
+| bat | çerçeve (`BAT_STYLE`); `cat` takma adı sade kalır | `BAT_STYLE` |
+| tmux | pencere etiketi (`SEGMENTS`, prompt'la aynı dil), ayırıcı, tarih, bölme çizgisi | `tmux-theme.conf` |
+| lazygit | kenar (`BORDER`), dosya simgeleri (`ICONS`), renkler rollerden | `lazygit.yml`; `LG_CONFIG_FILE` (`65-theme-lazygit`) |
+| btop | köşeler (`rounded_corners`), yalnızca `btop.conf` oluşturulurken | `act_seed_file` |
+
+Kenar stilinin her araçtaki karşılığı tek yerde tanımlıdır: `style_border_for fzf|tmux|lazygit|btop` (`lib/styles.sh`). Bir aracın karşılığı yoksa en yakını seçilir: tmux'ta yuvarlak bölme çizgisi yok (`single`), lazygit'te kalın çizgi yok (`single`), kutusuz kişilik lazygit'te `hidden` olur. `DATE_FORMAT` zsh, tmux ve eza'ya tırnak içinde yazıldığı için yalnızca `% harf rakam boşluk . : / -` içerebilir; `BAT_STYLE` parçaları bat'ın bildikleriyle denetlenir.
+
+**lazygit** kendi ayar dosyasını birden çok dosyadan okuyabilir (`LG_CONFIG_FILE=a.yml,b.yml`, sonraki üstün). Renderer'ın zsh parçası (`65-theme-lazygit`) önce Terminal Setup'ın `lazygit.yml`'ını, varsa ardından kullanıcının `config.yml`'ını verir; kullanıcının ayarı kazanır, dosyasına dokunulmaz. lazygit listedeki her dosyanın var olmasını istediği için kullanıcının dosyası yalnızca varsa eklenir; kullanıcı `LG_CONFIG_FILE`'ı kendisi vermişse dokunulmaz. bat ve btop gibi lazygit de script kurmamış olsa bile temaya uyar (birden çok dosya lazygit 0.30'dan, 2021'den beri destekleniyor).
+
+Uçtan uca testte her kişiliğin ayarları gerçek eza, bat, tmux ve lazygit ile denetlenir (`tests/e2e/tool_styles.zsh`): araç hata verirse ya da uyarı yazarsa test düşer.
 
 **Starship** (`renderers/starship.sh`, araç renderer'ı): ayar dosyası `~/.config/terminal-setup/starship.toml` rollerden ve kişilikten üretilir, tema ya da kişilik değişince yeniden yazılır; Starship onu `STARSHIP_CONFIG` ile okur, kullanıcının `~/.config/starship.toml`'una dokunulmaz. `SEGMENTS` prompt biçimini seçer (`plain`, `minimal`, `powerline`, `pills`, `brackets`, `arrows`). Tema uygulanmamışsa renkler terminalin kendi 16 renginin adlarından gelir. Nerd Font karakterleri dosyaya TOML kaçışı olarak yazılır; kaynakta ham Nerd Font karakteri bulunamaz (statik kontrol 7). Uçtan uca testte her kişilik gerçek Starship ile denetlenir.
 
@@ -218,7 +233,7 @@ Yeni kişilik: `styles/` altına bir dosya; kod gerekmez. `tests/unit/styles.bat
 
 `renderers/<ad>.sh`: `renderer_register <ad> "Ad" [terminal|tool]`, `rend_<ad>_available`, `rend_<ad>_apply` ve isteğe bağlı `rend_<ad>_font`. Terminal renderer'ları temanın 16 rengini `THEME[...]`'dan, araç renderer'ları metin renklerini `ROLE[...]`'dan okur; değişiklikler `act_*` ile yapılır.
 
-Tür `terminal` (varsayılan) ya da `tool`'dur. Araç renderer'ları (tmux, bat/delta/fzf, btop) temayı bir araca uygular; durum ekranında ve teşhiste terminal sayılmazlar. Kullanıcının araç ayar dosyalarına dokunulmaz: bat/delta/fzf, Terminal Setup'ın kendi zsh parçasındaki ortam değişkenleriyle (`BAT_THEME`, `FZF_DEFAULT_OPTS`) ayarlanır.
+Tür `terminal` (varsayılan) ya da `tool`'dur. Araç renderer'ları (Starship, tmux, lazygit, bat/delta/fzf/eza, btop) temayı ve kişiliği bir araca uygular; durum ekranında ve teşhiste terminal sayılmazlar. Kullanıcının araç ayar dosyalarına dokunulmaz: bat/delta/fzf/eza, Terminal Setup'ın kendi zsh parçasındaki ortam değişkenleriyle (`BAT_THEME`, `BAT_STYLE`, `FZF_DEFAULT_OPTS`, `EZA_COLORS`) ayarlanır; tmux, lazygit ve Starship `~/.config/terminal-setup/` altındaki kendi dosyalarını okur.
 
 Yazı tipi `rend_<ad>_font` ile uygulanır; hangi yazı tipinin uygulanacağını `lib/fonts.sh` belirler (`font` ayarı; seçili yazı tipinin bileşeni kaldırılırsa MesloLGS NF'ye dönülür).
 
