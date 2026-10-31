@@ -36,14 +36,13 @@ Güvenlik nedeniyle `curl ... | bash` biçimi önerilmez; betiği önce indirip 
 2. Profil seçin: `minimal`, `developer` (önerilen) ya da `full`. "özel" ile bileşenleri tek tek seçebilirsiniz.
 3. Tema seçin (sonradan "Tema dene" ile değiştirilebilir).
 4. Özeti onaylayın. İlk kurulumdan önce başlangıç fotoğrafı alınır.
-5. Kurulum bitince Powerlevel10k görünüm sihirbazını şimdi açmayı seçebilirsiniz.
-6. Terminali kapatıp yeniden açın.
+5. Terminali kapatıp yeniden açın. Prompt (Starship) seçtiğiniz temaya ve kişiliğe göre hazır gelir.
 
 Etkileşimsiz kurulum:
 
 ```bash
 ./terminal-setup.sh --yes install --profile developer --theme tokyo-night
-./terminal-setup.sh --yes install --components zsh,p10k,fzf,bat
+./terminal-setup.sh --yes install --components zsh,starship,fzf,bat
 ```
 
 Ne yapılacağını önceden görmek için başına `--dry-run` ekleyin.
@@ -55,7 +54,8 @@ Ne yapılacağını önceden görmek için başına `--dry-run` ekleyin.
 | İkonlar kare görünüyor | Terminal tercihlerinden yazı tipini **MesloLGS NF** yapın (GNOME Terminal ve Ptyxis'te otomatik ayarlanır) |
 | Hâlâ bash açılıyor | Oturumu kapatıp açın; ya da `./terminal-setup.sh doctor` |
 | Renkler değişmedi | Yeni bir terminal penceresi açın; Ptyxis'te bir kez açıp temayı yeniden uygulayın |
-| Prompt görünümünü değiştirmek | zsh içinde `p10k configure` |
+| Prompt'un biçimini değiştirmek | `./terminal-setup.sh style set retro` (kişilikler: `style list`; `auto` temanınkine döner) |
+| Powerlevel10k istiyorum | `./terminal-setup.sh remove starship`, ardından `install --components p10k`; görünüm sihirbazı: `p10k configure` |
 | Bir araç çalışmıyor | `./terminal-setup.sh doctor --fix` |
 
 Sorun devam ederse: `bash scripts/collect_logs.sh` ile log paketi oluşturup [issue açın](https://github.com/alibedirhan/Terminal-Setup/issues).

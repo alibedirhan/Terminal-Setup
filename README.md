@@ -1,6 +1,6 @@
 # Terminal Setup
 
-Ubuntu terminalini tek seferde güzel ve kullanışlı hale getiren, **yaptığı her şeyi geri alabilen** kurulum aracı. Zsh, Oh My Zsh, Powerlevel10k (ya da Starship), 12 renk teması, 14 modern komut satırı aracı ve tmux'u bir menüden kurar; seçtiğiniz tema terminalle birlikte bat, delta, fzf ve btop'a da uygulanır. Beğenmezseniz tek komutla kurulumdan önceki haline döner; kurulumdan önce sizde olan hiçbir şeye dokunmaz.
+Ubuntu terminalini tek seferde güzel ve kullanışlı hale getiren, **yaptığı her şeyi geri alabilen** kurulum aracı. Zsh, Oh My Zsh, Starship (ya da Powerlevel10k), 12 renk teması, 14 modern komut satırı aracı ve tmux'u bir menüden kurar; seçtiğiniz tema terminalle birlikte bat, delta, fzf ve btop'a da uygulanır. Beğenmezseniz tek komutla kurulumdan önceki haline döner; kurulumdan önce sizde olan hiçbir şeye dokunmaz.
 
 ![Version](https://img.shields.io/badge/version-6.2.2-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -23,7 +23,7 @@ Kurulumdan önce sizde olan bir paket (ör. tmux) ya da dosya (ör. kendi `.zshr
 
 | Grup | Bileşenler |
 |---|---|
-| Kabuk | Zsh (varsayılan kabuk yapılır), Oh My Zsh, Powerlevel10k ya da Starship, MesloLGS NF yazı tipi, komut önerisi ve sözdizimi renklendirme eklentileri, fzf-tab (Tab ile aranabilir tamamlama) |
+| Kabuk | Zsh (varsayılan kabuk yapılır), Oh My Zsh, Starship (temaya ve kişiliğe uyan prompt; Powerlevel10k isteğe bağlı), MesloLGS NF yazı tipi, komut önerisi ve sözdizimi renklendirme eklentileri, fzf-tab (Tab ile aranabilir tamamlama) |
 | Araçlar | fzf, zoxide, eza, bat, ripgrep, fd, delta, lazygit, btop, dust, duf, procs, atuin, tldr (tealdeer) |
 | Ekstra | tmux (temalı durum çubuğu), örnek alias'lar ve mevcut `~/.bash_aliases` dosyanızın zsh'e bağlanması, isteğe bağlı JetBrains Mono ve Fira Code Nerd Font |
 | Temalar | Koyu: Catppuccin Mocha, Dracula, Everforest, Gruvbox, Kanagawa, Nord, One Dark, Rosé Pine, Solarized, Tokyo Night. Açık: Catppuccin Latte, Gruvbox Light |
@@ -143,7 +143,7 @@ Son geliştirmeler ve kaldığımız nokta: [proje özeti](docs/PROJE_OZETI.md).
 ## Kalite
 
 - Her push'ta CI: ShellCheck (sıfır uyarı), 600 satır sınırı, "sisteme yalnızca `lib/actions/` dokunur" kuralı.
-- 219 birim, entegrasyon ve etkileşim testi, sahte bir sistem üzerinde (gerçek sisteme dokunmaz, ağa çıkmaz).
+- 229 birim, entegrasyon ve etkileşim testi, sahte bir sistem üzerinde (gerçek sisteme dokunmaz, ağa çıkmaz).
 - Temiz Ubuntu 22.04, 24.04 ve 26.04 konteynerlerinde gerçek gidiş-dönüş testi: tam kurulum → zsh oturumu → kaldırma → paket listesi, ev dizini, kabuk ve `/etc/shells` kurulum öncesiyle aynı mı?
 - İngilizce arayüz testi: tüm akış İngilizce çalıştırılır; çevirisi eksik ya da Türkçe kalan tek bir metin testi düşürür.
 - Aynı üç sürümde gerçek dconf ile GNOME Terminal ve Ptyxis testi: tema ve yazı tipi anahtarları şemaya uyuyor mu, kullanıcının kendi ayarları korunuyor mu, kaldırınca dconf eskisiyle aynı mı?
@@ -161,4 +161,4 @@ MIT — [LICENSE](LICENSE)
 
 ## Teşekkürler
 
-[Oh My Zsh](https://ohmyz.sh/), [Powerlevel10k](https://github.com/romkatv/powerlevel10k) ve kurulan tüm araçların geliştiricilerine.
+[Oh My Zsh](https://ohmyz.sh/), [Starship](https://starship.rs/), [Powerlevel10k](https://github.com/romkatv/powerlevel10k) ve kurulan tüm araçların geliştiricilerine.

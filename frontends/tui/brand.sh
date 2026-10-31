@@ -20,7 +20,7 @@ TUI_HERO_ROWS=32      # büyük logo için gereken en az satır
 _TUI_LOGO_CACHE=() _TUI_NAME_CACHE="" _TUI_CACHE_DEPTH=""
 
 # Durum önbelleği
-_TUI_ST_ZSH=off _TUI_ST_P10K=off _TUI_ST_THEME="" _TUI_ST_THEME_NAME=""
+_TUI_ST_ZSH=off _TUI_ST_PROMPT="off Prompt" _TUI_ST_THEME="" _TUI_ST_THEME_NAME=""
 _TUI_ST_COUNT=0 _TUI_ST_BROKEN=0 _TUI_ST_PILLS=""
 
 _tui_cache_art() {
@@ -45,12 +45,19 @@ _tui_zsh_state() {
     else echo off; fi
 }
 
-_tui_p10k_state() {
-    case "$(component_state p10k)" in
-        ours) echo ok ;;
-        broken) echo err ;;
-        *) [[ -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]] && echo info || echo off ;;
-    esac
+# Prompt durumu: Starship (v7 varsayılanı) ya da Powerlevel10k -> REPLY="durum Ad"
+_tui_prompt_state() {
+    local id st
+    for id in starship p10k; do
+        st=$(component_state "$id")
+        case "$st" in
+            ours) REPLY="ok ${COMP_NAME[$id]}"; return ;;
+            broken) REPLY="err ${COMP_NAME[$id]}"; return ;;
+        esac
+    done
+    if has_cmd starship; then REPLY="info Starship"
+    elif [[ -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]]; then REPLY="info Powerlevel10k"
+    else REPLY="off Prompt"; fi
 }
 
 _tui_status_refresh() {
@@ -58,7 +65,8 @@ _tui_status_refresh() {
     ((UI_HEADER_STALE)) || return 0
     UI_HEADER_STALE=0
     _TUI_ST_ZSH=$(_tui_zsh_state)
-    _TUI_ST_P10K=$(_tui_p10k_state)
+    _tui_prompt_state
+    _TUI_ST_PROMPT="$REPLY"
     _TUI_ST_THEME=$(settings_get theme)
     _TUI_ST_THEME_NAME=""
     [[ -n "$_TUI_ST_THEME" ]] && _TUI_ST_THEME_NAME=$(theme_load "$_TUI_ST_THEME" >/dev/null 2>&1 && echo "${THEME[NAME]}")
@@ -78,7 +86,7 @@ _tui_status_refresh() {
         ui_badge "$_TUI_ST_ZSH" "Zsh"
     fi
     pills="$REPLY   "
-    ui_badge "$_TUI_ST_P10K" "Powerlevel10k"
+    ui_badge "${_TUI_ST_PROMPT%% *}" "${_TUI_ST_PROMPT#* }"
     pills+="$REPLY   "
     if [[ -n "$_TUI_ST_THEME_NAME" ]]; then
         _t "Tema %s" "${U_BOLD}${_TUI_ST_THEME_NAME}${U_RST}"

@@ -1,6 +1,6 @@
-# Açıklama: Zsh + Oh My Zsh + Powerlevel10k, yazı tipi ve eklentiler
+# Açıklama: Zsh + Oh My Zsh + Starship, yazı tipi ve eklentiler
 zsh
 ohmyzsh
 fonts
-p10k
+starship
 zsh-plugins

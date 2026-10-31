@@ -15,8 +15,8 @@ Kararlar, gerçek bir Ubuntu 24.04 GNOME masaüstünde yapılan üç prototipe d
 | # | İş | Durum |
 |---|---|---|
 | 1 | **Renk rolleri ve okunabilirlik garantisi** | [#11](https://github.com/alibedirhan/Terminal-Setup/pull/11) |
-| 2 | **Tema kişilikleri**: `STYLE=` anahtarı; modern, arctic, vivid, retro, soft, neon | bu dal |
-| 3 | **Starship varsayılan prompt**: ayar dosyası palet ve kişilikten üretilir; Powerlevel10k seçenek | — |
+| 2 | **Tema kişilikleri**: `STYLE=` anahtarı; modern, arctic, vivid, retro, soft, neon | ayrı PR |
+| 3 | **Starship varsayılan prompt**: ayar dosyası palet ve kişilikten üretilir; Powerlevel10k seçenek | bu dal |
 | 4 | **Oh My Zsh'siz zsh temeli**: eklentiler doğrudan yüklenir | — |
 | 5 | **Araçlar kişiliğe uyar**: eza, bat, fzf, btop, tmux, lazygit | — |
 | 6 | **Sistem dili**: bütün metinler sistemin diliyle | — |
@@ -83,7 +83,7 @@ v6 kullanıcısının prompt'u ve Oh My Zsh'i güncellemeyle kendiliğinden değ
 
 - **`local` aynı satırda:** zsh'te `local a=x b=$a`, `b` için `a`'nın eski değerini görür.
 - **Kısa süreler:** Kayan noktalı kısa süreler `5.7e-05` diye yazılır; süreler tam sayıyla hesaplanmalı.
-- **Nerd Font karakterleri:** Özel kullanım alanı karakterleri (U+E0B0 gibi) kaynakta kaçış dizisiyle (``) tutulmalı.
+- **Nerd Font karakterleri:** Özel kullanım alanı karakterleri (U+E0B0 gibi) kaynakta kaçış dizisiyle (`\ue0b0`) tutulmalı.
 - **Kart genişliği:** Kart satırları genişlik sınırına göre kısaltılmalı; uzun dal adları kartı taşırıyordu.
 - **`$commands` tablosu:** PATH'e sonradan eklenen bir komutu görmeyebilir; `whence -p` kullanılmalı.
 - **Şeffaflık:** Arkadaki açık renkli bir pencere ana yazıyı %80 opaklıkta 3,6:1'e düşürüyor; şeffaflık en fazla %10 önerilir.
