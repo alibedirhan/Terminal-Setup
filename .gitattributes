@@ -6,6 +6,7 @@ tests/ export-ignore
 # README görselleri ve onları üreten araç (çalışmak için gerekmez)
 docs/images/ export-ignore
 scripts/demo/ export-ignore
-# Geliştirme özeti ve video hazırlığı kurulum paketinde gerekmez
+# Geliştirme özeti, plan ve video hazırlığı kurulum paketinde gerekmez
 docs/PROJE_OZETI.md export-ignore
 docs/VIDEO_HAZIRLIK.md export-ignore
+docs/V7_PLAN.md export-ignore

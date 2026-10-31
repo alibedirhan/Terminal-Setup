@@ -20,9 +20,9 @@ rend_btop_available() {
 # btop tema dosyasının içeriği -> REPLY
 _btop_theme() {
     local -A t=(
-        [main_bg]=BACKGROUND [main_fg]=FOREGROUND [title]=FOREGROUND [hi_fg]=ACCENT
-        [selected_bg]=SELECTION_BG [selected_fg]=SELECTION_FG [inactive_fg]=COLOR8
-        [graph_text]=COLOR7 [meter_bg]=BORDER [proc_misc]=COLOR6 [div_line]=BORDER
+        [main_bg]=BACKGROUND [main_fg]=FOREGROUND [title]=FOREGROUND [hi_fg]=role:accent
+        [selected_bg]=role:sel [selected_fg]=role:sel_fg [inactive_fg]=role:muted
+        [graph_text]=role:muted [meter_bg]=BORDER [proc_misc]=role:info [div_line]=BORDER
         [cpu_box]=COLOR4 [mem_box]=COLOR2 [net_box]=COLOR5 [proc_box]=COLOR6
         [temp_start]=COLOR2 [temp_mid]=COLOR3 [temp_end]=COLOR1
         [cpu_start]=COLOR2 [cpu_mid]=COLOR3 [cpu_end]=COLOR1
@@ -34,10 +34,12 @@ _btop_theme() {
         [upload_start]=COLOR5 [upload_mid]=COLOR1 [upload_end]=COLOR9
         [process_start]=COLOR2 [process_mid]=COLOR3 [process_end]=COLOR1
     )
-    local key
+    local key src color
     REPLY="# Terminal Setup: ${THEME[NAME]}"
     for key in $(printf '%s\n' "${!t[@]}" | sort); do
-        REPLY+=$'\n'"theme[$key]=\"${THEME[${t[$key]}]}\""
+        src="${t[$key]}"
+        if [[ "$src" == role:* ]]; then color="${ROLE[${src#role:}]}"; else color="${THEME[$src]}"; fi
+        REPLY+=$'\n'"theme[$key]=\"$color\""
     done
 }
 

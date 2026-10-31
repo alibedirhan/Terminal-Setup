@@ -18,12 +18,12 @@ rend_clitools_available() {
     [[ -f "$TS_CONFIG_DIR/init.zsh" ]]
 }
 
-# fzf --color değeri: _clitools_fzf_colors -> REPLY
+# fzf --color değeri, renk rollerinden (lib/palette.sh): _clitools_fzf_colors -> REPLY
 _clitools_fzf_colors() {
-    REPLY="fg:${THEME[FOREGROUND]},bg:-1,hl:${THEME[COLOR4]},fg+:${THEME[FOREGROUND]}"
-    REPLY+=",bg+:${THEME[SELECTION_BG]},hl+:${THEME[COLOR12]},info:${THEME[COLOR3]}"
-    REPLY+=",prompt:${THEME[ACCENT]},pointer:${THEME[ACCENT]},marker:${THEME[COLOR2]}"
-    REPLY+=",spinner:${THEME[ACCENT]},header:${THEME[COLOR8]},border:${THEME[BORDER]}"
+    REPLY="fg:${ROLE[fg]},bg:-1,hl:${ROLE[accent]},fg+:${ROLE[sel_fg]}"
+    REPLY+=",bg+:${ROLE[sel]},hl+:${ROLE[accent]},info:${ROLE[muted]}"
+    REPLY+=",prompt:${ROLE[accent]},pointer:${ROLE[accent]},marker:${ROLE[ok]}"
+    REPLY+=",spinner:${ROLE[accent]},header:${ROLE[muted]},border:${ROLE[border]}"
 }
 
 rend_clitools_apply() {
