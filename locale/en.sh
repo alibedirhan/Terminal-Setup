@@ -541,7 +541,6 @@ I18N_EN=(
     ["kişilik: %s"]="personality: %s"
     ["Kişilik bulunamadı: %s"]="Personality not found: %s"
     ["%s: %s geçersiz (%s)"]="%s: %s is invalid (%s)"
-    ["%s: PROMPT_SYMBOL ya da DATE_FORMAT geçersiz"]="%s: PROMPT_SYMBOL or DATE_FORMAT is invalid"
     ["Kişilik adı gerekli (ya da auto)"]="Personality name required (or auto)"
     ["Kişilik bulunamadı: %s (seçenekler: %s)"]="Personality not found: %s (choices: %s)"
     ["Kişilik kaydedildi; bir tema uygulandığında kullanılacak."]="Personality saved; it will be used when a theme is applied."

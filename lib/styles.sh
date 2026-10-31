@@ -6,7 +6,9 @@
 # yerleşimini, segment biçimini, kenar stilini, büyük/küçük harfi, ayırıcıyı,
 # liste simgelerini, tarih biçimini, bat çerçevesini ve git simgelerini
 # belirler. Bir temanın içinde her şey aynı kişiliği konuşur; temalar
-# birbirinden yalnızca renkle değil biçimle de ayrılır.
+# birbirinden yalnızca renkle değil biçimle de ayrılır. Araçlar (fzf, eza,
+# bat, tmux, lazygit, btop) kişiliği kendi renderer'larında okur; kenar
+# stilinin araçlardaki karşılığı style_border_for'dadır.
 #
 # Hangi kişilik: kullanıcının seçtiği (ayar: style) ya da temanın STYLE'ı.
 # Dosyalar kaynak olarak yüklenmez (source edilmez); değerler denetlenir.
@@ -28,6 +30,8 @@ declare -gA STYLE_CHOICES=(
     [ICONS]="on off"
     [GIT_SYMBOLS]="unicode ascii minimal"
 )
+# bat --style parçaları (Ubuntu 22.04'teki bat 0.19'un da bildikleri)
+STYLE_BAT_PARTS="auto full plain changes header grid rule numbers snip"
 
 style_list() {
     local f
@@ -57,8 +61,17 @@ style_load() {
         in_list "${STYLE[$key]}" ${STYLE_CHOICES[$key]} ||
             { log_err "%s: %s geçersiz (%s)" "$name" "$key" "${STYLE[$key]}"; return 1; }
     done
-    [[ -n "${STYLE[PROMPT_SYMBOL]}" && "${STYLE[DATE_FORMAT]}" == +* ]] ||
-        { log_err "%s: PROMPT_SYMBOL ya da DATE_FORMAT geçersiz" "$name"; return 1; }
+    [[ -n "${STYLE[PROMPT_SYMBOL]}" ]] || { log_err "%s: %s eksik" "$name" PROMPT_SYMBOL; return 1; }
+    # Tarih biçimi zsh, tmux ve eza'ya tırnak içinde yazılır: yalnızca güvenli karakterler
+    local date_re='^[+][%A-Za-z0-9 .:/-]+$' part parts
+    [[ "${STYLE[DATE_FORMAT]}" =~ $date_re ]] ||
+        { log_err "%s: %s geçersiz (%s)" "$name" DATE_FORMAT "${STYLE[DATE_FORMAT]}"; return 1; }
+    IFS=, read -ra parts <<< "${STYLE[BAT_STYLE]}"
+    ((${#parts[@]})) || { log_err "%s: %s eksik" "$name" BAT_STYLE; return 1; }
+    for part in "${parts[@]}"; do
+        in_list "$part" $STYLE_BAT_PARTS ||
+            { log_err "%s: %s geçersiz (%s)" "$name" BAT_STYLE "${STYLE[BAT_STYLE]}"; return 1; }
+    done
 }
 
 # Geçerli kişiliğin adı -> REPLY: kullanıcının seçimi, yoksa temanınki
@@ -97,13 +110,33 @@ style_case() {
     esac
 }
 
+# Kişiliğin kenar stili bir aracın dilinde: style_border_for ARAÇ -> REPLY
+# Bir aracın karşılığı yoksa en yakını seçilir (tmux'ta yuvarlak bölme
+# çizgisi, lazygit'te kalın çizgi yok). btop: rounded_corners değeri.
+#
+#            fzf      tmux    lazygit  btop
+#   rounded  rounded  single  rounded  True
+#   sharp    sharp    single  single   False
+#   heavy    bold     heavy   single   False
+#   double   double   double  double   False
+#   none     left     single  hidden   False
+style_border_for() {
+    local b="${STYLE[BORDER]}"
+    case "$1" in
+        fzf)
+            case "$b" in heavy) REPLY=bold ;; none) REPLY=left ;; *) REPLY="$b" ;; esac ;;
+        tmux)
+            case "$b" in heavy | double) REPLY="$b" ;; *) REPLY=single ;; esac ;;
+        lazygit)
+            case "$b" in rounded | double) REPLY="$b" ;; none) REPLY=hidden ;; *) REPLY=single ;; esac ;;
+        btop)
+            if [[ "$b" == rounded ]]; then REPLY=True; else REPLY=False; fi ;;
+        *) return 1 ;;
+    esac
+}
+
 # fzf seçenekleri (kenar, imleç, istem) -> REPLY
 style_fzf_opts() {
-    local border
-    case "${STYLE[BORDER]}" in
-        heavy) border=bold ;;
-        none) border=left ;;
-        *) border="${STYLE[BORDER]}" ;;
-    esac
-    REPLY="--border=$border --pointer='${STYLE[PROMPT_SYMBOL]}' --prompt='${STYLE[PROMPT_SYMBOL]} '"
+    style_border_for fzf
+    REPLY="--border=$REPLY --pointer='${STYLE[PROMPT_SYMBOL]}' --prompt='${STYLE[PROMPT_SYMBOL]} '"
 }

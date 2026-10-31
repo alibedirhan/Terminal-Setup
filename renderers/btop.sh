@@ -6,6 +6,8 @@
 # yoksa bu temayı seçen bir btop.conf oluşturulur; btop onu sonradan kendi
 # ayarlarıyla doldurur, bu yüzden kullanıcı verisi sayılır ve kaldırırken
 # arşive taşınır. Önceden var olan btop.conf'a dokunulmaz.
+# Kişilikten yalnızca köşe biçimi gelir (rounded_corners) ve yalnızca
+# btop.conf oluşturulurken yazılır: btop ayarı kendi menüsünden değiştirilir.
 # ============================================================================
 
 renderer_register btop "btop" tool
@@ -51,6 +53,8 @@ rend_btop_apply() {
             log_info "btop ayarlarınız korunuyor; temayı btop'ta Options → color_theme → terminal-setup ile seçebilirsiniz."
         return 0
     fi
+    style_border_for btop
     act_seed_file "$BTOP_CONF" "color_theme = \"$BTOP_THEME_FILE\"
-theme_background = True"
+theme_background = True
+rounded_corners = $REPLY"
 }

@@ -158,7 +158,7 @@ add_terminal() {
     [ ! -e "$TS_CONFIG_DIR/tmux-theme.conf" ]
     mkdir -p "$TS_CONFIG_DIR" && touch "$TS_CONFIG_DIR/tmux.conf"
     theme_apply nord
-    grep -q "window-status-current-style bg='#88C0D0'" "$TS_CONFIG_DIR/tmux-theme.conf"
+    grep -qx 'set -g pane-active-border-style "fg=#88C0D0"' "$TS_CONFIG_DIR/tmux-theme.conf"
 }
 
 @test "ghostty: tema dosyası ve theme bloğu; geri alınca config eski haline döner" {

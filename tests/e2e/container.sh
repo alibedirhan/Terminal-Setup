@@ -61,7 +61,7 @@ for cmd in zsh starship fzf zoxide eza batcat rg fdfind delta lazygit btop dust 
 done
 [[ "$(as_user 'git config --global --get core.pager')" == "delta" ]] || fail "delta git'e bağlanmadı"
 
-step "Starship ayarı her kişilikte geçerli mi? (gerçek starship)"
+step "Starship ve araç ayarları her kişilikte geçerli mi? (gerçek araçlar)"
 cfg="/home/$USER_NAME/.config/terminal-setup/starship.toml"
 grep -q 'palette = "terminal_setup"' "$cfg" || fail "Starship ayarı temadan üretilmedi"
 for s in $(ls "$WORK"/styles | sed 's/\.style$//') auto; do
@@ -70,6 +70,8 @@ for s in $(ls "$WORK"/styles | sed 's/\.style$//') auto; do
         > /tmp/prompt.out 2> /tmp/prompt.err || fail "starship prompt hata verdi: $s"
     [[ -s /tmp/prompt.err ]] && { cat /tmp/prompt.err; fail "starship ayarında uyarı: $s"; }
     [[ -s /tmp/prompt.out ]] || fail "starship boş prompt çizdi: $s"
+    # eza 11, bat 12, tmux 13, lazygit 14-15 (tests/e2e/tool_styles.zsh)
+    as_user "zsh -f $WORK/tests/e2e/tool_styles.zsh" || fail "araç ayarı gerçek araçta hata verdi ($s, kod $?)"
     printf '  ✓ %s\n' "$s"
 done
 

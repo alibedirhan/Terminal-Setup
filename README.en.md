@@ -1,6 +1,6 @@
 # Terminal Setup
 
-A setup tool that makes the Ubuntu terminal beautiful and useful in one go — and **can undo everything it does**. It installs Zsh, Starship, 12 color themes, 14 modern command-line tools and tmux from a single menu; the theme you pick is applied to bat, delta, fzf and btop too, not just the terminal. If you don't like the result, one command returns the system to its pre-install state; nothing you had before is touched.
+A setup tool that makes the Ubuntu terminal beautiful and useful in one go — and **can undo everything it does**. It installs Zsh, Starship, 12 color themes, 14 modern command-line tools and tmux from a single menu; the theme you pick is applied to the prompt and the tools too (bat, delta, fzf, eza, tmux, lazygit, btop), not just the terminal. If you don't like the result, one command returns the system to its pre-install state; nothing you had before is touched.
 
 ![Version](https://img.shields.io/badge/version-6.2.2-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -28,7 +28,7 @@ A package you already had (e.g. tmux) or a file you already had (e.g. your own `
 | Extras | tmux (themed status bar), handy aliases, your existing `~/.bash_aliases` loaded in zsh, optional JetBrains Mono and Fira Code Nerd Fonts |
 | Themes | Dark: Catppuccin Mocha, Dracula, Everforest, Gruvbox, Kanagawa, Nord, One Dark, Rosé Pine, Solarized, Tokyo Night. Light: Catppuccin Latte, Gruvbox Light |
 | Terminals | GNOME Terminal, Ptyxis (Ubuntu 25.10+), Kitty, Alacritty, Ghostty, WezTerm |
-| Tool colors | bat and delta (syntax theme), fzf, btop and tmux follow the selected theme too |
+| Tools follow the theme | Colors: bat and delta (syntax theme), fzf, eza, tmux, lazygit, btop. Shape comes from the theme's personality: fzf and lazygit borders, the tmux status bar, eza icons and date format, the bat frame |
 
 Three ready-made profiles: **minimal** (shell), **developer** (shell + developer tools, the default) and **full** (everything).
 
