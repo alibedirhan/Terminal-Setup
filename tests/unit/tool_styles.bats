@@ -169,7 +169,7 @@ lg_env() {
 
 @test "lazygit: önceden kurulu lazygit'e de uygulanır; lazygit yoksa hiçbir şey yazılmaz" {
     mkdir -p "$TS_CONFIG_DIR" && touch "$TS_CONFIG_DIR/init.zsh"
-    ! rend_lazygit_available
+    ! rend_lazygit_available || false
     printf '#!/bin/sh\n' > "$FAKE_ROOT/pkgbin/lazygit" && chmod +x "$FAKE_ROOT/pkgbin/lazygit"
     rend_lazygit_available
     theme_load kanagawa

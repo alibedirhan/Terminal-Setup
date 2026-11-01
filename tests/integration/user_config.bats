@@ -19,7 +19,7 @@ home_listing() {
         cut -f2,3 "$HOME/.terminal-setup/ledger" | grep -qx "userdata"$'\t'"$HOME/.config/$f"
     done
     for d in lazygit btop atuin; do
-        ! cut -f2,3 "$HOME/.terminal-setup/ledger" | grep -qx "glob"$'\t'"$HOME/.config/$d"
+        ! cut -f2,3 "$HOME/.terminal-setup/ledger" | grep -qx "glob"$'\t'"$HOME/.config/$d" || false
     done
     # Araçların ilk çalışmada ve kullanıcının sonradan yazdıkları
     mkdir -p "$HOME/.config/lazygit" "$HOME/.config/btop" "$HOME/.config/atuin" "$HOME/.local/state/lazygit"

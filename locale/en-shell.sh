@@ -37,4 +37,8 @@ I18N_EN+=(
     ["sanal ortamı aç"]="activate the virtual env"
     ["Bu dizinde önerilecek komut yok."]="Nothing to suggest in this directory."
     ["Enter: komut satırına yaz · Esc: kapat"]="Enter: put it on the command line · Esc: close"
+
+    # --- Alt+H yardımı -----------------------------------------------------------
+    ["Yazdığınız komutun kısa yardımını göster"]="Show quick help for the command you are typing"
+    ["%s için yardım sayfası yok."]="No help page for %s."
 )

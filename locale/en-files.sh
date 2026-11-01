@@ -114,4 +114,19 @@ I18N_EN+=(
     ["Son kullanılanlar: geçmişten, tekrarsız ve en yenisi önce (en çok 15)"]="Recent: from history, unique, newest first (at most 15)"
     ["fzf'i paletin seçenekleriyle çalıştır (uçtan uca test --filter ile çağırır)"]="Run fzf with the palette's options (the end-to-end test calls it with --filter)"
     ["Ctrl+Space: listeyi fzf'te aç, seçilen komutu satıra yaz"]="Ctrl+Space: open the list in fzf, put the picked command on the line"
+
+    # --- 61-tldr-help.zsh (zsh/help.zsh) --------------------------------------
+    ["Terminal Setup — Alt+H: yazdığınız komutun kısa yardımı"]="Terminal Setup — Alt+H: quick help for the command you are typing"
+    ["Komut satırındaki komutun tldr sayfasından açıklama ve ilk dört örnek"]="The description and first four examples from the command's tldr page"
+    ["istemin üstüne yazılır; yazdığınız satır olduğu gibi kalır. Sayfa sistem"]="are printed above the prompt; what you typed stays as it is. The page is"
+    ["dilinde aranır, yoksa İngilizcesi gösterilir. tldr-hs (Ubuntu 22.04) ve"]="looked up in the system language, falling back to English. tldr-hs (Ubuntu 22.04)"
+    ["tealdeer'in çıktıları aynı biçimde okunur."]="and tealdeer output are read the same way."
+    ["tldr çıktısını oku: _ts_help_parse KOMUT < çıktı -> reply"]="Read tldr output: _ts_help_parse COMMAND < output -> reply"
+    ["  reply[1] açıklama, ardından (örnek açıklaması, örnek komut) çiftleri"]="  reply[1] is the description, then (example text, example command) pairs"
+    ["İlk boş satıra kadar açıklamadır (başlık ve bağlantı satırları hariç);"]="Up to the first blank line is the description (except title and link lines);"
+    ["sonra \":\" ile biten açıklama ve onu izleyen komut satırı sırayla gelir."]="then a line ending in \":\" and the command line after it alternate."
+    ["Kısaltma karakterle yapılsın (C/POSIX yerel ayarında bayt ortadan bölünürdü)"]="Cut by characters (the C/POSIX locale could split a byte sequence)"
+    ["KOMUT'un yardımı -> reply (sayfa yoksa 1 döner)"]="Help for COMMAND -> reply (returns 1 if there is no page)"
+    ["Komut satırındaki asıl komut: sudo, env gibi önekler ve AD=değer atamaları"]="The actual command on the line: the first word after prefixes such as sudo"
+    ["atlandıktan sonraki ilk kelime -> REPLY"]="and env and NAME=value assignments -> REPLY"
 )

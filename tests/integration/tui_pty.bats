@@ -53,7 +53,7 @@ assert_terminal_restored() {
     sleep 0.5
     grep -qw -- "echo" "$BATS_TEST_TMPDIR/stty.txt"
     grep -qw -- "icanon" "$BATS_TEST_TMPDIR/stty.txt"
-    ! grep -qw -- "-echo" "$BATS_TEST_TMPDIR/stty.txt"
+    ! grep -qw -- "-echo" "$BATS_TEST_TMPDIR/stty.txt" || false
     ! grep -qw -- "-icanon" "$BATS_TEST_TMPDIR/stty.txt"
 }
 
@@ -88,7 +88,7 @@ assert_terminal_restored() {
     wait_for "ÇIKIŞ=0"
     # Durum çıktısı kaydırılabilir geçmişte kaldı, menü kalıntısı kalmadı
     t capture-pane -p -t t -S -200 | grep -q "Sağlık kontrolü"
-    ! screen | grep -q "Ne yapmak istersiniz?"
+    ! screen | grep -q "Ne yapmak istersiniz?" || false
     assert_terminal_restored
 }
 
@@ -99,7 +99,7 @@ assert_terminal_restored() {
     sleep 0.6
     keys Down
     wait_for "Ne yapmak istersiniz?"
-    ! screen | grep -q "▀▀█▀▀"
+    ! screen | grep -q "▀▀█▀▀" || false
     # tuş ipuçları en altta, başlık bir kez
     [ "$(screen | grep -c "Ne yapmak istersiniz?")" -eq 1 ]
     screen | grep -v '^$' | tail -n 1 | grep -q "enter"
@@ -115,7 +115,7 @@ assert_terminal_restored() {
     for ((i = 0; i < 40; i++)); do t send-keys -t t Down; done
     for ((i = 0; i < 40; i++)); do t send-keys -t t Up; done
     sleep 1.5
-    ! screen | grep -qE '\^\[|\[A|\[B|OA|OB'
+    ! screen | grep -qE '\^\[|\[A|\[B|OA|OB' || false
     keys q q
     wait_for "ÇIKIŞ=0"
 }

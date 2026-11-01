@@ -13,7 +13,7 @@ setup() {
     act_gitcfg delta.navigate true
     [ "$(git config --global --get delta.navigate)" = "true" ]
     undo_gitcfg delta.navigate NONE
-    ! git config --global --get delta.navigate
+    ! git config --global --get delta.navigate || false
     ! grep -q '\[delta\]' "$HOME/.gitconfig"
 }
 
@@ -36,7 +36,7 @@ setup() {
 @test "prova modunda git kurulu olmasa da plan gösterilir" {
     rm -f "$FAKE_ROOT/sysbin/git"
     export PATH="${PATH//$REPO_ROOT\/tests\/helpers\/bin:/}"
-    ! has_cmd git
+    ! has_cmd git || false
     TS_DRY_RUN=1
     run act_gitcfg core.pager delta
     [ "$status" -eq 0 ]

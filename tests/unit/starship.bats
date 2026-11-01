@@ -35,7 +35,7 @@ toml_ok() {
         theme_load "$t"
         starship_config
         # Özel kullanım alanı (U+E000–U+F8FF) baytları: EE 80 80 – EF A3 BF
-        ! LC_ALL=C grep -q $'[\xee\xef]' <<< "$REPLY"
+        ! LC_ALL=C grep -q $'[\xee\xef]' <<< "$REPLY" || false
         [[ "$REPLY" == *'symbol = "\ue0a0 "'* ]]
         [[ "$REPLY" != *'@PL@'* && "$REPLY" != *'@PILL_'* ]]
     done

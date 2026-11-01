@@ -231,7 +231,7 @@ Kenar stilinin her araçtaki karşılığı tek yerde tanımlıdır: `style_bord
 
 **lazygit** kendi ayar dosyasını birden çok dosyadan okuyabilir (`LG_CONFIG_FILE=a.yml,b.yml`, sonraki üstün). Renderer'ın zsh parçası (`65-theme-lazygit`) önce Terminal Setup'ın `lazygit.yml`'ını, varsa ardından kullanıcının `config.yml`'ını verir; kullanıcının ayarı kazanır, dosyasına dokunulmaz. lazygit listedeki her dosyanın var olmasını istediği için kullanıcının dosyası yalnızca varsa eklenir; kullanıcı `LG_CONFIG_FILE`'ı kendisi vermişse dokunulmaz. bat ve btop gibi lazygit de script kurmamış olsa bile temaya uyar (birden çok dosya lazygit 0.30'dan, 2021'den beri destekleniyor).
 
-Uçtan uca testte her kişiliğin ayarları gerçek eza, bat, tmux ve lazygit ile denetlenir (`tests/e2e/tool_styles.zsh`): araç hata verirse ya da uyarı yazarsa test düşer. Karşılama kartının arka plan yenilemesi gerçek `apt-check`, `df` ve git ile çalıştırılır; kart her kişilikte hatasız ve eşit genişlikte çizilmelidir. Komut paletinin fzf seçenekleri gerçek fzf'in süzgeç kipiyle (`--filter`) denetlenir.
+Uçtan uca testte her kişiliğin ayarları gerçek eza, bat, tmux ve lazygit ile denetlenir (`tests/e2e/tool_styles.zsh`): araç hata verirse ya da uyarı yazarsa test düşer. Karşılama kartının arka plan yenilemesi gerçek `apt-check`, `df` ve git ile çalıştırılır; kart her kişilikte hatasız ve eşit genişlikte çizilmelidir. Komut paletinin fzf seçenekleri gerçek fzf'in süzgeç kipiyle (`--filter`) denetlenir; Alt+H yardımı gerçek tldr istemcisinin çıktısını okumalıdır.
 
 **Starship** (`renderers/starship.sh`, araç renderer'ı): ayar dosyası `~/.config/terminal-setup/starship.toml` rollerden ve kişilikten üretilir, tema ya da kişilik değişince yeniden yazılır; Starship onu `STARSHIP_CONFIG` ile okur, kullanıcının `~/.config/starship.toml`'una dokunulmaz. `SEGMENTS` prompt biçimini seçer (`plain`, `minimal`, `powerline`, `pills`, `brackets`, `arrows`). Tema uygulanmamışsa renkler terminalin kendi 16 renginin adlarından gelir. Nerd Font karakterleri dosyaya TOML kaçışı olarak yazılır; kaynakta ham Nerd Font karakteri bulunamaz (statik kontrol 7). Uçtan uca testte her kişilik gerçek Starship ile denetlenir.
 
@@ -255,6 +255,8 @@ Uçtan uca testte her kişiliğin ayarları gerçek eza, bat, tmux ve lazygit il
 - son 15 farklı komut.
 
 Proje kökü git köküdür. `package.json` jq'suz, satır satır okunur. Liste fzf ile süzülür; renk ve kenar `FZF_DEFAULT_OPTS`'tan, yani temadan gelir. Seçilen komut çalıştırılmaz, komut satırına yazılır. Bileşen fzf'e bağlıdır.
+
+**Alt+H yardımı** (`zsh/help.zsh`, tldr bileşeninin `61-tldr-help` parçası): komut satırındaki asıl komutun tldr sayfasından açıklamayı ve ilk dört örneği istemin üstüne yazar; yazılan satır değişmez. `sudo`, `env` gibi önekler ve `AD=değer` atamaları atlanır. Sayfa sistem dilinde aranır (`-L tr`), yoksa İngilizcesi gösterilir. Ubuntu 22.04'teki tldr-hs ve sonraki sürümlerdeki tealdeer'in çıktıları aynı kuralla okunur: ilk boş satıra kadar açıklama (başlık ve bağlantı hariç), sonra `:` ile biten örnek açıklaması ve komut satırı. Uçtan uca testte bu okuma gerçek istemciyle denetlenir.
 
 Yeni kişilik: `styles/` altına bir dosya; kod gerekmez. `tests/unit/styles.bats` her dosyayı ve her temanın bağlantısını denetler.
 

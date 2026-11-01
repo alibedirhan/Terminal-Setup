@@ -59,4 +59,15 @@ source $d/zsh.d/97-palette.zsh
 ( cd $repo && _ts_palette_items && print -rl -- $reply | _ts_palette_fzf --filter='make test' ) > $err.pal 2> $err ||
     { cat $err; exit 18; }
 [[ ! -s $err ]] && grep -q $'\tmake test$' $err.pal || { cat $err $err.pal; exit 18; }
+# Alt+H: gerçek tldr istemcisinin (22.04 tldr-hs, sonrası tealdeer) çıktısı
+# okunur: açıklama ve en az bir örnek, renk kodu kalmadan. Sayfa önbelleği
+# indirilemediyse (ağ) denetim uyarıyla atlanır.
+source $d/zsh.d/61-tldr-help.zsh
+if tldr tar > /dev/null 2>&1; then
+    _ts_help_page tar || { tldr tar | head -20; exit 19; }
+    (( $#reply >= 3 )) && [[ $reply != *$'\e'* && ${reply[3]} == tar* ]] ||
+        { print -rl -- $reply; tldr tar | head -20; exit 19; }
+else
+    print -u2 "uyarı: tldr sayfaları yok; Alt+H denetimi atlandı"
+fi
 rm -rf $repo $err $err.pal

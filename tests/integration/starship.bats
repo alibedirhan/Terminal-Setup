@@ -13,7 +13,7 @@ setup() {
     local p
     for p in minimal developer full; do
         grep -qx starship "$REPO_ROOT/profiles/$p.profile"
-        ! grep -qx p10k "$REPO_ROOT/profiles/$p.profile"
+        ! grep -qx p10k "$REPO_ROOT/profiles/$p.profile" || false
     done
 }
 
@@ -22,7 +22,7 @@ setup() {
     [ "$status" -eq 0 ]
     [ -f "$CFG" ]
     grep -q "export STARSHIP_CONFIG=\"$CFG\"" "$SNIP"
-    ! grep -q 'palette =' "$CFG"                       # tema yok: terminalin renkleri
+    ! grep -q 'palette =' "$CFG" || false                       # tema yok: terminalin renkleri
     run ts theme apply nord
     [ "$status" -eq 0 ]
     grep -q 'palette = "terminal_setup"' "$CFG"

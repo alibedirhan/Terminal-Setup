@@ -97,7 +97,7 @@ home_listing() {
     ts install --components bat,ripgrep
     run ts remove bat
     [ "$status" -eq 0 ]
-    ! pkg_is_installed bat
+    ! pkg_is_installed bat || false
     pkg_is_installed ripgrep
     [ -f "$HOME/.config/terminal-setup/zsh.d/60-ripgrep.zsh" ]
 }
