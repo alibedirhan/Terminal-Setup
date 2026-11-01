@@ -23,12 +23,12 @@ Kurulumdan önce sizde olan bir paket (ör. tmux) ya da dosya (ör. kendi `.zshr
 
 | Grup | Bileşenler |
 |---|---|
-| Kabuk | Zsh (varsayılan kabuk yapılır; geçmiş, tamamlama ve tuş ayarları Oh My Zsh gerektirmeden gelir), Starship (temaya ve kişiliğe uyan prompt), isteğe bağlı Oh My Zsh ve Powerlevel10k, MesloLGS NF yazı tipi, komut önerisi ve sözdizimi renklendirme eklentileri, fzf-tab (Tab ile aranabilir tamamlama) |
+| Kabuk | Zsh (varsayılan kabuk yapılır; geçmiş, tamamlama ve tuş ayarları Oh My Zsh gerektirmeden gelir), Starship (temaya ve kişiliğe uyan prompt), karşılama kartı (yalnızca dikkat isteyenler ve kaldığınız proje: `resume`), isteğe bağlı Oh My Zsh ve Powerlevel10k, MesloLGS NF yazı tipi, komut önerisi ve sözdizimi renklendirme eklentileri, fzf-tab (Tab ile aranabilir tamamlama) |
 | Araçlar | fzf, zoxide, eza, bat, ripgrep, fd, delta, lazygit, btop, dust, duf, procs, atuin, tldr (tealdeer) |
 | Ekstra | tmux (temalı durum çubuğu), örnek alias'lar ve mevcut `~/.bash_aliases` dosyanızın zsh'e bağlanması, isteğe bağlı JetBrains Mono ve Fira Code Nerd Font |
 | Temalar | Koyu: Catppuccin Mocha, Dracula, Everforest, Gruvbox, Kanagawa, Nord, One Dark, Rosé Pine, Solarized, Tokyo Night. Açık: Catppuccin Latte, Gruvbox Light |
 | Terminaller | GNOME Terminal, Ptyxis (Ubuntu 25.10+), Kitty, Alacritty, Ghostty, WezTerm |
-| Araçlar temaya uyar | Renkler: bat ve delta (söz dizimi teması), fzf, eza, tmux, lazygit, btop. Biçim temanın kişiliğinden: fzf ve lazygit kenarları, tmux durum çubuğu, eza simgeleri ve tarih biçimi, bat çerçevesi |
+| Araçlar temaya uyar | Renkler: bat ve delta (söz dizimi teması), fzf, eza, tmux, lazygit, btop, karşılama kartı. Biçim temanın kişiliğinden: fzf ve lazygit kenarları, tmux durum çubuğu, eza simgeleri ve tarih biçimi, bat çerçevesi, kartın kenarı ve işaretleri |
 
 Üç hazır profil vardır: **minimal** (kabuk), **developer** (kabuk + geliştirici araçları, varsayılan) ve **full** (her şey).
 

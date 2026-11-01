@@ -28,6 +28,14 @@ renderer_register() {
     RENDERER_KIND[$1]="${3:-terminal}"
 }
 
+# Renderer'ın gösterilecek adı -> REPLY. Çoğu özel addır (GNOME Terminal,
+# lazygit) ve çevrilmez; katalogda karşılığı olan ad ("karşılama kartı") çevrilir.
+renderer_label() {
+    REPLY="${RENDERER_NAME[$1]}"
+    [[ "$TS_LANG" == en && -n "${I18N_EN[$REPLY]+x}" ]] && REPLY="${I18N_EN[$REPLY]}"
+    return 0
+}
+
 # Bu sistemde uygulanabilen renderer'lar: renderers_available [terminal|tool]
 # shellcheck disable=SC2120  # tür argümanı başka dosyalardan (durum, teşhis) verilir
 renderers_available() {
@@ -191,11 +199,12 @@ theme_apply() {
     theme_load "$name" || return 1
     TS_CURRENT_COMPONENT="theme"
     for id in $(renderers_available); do
-        log_step "%s: %s uygulanıyor" "${RENDERER_NAME[$id]}" "${THEME[NAME]}"
+        renderer_label "$id"
+        log_step "%s: %s uygulanıyor" "$REPLY" "${THEME[NAME]}"
         if "rend_${id}_apply"; then
             applied=$((applied + 1))
         else
-            log_warn "%s için tema uygulanamadı" "${RENDERER_NAME[$id]}"
+            log_warn "%s için tema uygulanamadı" "$REPLY"
         fi
     done
     TS_CURRENT_COMPONENT="$owner"
@@ -207,6 +216,21 @@ theme_apply() {
     is_dry_run || log_ok "%s teması uygulandı. Yeni açılan pencerelerde görünür." "${THEME[NAME]}"
 }
 
+# Temadan sonra kurulan bir aracı uygulanmış temaya hemen uydur:
+#   theme_apply_one RENDERER (bileşenin kurulumundan çağrılır)
+# Üretilen dosyalar temaya aittir; görünümü sıfırlayınca onlar da gider.
+theme_apply_one() {
+    local id="$1" theme owner="$TS_CURRENT_COMPONENT" rc
+    theme=$(settings_get theme)
+    [[ -n "$theme" ]] && "rend_${id}_available" || return 0
+    theme_load "$theme" || return 1
+    TS_CURRENT_COMPONENT="theme"
+    "rend_${id}_apply"
+    rc=$?
+    TS_CURRENT_COMPONENT="$owner"
+    return "$rc"
+}
+
 # Seçili yazı tipini uygun terminallere ayarla (yazı tipi bileşenleri çağırır)
 theme_apply_font() {
     local id
@@ -214,7 +238,8 @@ theme_apply_font() {
     TS_FONT_NAME="${FONT_FAMILY[$REPLY]}"
     for id in $(renderers_available); do
         declare -F "rend_${id}_font" >/dev/null || continue
-        "rend_${id}_font" || log_warn "%s için yazı tipi ayarlanamadı" "${RENDERER_NAME[$id]}"
+        renderer_label "$id"
+        "rend_${id}_font" || log_warn "%s için yazı tipi ayarlanamadı" "$REPLY"
     done
     return 0
 }

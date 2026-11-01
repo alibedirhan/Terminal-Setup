@@ -213,8 +213,9 @@ Tema = palet + kişilik. Palet renkleri, kişilik biçimi belirler: prompt simge
 | `TITLE_CASE`, `TEXT_CASE` | `normal`, `lower`, `upper` (Türkçede i/İ, ı/I doğru dönüşür) |
 | `SEPARATOR`, `DATE_FORMAT`, `BAT_STYLE` | ayırıcı, `+strftime` biçimi, bat `--style` değeri |
 | `ICONS`, `GIT_SYMBOLS` | `on`/`off`; `unicode`, `ascii`, `minimal` |
+| `CARD_MARKS` | karşılama kartının üç işareti: uyarı, hata, kaldığınız yer (`● ◆ ↳`, `[!] [X] [>]`) |
 
-Temanın kişiliği `STYLE=` anahtarıdır. Kullanıcı başka birini seçebilir (`style set retro`, ayar: `style`); `auto` temanınkine döner. `theme_load` geçerli kişiliği `STYLE[...]` dizisine yükler; tüketiciler oradan okur. Kişilikten Starship prompt'u ve araçlar okur. Karşılama kartı v7.1'de bağlanır ([plan](V7_PLAN.md)).
+Temanın kişiliği `STYLE=` anahtarıdır. Kullanıcı başka birini seçebilir (`style set retro`, ayar: `style`); `auto` temanınkine döner. `theme_load` geçerli kişiliği `STYLE[...]` dizisine yükler; tüketiciler oradan okur. Kişilikten Starship prompt'u, araçlar ve karşılama kartı okur.
 
 | Araç | Kişilikten | Nasıl |
 |---|---|---|
@@ -224,14 +225,25 @@ Temanın kişiliği `STYLE=` anahtarıdır. Kullanıcı başka birini seçebilir
 | tmux | pencere etiketi (`SEGMENTS`, prompt'la aynı dil), ayırıcı, tarih, bölme çizgisi | `tmux-theme.conf` |
 | lazygit | kenar (`BORDER`), dosya simgeleri (`ICONS`), renkler rollerden | `lazygit.yml`; `LG_CONFIG_FILE` (`65-theme-lazygit`) |
 | btop | köşeler (`rounded_corners`), yalnızca `btop.conf` oluşturulurken | `act_seed_file` |
+| karşılama kartı | kenar, başlık biçimi (`SEGMENTS`), büyük/küçük harf, tarih, işaretler (`CARD_MARKS`) | `65-theme-welcome.zsh` (`_ts_card` dizisi) |
 
 Kenar stilinin her araçtaki karşılığı tek yerde tanımlıdır: `style_border_for fzf|tmux|lazygit|btop` (`lib/styles.sh`). Bir aracın karşılığı yoksa en yakını seçilir: tmux'ta yuvarlak bölme çizgisi yok (`single`), lazygit'te kalın çizgi yok (`single`), kutusuz kişilik lazygit'te `hidden` olur. `DATE_FORMAT` zsh, tmux ve eza'ya tırnak içinde yazıldığı için yalnızca `% harf rakam boşluk . : / -` içerebilir; `BAT_STYLE` parçaları bat'ın bildikleriyle denetlenir.
 
 **lazygit** kendi ayar dosyasını birden çok dosyadan okuyabilir (`LG_CONFIG_FILE=a.yml,b.yml`, sonraki üstün). Renderer'ın zsh parçası (`65-theme-lazygit`) önce Terminal Setup'ın `lazygit.yml`'ını, varsa ardından kullanıcının `config.yml`'ını verir; kullanıcının ayarı kazanır, dosyasına dokunulmaz. lazygit listedeki her dosyanın var olmasını istediği için kullanıcının dosyası yalnızca varsa eklenir; kullanıcı `LG_CONFIG_FILE`'ı kendisi vermişse dokunulmaz. bat ve btop gibi lazygit de script kurmamış olsa bile temaya uyar (birden çok dosya lazygit 0.30'dan, 2021'den beri destekleniyor).
 
-Uçtan uca testte her kişiliğin ayarları gerçek eza, bat, tmux ve lazygit ile denetlenir (`tests/e2e/tool_styles.zsh`): araç hata verirse ya da uyarı yazarsa test düşer.
+Uçtan uca testte her kişiliğin ayarları gerçek eza, bat, tmux ve lazygit ile denetlenir (`tests/e2e/tool_styles.zsh`): araç hata verirse ya da uyarı yazarsa test düşer. Karşılama kartının arka plan yenilemesi gerçek `apt-check`, `df` ve git ile çalıştırılır; kart her kişilikte hatasız ve eşit genişlikte çizilmelidir.
 
 **Starship** (`renderers/starship.sh`, araç renderer'ı): ayar dosyası `~/.config/terminal-setup/starship.toml` rollerden ve kişilikten üretilir, tema ya da kişilik değişince yeniden yazılır; Starship onu `STARSHIP_CONFIG` ile okur, kullanıcının `~/.config/starship.toml`'una dokunulmaz. `SEGMENTS` prompt biçimini seçer (`plain`, `minimal`, `powerline`, `pills`, `brackets`, `arrows`). Tema uygulanmamışsa renkler terminalin kendi 16 renginin adlarından gelir. Nerd Font karakterleri dosyaya TOML kaçışı olarak yazılır; kaynakta ham Nerd Font karakteri bulunamaz (statik kontrol 7). Uçtan uca testte her kişilik gerçek Starship ile denetlenir.
+
+**Temadan sonra kurulan araç** (`theme_apply_one RENDERER`): bileşen kurulurken bir tema uygulanmışsa aracın tema dosyaları hemen üretilir. Dosyalar "theme" bileşenine yazılır; görünümü sıfırlayınca onlar da gider. Bileşen kaldırılırsa tema dosyası (zararsız) görünüm sıfırlanana ya da kaldırmaya kadar kalır.
+
+**Karşılama kartı** (`components/shell/welcome.sh`, `zsh/welcome.zsh`, `renderers/welcome.sh`): yeni terminalde yalnızca dikkat isteyenleri gösterir: bekleyen güncellemeler, yeniden başlatma, %90'ı dolan disk, kaydedilmemiş iş ve kaldığınız proje (`resume`). Söylenecek bir şey yoksa kart çıkmaz; tmux içinde ve `TS_WELCOME=off` iken de çıkmaz.
+- **Hız:** Kart çizilirken dış komut çalışmaz; tarih `zsh/datetime`, dal `.git/HEAD`'den okunur. Güncelleme (`apt-check`), disk (`df`) ve git durumu ilk istemden sonra arka planda, en çok saatte bir `~/.cache/terminal-setup/welcome` dosyasına yazılır. Kart bir önceki yenilemenin bilgisini gösterir.
+- **Projeler:** dizin değişince (`chpwd`) git kökü `~/.cache/terminal-setup/projects`'e yazılır (en yenisi başta, en çok 10). Kullanıcının kendi `resume` komutu varsa kart `ts-resume` tanımlar.
+- **Önbellek güvenliği:** Önbellekteki sayılar aritmetiğe girmeden önce denetlenir.
+- **Dil ve biçim:** İletiler kurulumda sistem dilinde `_ts_wmsg` dizisine yazılır. Biçim ve renkler `_ts_card` dizisindedir; tema yokken terminalin 16 rengi kullanılır.
+- **Genişlik:** Kart en çok 72 sütundur. Sığmayan metin `…` ile kısaltılır; 26 sütundan dar terminalde kart çizilmez.
+- **Yerel ayar:** Kart `local LC_ALL=C.UTF-8` ile çizilir. C/POSIX yerel ayarında zsh çok baytlı karakteri bayt sayar ve hizalama bozulur; zsh 5.8 ayrıca `$'\u…'` kaçışında hata verir. Bu yüzden Nerd Font ve İ/ı karakterleri UTF-8 baytlarıyla (`$'\356\202\260'`) yazılır.
 
 Yeni kişilik: `styles/` altına bir dosya; kod gerekmez. `tests/unit/styles.bats` her dosyayı ve her temanın bağlantısını denetler.
 

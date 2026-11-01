@@ -6,7 +6,9 @@
 # olarak kullanılır (gettext'teki msgid gibi). İngilizce karşılıklar
 # locale/en.sh içindeki I18N_EN dizisindedir. Karşılığı olmayan metin
 # Türkçe gösterilir; TS_I18N_MISSING tanımlıysa o dosyaya yazılır (testler
-# eksik çeviriyi böyle yakalar).
+# eksik çeviriyi böyle yakalar). Katalog konulara bölünmüştür: en.sh arayüz,
+# en-files.sh üretilen dosyalar, en-shell.sh kabuğun içindeki özellikler
+# (karşılama kartı, komut paleti, Alt+H yardımı).
 #
 # Dil sırası: --lang, TS_LANG ortam değişkeni, "language" ayarı (tr|en|auto),
 # sistem dili (LC_ALL, LC_MESSAGES, LANG: tr* ise Türkçe, değilse English).
@@ -40,11 +42,11 @@ i18n_init() {
         *) TS_LANG=$(i18n_detect) ;;
     esac
     if [[ "$TS_LANG" == en && "$I18N_LOADED" != en ]]; then
-        local k
-        # shellcheck source=locale/en.sh
-        source "$TS_ROOT/locale/en.sh" || return 0
-        # shellcheck source=locale/en-files.sh
-        source "$TS_ROOT/locale/en-files.sh" || return 0
+        local k f
+        for f in "$TS_ROOT"/locale/en*.sh; do
+            # shellcheck source=/dev/null
+            source "$f" || return 0
+        done
         for k in "${!I18N_EN[@]}"; do I18N_DONE[${I18N_EN[$k]}]=1; done
         I18N_LOADED=en
     fi

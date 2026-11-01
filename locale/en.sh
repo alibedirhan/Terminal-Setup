@@ -9,7 +9,7 @@
 # ============================================================================
 
 declare -gA I18N_EN
-I18N_EN=(
+I18N_EN+=(
     # --- Genel ---------------------------------------------------------------
     ["Prova modu: hiçbir şey değiştirilmeyecek."]="Dry run: nothing will be changed."
     ["Prova modu: hiçbir şey değiştirilmedi."]="Dry run: nothing was changed."

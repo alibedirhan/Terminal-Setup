@@ -23,12 +23,12 @@ A package you already had (e.g. tmux) or a file you already had (e.g. your own `
 
 | Group | Components |
 |---|---|
-| Shell | Zsh (made the default shell; history, completion and key settings without needing Oh My Zsh), Starship (a prompt that follows the theme and personality), optional Oh My Zsh and Powerlevel10k, the MesloLGS NF font, autosuggestion and syntax-highlighting plugins, fzf-tab (searchable Tab completion) |
+| Shell | Zsh (made the default shell; history, completion and key settings without needing Oh My Zsh), Starship (a prompt that follows the theme and personality), a welcome card (only what needs attention, plus your last project: `resume`), optional Oh My Zsh and Powerlevel10k, the MesloLGS NF font, autosuggestion and syntax-highlighting plugins, fzf-tab (searchable Tab completion) |
 | Tools | fzf, zoxide, eza, bat, ripgrep, fd, delta, lazygit, btop, dust, duf, procs, atuin, tldr (tealdeer) |
 | Extras | tmux (themed status bar), handy aliases, your existing `~/.bash_aliases` loaded in zsh, optional JetBrains Mono and Fira Code Nerd Fonts |
 | Themes | Dark: Catppuccin Mocha, Dracula, Everforest, Gruvbox, Kanagawa, Nord, One Dark, Rosé Pine, Solarized, Tokyo Night. Light: Catppuccin Latte, Gruvbox Light |
 | Terminals | GNOME Terminal, Ptyxis (Ubuntu 25.10+), Kitty, Alacritty, Ghostty, WezTerm |
-| Tools follow the theme | Colors: bat and delta (syntax theme), fzf, eza, tmux, lazygit, btop. Shape comes from the theme's personality: fzf and lazygit borders, the tmux status bar, eza icons and date format, the bat frame |
+| Tools follow the theme | Colors: bat and delta (syntax theme), fzf, eza, tmux, lazygit, btop, the welcome card. Shape comes from the theme's personality: fzf and lazygit borders, the tmux status bar, eza icons and date format, the bat frame, the card's border and marks |
 
 Three ready-made profiles: **minimal** (shell), **developer** (shell + developer tools, the default) and **full** (everything).
 

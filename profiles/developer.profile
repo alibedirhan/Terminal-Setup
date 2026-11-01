@@ -5,6 +5,7 @@ starship
 zsh-plugins
 fzf-tab
 aliases
+welcome
 fzf
 zoxide
 eza

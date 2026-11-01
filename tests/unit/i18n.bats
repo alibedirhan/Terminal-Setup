@@ -16,7 +16,8 @@ setup() {
     local k v bad=0
     for k in "${!I18N_EN[@]}"; do
         v="${I18N_EN[$k]}"
-        if [[ "$(grep -o '%[^%]' <<< "$k" | tr -d '\n')" != "$(grep -o '%[^%]' <<< "$v" | tr -d '\n')" ]]; then
+        # %% düz yüzde işaretidir, yer tutucu değil
+        if [[ "$(grep -o '%[^%]' <<< "${k//%%/}" | tr -d '\n')" != "$(grep -o '%[^%]' <<< "${v//%%/}" | tr -d '\n')" ]]; then
             echo "yer tutucular farklı: $k -> $v"
             bad=1
         fi
