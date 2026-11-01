@@ -25,4 +25,16 @@ I18N_EN+=(
     ["Kaydedilmemiş iş: %s"]="Uncommitted work: %s"
     ["Kaldığınız yer"]="Last project"
     ["Dönülecek bir proje yok."]="No project to go back to."
+
+    # --- Komut paleti ----------------------------------------------------------
+    ["Komut paleti"]="Command palette"
+    ["Ctrl+Space: projenin betikleri, testler, git ve son komutlar"]="Ctrl+Space: the project's scripts, tests, git and recent commands"
+    ["Bu projede çalıştırabileceklerinizi listeleyin"]="List what you can run in this project"
+    ["betik"]="script"
+    ["test"]="test"
+    ["ortam"]="env"
+    ["geçmiş"]="recent"
+    ["sanal ortamı aç"]="activate the virtual env"
+    ["Bu dizinde önerilecek komut yok."]="Nothing to suggest in this directory."
+    ["Enter: komut satırına yaz · Esc: kapat"]="Enter: put it on the command line · Esc: close"
 )

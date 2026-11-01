@@ -58,6 +58,24 @@ _i18n_should_report() {
     ((${#1} >= 4)) && [[ "$1" != *$'\033'* ]]
 }
 
+# Kabukta gösterilecek iletileri sistem dilinde bir zsh dizisine çevir:
+#   i18n_zsh_messages DİZİ anahtar "Türkçe metin" ... -> REPLY (zsh kodu)
+# Değerler tek tırnak içinde yazılır; metindeki %s zsh'in printf'iyle
+# çalışırken doldurulur. "lang" anahtarı kurulumun dilidir.
+i18n_zsh_messages() {
+    local name="$1" sq="'" text
+    shift
+    REPLY="typeset -gA $name=("
+    while (($# >= 2)); do
+        _t "$2"
+        # Tek tırnak içinde: metindeki ' -> '\''
+        text="${TR//$sq/$sq\\$sq$sq}"
+        REPLY+=$'\n'"    $1 $sq$text$sq"
+        shift 2
+    done
+    REPLY+=$'\n'"    lang $TS_LANG"$'\n'")"
+}
+
 # Çevir ve biçimlendir: _t "Biçim %s" arg... -> TR
 # Zaten çevrilmiş bir metne uygulanırsa metni olduğu gibi bırakır; böylece
 # çevrilmiş bir değer, kendisi çeviri yapan bir arayüz fonksiyonuna verilebilir.

@@ -25,8 +25,8 @@ Kararlar, gerçek bir Ubuntu 24.04 GNOME masaüstünde yapılan üç prototipe d
 
 | # | İş |
 |---|---|
-| 7 | **Akıllı karşılama kartı**: yalnızca dikkat isteyenler; son proje ve `resume` (bu dal) |
-| 8 | **Komut paleti** (Ctrl+Space): projenin betikleri, testleri, venv, git, son kullanılanlar |
+| 7 | **Akıllı karşılama kartı**: yalnızca dikkat isteyenler; son proje ve `resume` ([#18](https://github.com/alibedirhan/Terminal-Setup/pull/18)) |
+| 8 | **Komut paleti** (Ctrl+Space): projenin betikleri, testleri, venv, git, son kullanılanlar (bu dal) |
 | 9 | **Alt+H yardımı**: yazılan komutun tldr sayfası, sistem dilinde |
 
 ### Sonraya kalanlar

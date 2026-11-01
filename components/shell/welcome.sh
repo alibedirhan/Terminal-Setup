@@ -7,27 +7,13 @@ component_register welcome "Karşılama kartı" shell "Yeni terminalde bekleyen 
 
 component_tip welcome "resume" "Kaldığınız projeye dönün"
 
-# Kartın iletileri sistem dilinde, zsh dizisi olarak -> REPLY
-# (değerler zsh'in printf biçimidir; %s çalışırken doldurulur)
+# Kartın iletileri sistem dilinde (%s zsh'in printf'iyle doldurulur)
 _welcome_messages() {
-    local key text sq="'"
-    local -a pairs=(
-        morning "Günaydın" day "İyi günler" evening "İyi akşamlar" night "İyi geceler"
-        updates "%s güncelleme bekliyor" reboot "Yeniden başlatma gerekli"
-        disk "Disk %%%s dolu" dirty "Kaydedilmemiş iş: %s"
+    i18n_zsh_messages _ts_wmsg \
+        morning "Günaydın" day "İyi günler" evening "İyi akşamlar" night "İyi geceler" \
+        updates "%s güncelleme bekliyor" reboot "Yeniden başlatma gerekli" \
+        disk "Disk %%%s dolu" dirty "Kaydedilmemiş iş: %s" \
         resume "Kaldığınız yer" noresume "Dönülecek bir proje yok."
-    )
-    REPLY="typeset -gA _ts_wmsg=("
-    while ((${#pairs[@]})); do
-        key="${pairs[0]}"
-        _t "${pairs[1]}"
-        pairs=("${pairs[@]:2}")
-        # Tek tırnak içinde: metindeki ' -> '\''
-        text="${TR//$sq/$sq\\$sq$sq}"
-        REPLY+=$'\n'"    $key $sq$text$sq"
-    done
-    # Büyük/küçük harf dönüşümü için (Türkçede i/İ, ı/I)
-    REPLY+=$'\n'"    lang $TS_LANG"$'\n'")"
 }
 
 comp_welcome_install() {

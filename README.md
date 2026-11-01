@@ -23,7 +23,7 @@ Kurulumdan önce sizde olan bir paket (ör. tmux) ya da dosya (ör. kendi `.zshr
 
 | Grup | Bileşenler |
 |---|---|
-| Kabuk | Zsh (varsayılan kabuk yapılır; geçmiş, tamamlama ve tuş ayarları Oh My Zsh gerektirmeden gelir), Starship (temaya ve kişiliğe uyan prompt), karşılama kartı (yalnızca dikkat isteyenler ve kaldığınız proje: `resume`), isteğe bağlı Oh My Zsh ve Powerlevel10k, MesloLGS NF yazı tipi, komut önerisi ve sözdizimi renklendirme eklentileri, fzf-tab (Tab ile aranabilir tamamlama) |
+| Kabuk | Zsh (varsayılan kabuk yapılır; geçmiş, tamamlama ve tuş ayarları Oh My Zsh gerektirmeden gelir), Starship (temaya ve kişiliğe uyan prompt), karşılama kartı (yalnızca dikkat isteyenler ve kaldığınız proje: `resume`), komut paleti (Ctrl+Space: projenin betikleri, testleri, git ve son komutlar), isteğe bağlı Oh My Zsh ve Powerlevel10k, MesloLGS NF yazı tipi, komut önerisi ve sözdizimi renklendirme eklentileri, fzf-tab (Tab ile aranabilir tamamlama) |
 | Araçlar | fzf, zoxide, eza, bat, ripgrep, fd, delta, lazygit, btop, dust, duf, procs, atuin, tldr (tealdeer) |
 | Ekstra | tmux (temalı durum çubuğu), örnek alias'lar ve mevcut `~/.bash_aliases` dosyanızın zsh'e bağlanması, isteğe bağlı JetBrains Mono ve Fira Code Nerd Font |
 | Temalar | Koyu: Catppuccin Mocha, Dracula, Everforest, Gruvbox, Kanagawa, Nord, One Dark, Rosé Pine, Solarized, Tokyo Night. Açık: Catppuccin Latte, Gruvbox Light |

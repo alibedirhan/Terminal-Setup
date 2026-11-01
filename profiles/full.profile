@@ -6,6 +6,7 @@ zsh-plugins
 fzf-tab
 aliases
 welcome
+palette
 fzf
 zoxide
 eza

@@ -53,4 +53,10 @@ if [[ ${_ts_card[border]} != none ]]; then
         (( ${#w} == 1 ))
     } || { print -r -- $card; exit 17; }
 fi
-rm -rf $repo $err
+# Komut paleti: seçenekleri gerçek fzf kabul eder, Makefile hedefi bulunur
+print 'test:' > $repo/Makefile
+source $d/zsh.d/97-palette.zsh
+( cd $repo && _ts_palette_items && print -rl -- $reply | _ts_palette_fzf --filter='make test' ) > $err.pal 2> $err ||
+    { cat $err; exit 18; }
+[[ ! -s $err ]] && grep -q $'\tmake test$' $err.pal || { cat $err $err.pal; exit 18; }
+rm -rf $repo $err $err.pal
