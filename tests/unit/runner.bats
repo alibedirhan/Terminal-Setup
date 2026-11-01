@@ -25,7 +25,7 @@ setup() {
         declare -F "$(_comp_fn "$id" install)" >/dev/null
         declare -F "$(_comp_fn "$id" verify)" >/dev/null
     done
-    [ "${#COMP_IDS[@]}" -eq 26 ]
+    [ "${#COMP_IDS[@]}" -eq 27 ]
 }
 
 @test "profillerdeki her bileşen tanımlı" {

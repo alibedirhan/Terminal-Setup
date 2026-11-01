@@ -70,7 +70,7 @@ for s in $(ls "$WORK"/styles | sed 's/\.style$//') auto; do
         > /tmp/prompt.out 2> /tmp/prompt.err || fail "starship prompt hata verdi: $s"
     [[ -s /tmp/prompt.err ]] && { cat /tmp/prompt.err; fail "starship ayarında uyarı: $s"; }
     [[ -s /tmp/prompt.out ]] || fail "starship boş prompt çizdi: $s"
-    # eza 11, bat 12, tmux 13, lazygit 14-15, karşılama kartı 16-17 (tests/e2e/tool_styles.zsh)
+    # eza 11, bat 12, tmux 13, lazygit 14-15, karşılama kartı 16-17, komut paleti 18 (tests/e2e/tool_styles.zsh)
     as_user "zsh -f $WORK/tests/e2e/tool_styles.zsh" || fail "araç ayarı gerçek araçta hata verdi ($s, kod $?)"
     printf '  ✓ %s\n' "$s"
 done

@@ -94,4 +94,23 @@ I18N_EN+=(
     ["Üst satır: köşe ─ başlık ─── tarih ─ köşe (genişlik W). Sığmazsa önce"]="Top line: corner ─ title ─── date ─ corner (width W). If it does not fit,"
     ["tarih düşer, sonra başlık sade hâliyle kısaltılır."]="the date goes first, then the title is shortened in its plain form."
     ["İlk istemde bir kez: kartı çiz, önbellek bir saatten eskiyse arka planda yenile"]="Once, at the first prompt: draw the card; refresh the cache in the background if older than an hour"
+
+    # --- 97-palette.zsh (zsh/palette.zsh) ------------------------------------
+    ["Terminal Setup — komut paleti (Ctrl+Space)"]="Terminal Setup — command palette (Ctrl+Space)"
+    ["Bulunduğunuz projede çalıştırabileceklerinizi tek listede gösterir:"]="Shows what you can run in the current project in one list:"
+    ["betikler (package.json, Makefile, justfile), testler, Python sanal ortamı,"]="scripts (package.json, Makefile, justfile), tests, the Python virtual env,"
+    ["git ve son kullandığınız komutlar. Seçtiğiniz komut çalıştırılmaz, komut"]="git and your recent commands. The command you pick is not run; it is put on"
+    ["satırına yazılır; Enter'a siz basarsınız. Liste fzf ile süzülür; renkler"]="the command line and you press Enter. The list is filtered with fzf; colors"
+    ["ve kenar temadan gelir (FZF_DEFAULT_OPTS)."]="and border come from the theme (FZF_DEFAULT_OPTS)."
+    ["Projenin kökü: git kökü, yoksa bulunulan dizin -> REPLY"]="Project root: the git root, otherwise the current directory -> REPLY"
+    ["package.json'daki \"scripts\" anahtarları -> reply (jq gerekmez; satır satır)"]="Keys of \"scripts\" in package.json -> reply (no jq needed; line by line)"
+    ["Bir dosyadaki hedef adları: _ts_pal_targets DOSYA DESEN -> reply (tekrarsız)"]="Target names in a file: _ts_pal_targets FILE PATTERN -> reply (unique)"
+    ["make için \"ad:\" (değişken ataması ve .ÖZEL hedefler hariç), just için \"ad argümanlar:\""]="\"name:\" for make (no variable assignments or .SPECIAL targets), \"name args:\" for just"
+    ["Satır ekle: _ts_pal_add TÜR KOMUT [NEREDEN] (çağıranın rows dizisine:"]="Add a row: _ts_pal_add KIND COMMAND [SOURCE] (to the caller's rows array:"
+    ["\"görünen satır<TAB>komut\")"]="\"visible row<TAB>command\")"
+    ["Paletin satırları -> reply"]="Palette rows -> reply"
+    ["Python sanal ortamı: açıksa kapat, değilse projedekini aç"]="Python virtual env: deactivate if active, otherwise activate the project's"
+    ["Son kullanılanlar: geçmişten, tekrarsız ve en yenisi önce (en çok 15)"]="Recent: from history, unique, newest first (at most 15)"
+    ["fzf'i paletin seçenekleriyle çalıştır (uçtan uca test --filter ile çağırır)"]="Run fzf with the palette's options (the end-to-end test calls it with --filter)"
+    ["Ctrl+Space: listeyi fzf'te aç, seçilen komutu satıra yaz"]="Ctrl+Space: open the list in fzf, put the picked command on the line"
 )
