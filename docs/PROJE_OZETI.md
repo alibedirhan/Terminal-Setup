@@ -1,6 +1,6 @@
-# Proje Özeti — Terminal Setup 6.2.2
+# Proje Özeti — Terminal Setup 7.0.0
 
-Son güncelleme: 31 Ekim 2026
+Son güncelleme: 1 Kasım 2026
 
 ## Nerede kaldık?
 
@@ -11,6 +11,7 @@ Son güncelleme: 31 Ekim 2026
 - **v6.2.1 (26 Ekim):** Tema listesi düzeltmesini ve depo düzenini içerir. Eksik komut seçenekleri, başarısız arşiv/yedekleme, paket simülasyonu ve yarım kalan kurulum, sembolik bağlantılar ve kaldırma hataları için korumalar eklendi. Test sayısı 194'e çıktı.
 - **v6.2.2 (31 Ekim) — gerçek sistem testi:** Bu Ubuntu 24.04 GNOME masaüstünde yalıtılmış durum klasörüyle tam kurulum, tema değiştirme ve kaldırma yapıldı; sistem bağımsız bir fotoğrafla karşılaştırılarak eski haline döndürüldü. Kullanıcının kendi Oh My Zsh'iyle fzf-tab/Ctrl+R çakışması, `pipefail` + `grep -q` yazı tipi teşhisi, gereksiz sudo isteyen kaldırma ve yanıltıcı zsh hız mesajı düzeltildi; 10 regresyon testi eklendi (204).
 - **v7 başladı (31 Ekim):** Üç prototipten sonra "uyumlu terminal" planı onaylandı: renk rolleri, tema kişilikleri, Starship, Oh My Zsh'siz temel. Ayrıntı: [V7_PLAN.md](V7_PLAN.md).
+- **v7.0.0 (1 Kasım) — uyumlu terminal:** Tema = palet + kişilik. Starship prompt'u, araçlar (tmux, lazygit, eza, bat, fzf, btop) ve karşılama kartı aynı kişiliği izler. Oh My Zsh'siz zsh temeli, sistem dilinde üretilen dosyalar, komut paleti (Ctrl+Space) ve Alt+H yardımı eklendi. Kaldırmada araç ayarlarının silinmesi ve tek bileşen kaldırıldıktan sonra kalan boş dizinler düzeltildi. Testlerin ortasındaki etkisiz `! komut` satırları (28) düzeltildi. PR'lar: [#14](https://github.com/alibedirhan/Terminal-Setup/pull/14)–[#21](https://github.com/alibedirhan/Terminal-Setup/pull/21).
 - **Açık işler:** 26 Ekim kontrolünde GitHub'da açık issue veya PR bulunmuyor. Video çekimi için [hazırlık listesi](VIDEO_HAZIRLIK.md) var; çekimin tamamlandığına dair depoda kayıt yok.
 
 Sürüm geçmişi: [CHANGELOG.md](../CHANGELOG.md). Geliştirme ve test komutları: [katkı rehberi](../.github/CONTRIBUTING.md).
