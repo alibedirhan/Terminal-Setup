@@ -72,6 +72,37 @@ assert_nothing_missing() {
     assert_nothing_missing
 }
 
+# Ev dizininde Türkçe harf içeren dosya var mı? Dışarıda kalanlar: durum
+# dizini (defter ve log), sahte sistemin indirdiği yazı tipleri, ikililer ve
+# klonlanan depolar (bizim yazdığımız dosyalar değil)
+assert_files_english() {
+    if (cd "$HOME" && grep -rnE '[çğıöşüÇĞİÖŞÜ]' . --exclude-dir={.terminal-setup,fonts,bin,.oh-my-zsh}); then
+        echo "Üretilen dosyada Türkçe metin kaldı"
+        return 1
+    fi
+}
+
+@test "kurulumun ürettiği dosyalar ve arşiv klasörü de İngilizce" {
+    local t
+    # Diğer terminaller de kuruluymuş gibi: renk ve ayar dosyaları yazılsın
+    for t in kitty wezterm alacritty ghostty; do
+        printf '#!/bin/sh\nexit 0\n' > "$FAKE_ROOT/pkgbin/$t" && chmod +x "$FAKE_ROOT/pkgbin/$t"
+    done
+    {
+        ts install --profile full --theme nord
+        ts style set retro
+        ts install --components tmux,btop,lazygit
+    } > "$OUT" 2>&1
+    assert_files_english
+    # Powerlevel10k Starship'le birlikte kurulamaz
+    { ts remove starship; ts install --components p10k; } >> "$OUT" 2>&1
+    assert_files_english
+    assert_nothing_missing
+    ts uninstall >> "$OUT" 2>&1
+    [ -f "$HOME"/terminal-setup-removed-*/removal-report.txt ]
+    [ -z "$(cd "$HOME" && find . -mindepth 1 ! -path './terminal-setup-removed-*')" ]
+}
+
 @test "--lang ortam değişkeninden önce gelir" {
     TS_LANG=tr run ts --lang en --help
     [[ "$output" == *"Usage: terminal-setup.sh"* ]]

@@ -120,9 +120,10 @@ Arayüz Türkçe ve İngilizcedir (`lib/i18n.sh`). Kaynak dil Türkçedir: metin
 - **Değişkenler metnin içine yazılmaz**, printf argümanı olur: `log_err "Bilinmeyen bileşen: %s" "$id"`. Böylece anahtar sabit kalır.
 - Metin alan arayüz fonksiyonları çeviriyi kendisi yapar: `log_*`, `ui_title`, `ui_section`, `ui_card_top`, `ui_confirm`, `ui_type_confirm`, `ui_menu`, `ui_checklist`, `ui_keys`, `diag_say`, `_verify_*`. Hazır satır alanlar (`ui_line`, `ui_center`, `ui_badge`, `ui_card_row`) ham metin alır; çeviriyi çağıran yapar.
 - Bileşen, tema ve profil adları/açıklamaları kayıtta Türkçe tutulur, gösterilirken çevrilir (`comp_label`). Dil menüden değişince ekran hemen yeni dilde çizilir.
-- Kullanıcının dosyalarına yazılan içerik (zsh parçalarındaki yorumlar) dile bağlı değildir; dil değişince dosyalar değişmez.
+- **Üretilen dosyalar da sistem dilindedir.** `act_write_file`, `act_seed_file` ve `act_rc_block` içerikteki açıklamaları yazmadan önce çevirir (`i18n_comments`). Çeviri satır satırdır: tam satır açıklama, `--- Başlık ---` bölüm başlığı (çizgi uzunluğu korunur) ve kod satırının sonundaki açıklama. Karşılıkları `locale/en-files.sh` içindedir. Katalogda karşılığı olmayan satır aynen kalır; böylece renk kodundaki ya da tmux biçimindeki `#` hiçbir zaman değişmez. Değişken içeren başlıklar `_t` ile yazılır (`style_file_header`: "Kişilik: %s  Tema: %s"). Dil değişince dosyalar bir sonraki yazımda (tema uygulama, yeniden kurma) yeni dile geçer.
+- Arşiv klasörü ve kaldırma raporu da sistem dilinde adlandırılır: `~/terminal-setup-kaldirilan-TARİH/kaldirma-raporu.txt` ya da `~/terminal-setup-removed-DATE/removal-report.txt`. Başlangıç fotoğrafı iki adı da dışarıda bırakır.
 
-Testler: `tests/unit/i18n.bats` katalogdaki her çevirinin `%s` sayısını denetler. `tests/integration/english.bats` tüm akışı İngilizce çalıştırır; `TS_I18N_MISSING` dosyasına düşen eksik çeviri ya da çıktıda kalan Türkçe metin (Türkçe harf veya katalogdaki bir cümle) testi düşürür. `tests/unit/tui_layout.bats` her ekranı İngilizce de her boyutta çizer.
+Testler: `tests/unit/i18n.bats` katalogdaki her çevirinin `%s` sayısını denetler. `tests/integration/english.bats` tüm akışı İngilizce çalıştırır; `TS_I18N_MISSING` dosyasına düşen eksik çeviri ya da çıktıda kalan Türkçe metin (Türkçe harf veya katalogdaki bir cümle) testi düşürür. Aynı dosya, bütün bileşenler ve terminaller kurulduktan sonra ev dizinindeki üretilmiş dosyalarda Türkçe harf kalmadığını da denetler. `tests/unit/tui_layout.bats` her ekranı İngilizce de her boyutta çizer.
 
 ## Güncelleme
 

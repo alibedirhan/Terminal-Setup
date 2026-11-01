@@ -72,7 +72,7 @@ if [[ $TERM == (xterm*|*-256color|alacritty|foot*|kitty*|wezterm|ghostty|tmux*|s
     add-zsh-hook preexec _ts_title_preexec
 
     # OSC 7: bulunulan dizini terminale bildirir; yeni sekme aynı dizinde açılır.
-    # Yol, URL kurallarına göre UTF-8 baytları üzerinden kodlanır (İ -> %C4%B0).
+    # Yol, URL kurallarına göre UTF-8 baytları üzerinden kodlanır (é -> %C3%A9).
     _ts_osc7() {
         emulate -L zsh
         local LC_ALL=C url="" c i hex

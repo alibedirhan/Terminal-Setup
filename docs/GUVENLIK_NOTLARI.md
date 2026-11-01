@@ -17,9 +17,9 @@ Terminal Setup'ın kullanıcı verisine nasıl davrandığının özeti. Ayrınt
 
 - Script'in oluşturduğu her şey silinir; değiştirdiği her şey kurulum öncesi değerine döner.
 - **Kurulumdan önce var olan hiçbir şey silinmez.** Paketler, dosyalar ve dizinler yalnızca script oluşturduysa kaydedilir.
-- Kullanımla oluşan veriler silinmez, arşive taşınır: `~/.zsh_history`, `~/.p10k.zsh`, zoxide ve atuin veritabanları.
+- Kullanımla oluşan veriler silinmez, arşive taşınır: `~/.zsh_history`, `~/.p10k.zsh`, zoxide ve atuin veritabanları, lazygit, btop ve atuin'in ayar dosyaları.
 - Kurulumdan sonra elle değiştirdiğiniz bir ayar dosyası orijinaline döndürülür; son hali arşive kopyalanır.
-- Arşiv: `~/terminal-setup-kaldirilan-TARİH/` (kaldırma raporu ve log dahil).
+- Arşiv: `~/terminal-setup-kaldirilan-TARİH/`, İngilizce sistemde `~/terminal-setup-removed-DATE/` (kaldırma raporu ve log dahil).
 
 ## Durum dosyaları
 

@@ -34,7 +34,7 @@ baseline_list_paths() {
         depth="${entry##*:}"
         [[ -d "$dir" ]] || continue
         find "$dir" -mindepth 1 -maxdepth "$depth" 2>/dev/null
-    done | grep -vE "^($TS_STATE_DIR|$HOME/terminal-setup-kaldirilan-)" | sort -u
+    done | grep -vE "^($TS_STATE_DIR|$HOME/terminal-setup-(kaldirilan|removed)-)" | sort -u
 }
 
 baseline_list_gitconfig() {

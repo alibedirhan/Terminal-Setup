@@ -86,9 +86,11 @@ act_mkdir() {
 
 # Script'e ait bir dosyayı yaz (yoksa oluşturulur ve kaydedilir).
 # Kullanıcıya ait mevcut bir dosyanın üzerine yazmak için act_rc_* kullanın.
+# İçerikteki açıklamalar sistem dilinde yazılır (i18n_file_comments).
 #   act_write_file YOL İÇERİK [mod]
 act_write_file() {
     local path="$1" content="$2" mode="${3:-644}"
+    i18n_file_comments "$path" "$content"; content="$REPLY"
     if [[ -e "$path" || -L "$path" ]] && ! ledger_has path "$path"; then
         log_err "Dosya kullanıcıya ait, üzerine yazılmadı: %s" "$(ts_pretty_path "$path")"
         return 1
@@ -109,6 +111,7 @@ act_write_file() {
 act_seed_file() {
     local path="$1" content="$2"
     [[ -e "$path" || -L "$path" ]] && return 0
+    i18n_file_comments "$path" "$content"; content="$REPLY"
     if is_dry_run; then
         log_plan "yaz %s" "$(ts_pretty_path "$path")"
         return 0
@@ -264,16 +267,23 @@ act_font_cache() {
 FS_FONTS_CHANGED=0
 UNDO_ARCHIVED=()   # arşive taşınan/kopyalanan yollar (rapor için)
 
+# Arşiv klasörünün adı sistem dilinde: ~/terminal-setup-kaldirilan-TARİH ya da
+# ~/terminal-setup-removed-DATE. Fotoğraf ikisini de dışarıda bırakır (baseline.sh).
+fs_archive_prefix() {
+    if [[ "$TS_LANG" == en ]]; then REPLY="terminal-setup-removed"; else REPLY="terminal-setup-kaldirilan"; fi
+}
+
 # Arşiv dizinini ilk ihtiyaçta belirle ve oluştur. Alt kabukta ($(...))
 # çağrılmamalıdır; TS_ARCHIVE_DIR'i ana kabukta ayarlar.
 undo_archive_init() {
     if [[ -z "$TS_ARCHIVE_DIR" ]]; then
+        fs_archive_prefix
         if is_dry_run; then
-            TS_ARCHIVE_DIR="$HOME/terminal-setup-kaldirilan-$(ts_stamp)"
+            TS_ARCHIVE_DIR="$HOME/$REPLY-$(ts_stamp)"
             return 0
         fi
         # Aynı saniyedeki ayrı işlemler eski arşivin üzerine yazmamalı.
-        TS_ARCHIVE_DIR=$(mktemp -d "$HOME/terminal-setup-kaldirilan-$(ts_stamp).XXXXXXXX") || return 1
+        TS_ARCHIVE_DIR=$(mktemp -d "$HOME/$REPLY-$(ts_stamp).XXXXXXXX") || return 1
         return 0
     fi
     is_dry_run || mkdir -p "$TS_ARCHIVE_DIR"
