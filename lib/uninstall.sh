@@ -29,6 +29,17 @@ uninstall_show_plan() {
     fi
 }
 
+# Defter satırları: _uninstall_lines core-dirs|other
+# core-dirs yola göre sıralıdır; undo_lines sondan okuduğu için alt dizin
+# üst dizinden önce silinir.
+_uninstall_lines() {
+    if [[ "$1" == core-dirs ]]; then
+        ledger_lines | awk -F'\t' '$1 == "core" && $2 == "dir"' | sort -t$'\t' -k3,3
+    else
+        ledger_lines | awk -F'\t' '!($1 == "core" && $2 == "dir")'
+    fi
+}
+
 uninstall_all() {
     if ! ledger_exists || (( $(ledger_count) == 0 )); then
         if legacy_detect; then
@@ -55,10 +66,13 @@ uninstall_all() {
     undo_archive_init || return 1
     UNDO_FAILED=0
     log_step "Değişiklikler geri alınıyor"
-    undo_lines < <(ledger_lines)
+    # İlk tur core'a devredilmiş ortak dizinleri atlar: bunlar deftere sonradan
+    # eklendiği için sondan başa okumada önce gelir, içleri henüz doluyken
+    # bırakılıp defterden düşerlerdi.
+    undo_lines < <(_uninstall_lines other)
     undo_rcfile_gc
-    # İkinci tur: ortak dizinler ve core'a devredilen kayıtlar
-    undo_lines < <(ledger_lines)
+    # İkinci tur: kalan kayıtlar, en sonda devredilen dizinler (önce alt dizin)
+    undo_lines < <(_uninstall_lines core-dirs; _uninstall_lines other)
     undo_rcfile_gc
 
     printf '\n'

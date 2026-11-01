@@ -102,6 +102,17 @@ home_listing() {
     [ -f "$HOME/.config/terminal-setup/zsh.d/60-ripgrep.zsh" ]
 }
 
+@test "tek bileşen kaldırıldıktan sonra tam kaldırma ortak dizinleri de siler" {
+    ts install --components lazygit,atuin
+    # ~/.local/bin'i lazygit oluşturdu; atuin hâlâ kullandığı için core'a devredilir
+    ts remove lazygit
+    [ -d "$HOME/.local/bin" ]
+    run ts uninstall
+    [ "$status" -eq 0 ]
+    [ -z "$(home_listing)" ]
+    [ ! -e "$HOME/.terminal-setup" ]
+}
+
 @test "kurulmamış bileşeni kaldırma isteği zararsızdır" {
     run ts remove btop
     [[ "$output" == *"kurulmamış"* ]]

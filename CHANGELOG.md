@@ -16,6 +16,7 @@ Terminal Setup 7 başladı: [plan](docs/V7_PLAN.md).
 
 ### Düzeltildi
 - **Script'in kurduğu lazygit, btop ya da atuin kaldırılınca kullanıcının o araçlara yazdığı ayarlar da siliniyordu.** Bu araçların ayar dizini (`~/.config/lazygit`, `~/.config/btop`, `~/.config/atuin`) önbellek gibi kaydedilip bütünüyle siliniyordu. Artık ayar dosyası (`config.yml`, `btop.conf`, `config.toml`) arşive taşınır; günlük dosyası silinir; dizin yalnızca boş kalırsa silinir, kullanıcının oraya koyduğu başka dosyalar yerinde kalır. Lazygit'in ilk açılışta yazdığı boş `config.yml` gibi boş dosyalar arşive gitmez. 6.x ile yapılmış kurulumların defteri bir sonraki komutta kendiliğinden çevrilir; yeniden kurmak gerekmez.
+- Tek bir bileşen kaldırıldıktan sonra yapılan tam kaldırma `~/.local/bin` gibi boş ortak dizinleri bırakıyordu. Hâlâ dolu olduğu için "core"a devredilen dizinler ilk turda içleri doluyken işlenip defterden düşüyordu; artık ikinci turda, alt dizinden başlanarak siliniyor.
 
 ## [6.2.2] - 2026-10-31
 
