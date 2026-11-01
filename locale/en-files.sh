@@ -109,6 +109,7 @@ I18N_EN+=(
     ["Satır ekle: _ts_pal_add TÜR KOMUT [NEREDEN] (çağıranın rows dizisine:"]="Add a row: _ts_pal_add KIND COMMAND [SOURCE] (to the caller's rows array:"
     ["\"görünen satır<TAB>komut\")"]="\"visible row<TAB>command\")"
     ["Paletin satırları -> reply"]="Palette rows -> reply"
+    ["Tür sütunu karakterle hizalansın (C/POSIX yerel ayarında bayt sayılırdı)"]="Align the kind column by characters (the C/POSIX locale would count bytes)"
     ["Python sanal ortamı: açıksa kapat, değilse projedekini aç"]="Python virtual env: deactivate if active, otherwise activate the project's"
     ["Son kullanılanlar: geçmişten, tekrarsız ve en yenisi önce (en çok 15)"]="Recent: from history, unique, newest first (at most 15)"
     ["fzf'i paletin seçenekleriyle çalıştır (uçtan uca test --filter ile çağırır)"]="Run fzf with the palette's options (the end-to-end test calls it with --filter)"

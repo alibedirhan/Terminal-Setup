@@ -87,6 +87,15 @@ JSON
     [ "${lines[1]}" = "[make test] 9" ]
 }
 
+@test "C yerel ayarında da tür sütunu hizalı" {
+    printf 'test:\n' > "$P/Makefile"
+    run env LC_ALL=C LANG=C "$ZSH" -f -c "source '$BATS_TEST_TMPDIR/msg.zsh'; source '$REPO_ROOT/zsh/palette.zsh'
+        fc -p; print -s 'ls -la'; cd '$P'; _ts_palette_items; print -rl -- \"\${reply[@]%%\$'\\t'*}\""
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"betik    make test"* ]]
+    [[ "$output" == *"geçmiş   ls -la"* ]]
+}
+
 @test "boş dizinde ileti gösterilir, komut satırı değişmez" {
     run "$ZSH" -f -c "source '$BATS_TEST_TMPDIR/msg.zsh'; source '$REPO_ROOT/zsh/palette.zsh'
         cd '$HOME'; fc -p; zle() { print -r -- \"zle \$*\"; }; BUFFER=eski; _ts_palette; print -r -- \"[\$BUFFER]\""

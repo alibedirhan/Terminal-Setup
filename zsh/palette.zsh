@@ -51,6 +51,8 @@ _ts_pal_add() { rows+=("${(r:8:)1} $2${3:+  · $3}"$'\t'"$2"); }
 # Paletin satırları -> reply
 _ts_palette_items() {
     emulate -L zsh -o extended_glob
+    # Tür sütunu karakterle hizalansın (C/POSIX yerel ayarında bayt sayılırdı)
+    local LC_ALL=C.UTF-8
     _ts_pal_root
     local root=$REPLY f s pm=npm
     local -a rows py
