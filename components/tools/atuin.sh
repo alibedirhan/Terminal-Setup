@@ -13,7 +13,7 @@ comp_atuin_install() {
     # atuin ilk çalıştığında ayar ve veritabanını bu konumlardan birine yazar
     act_userdata "$HOME/.local/share/atuin"
     act_userdata "$HOME/.atuin"
-    act_glob "$HOME/.config/atuin"
+    act_userdata "$HOME/.config/atuin/config.toml"
 }
 
 comp_atuin_verify() { has_cmd atuin; }

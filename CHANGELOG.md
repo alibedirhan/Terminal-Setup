@@ -14,6 +14,9 @@ Terminal Setup 7 başladı: [plan](docs/V7_PLAN.md).
 - **Tema kişilikleri.** Tema artık palet ve kişilikten oluşur. Altı kişilik (modern, arctic, vivid, retro, soft, neon) `styles/` altında veri dosyası olarak durur. Kişilik; prompt simgesini, kenar stilini, büyük/küçük harfi, ayırıcıları, liste simgelerini ve tarih biçimini belirler. Her tema `STYLE=` ile bir kişiliğe bağlıdır. `style list` ve `style set AD|auto` ile başka bir kişilik seçilebilir, örneğin Nord renkleriyle retro. Kişilikten Starship prompt'u, fzf, eza, bat, tmux, lazygit ve btop okur.
 - **Renk rolleri ve okunabilirlik garantisi.** Temanın 16 rengi değişmez; Terminal Setup'ın çizdiği her şey (fzf, btop, tmux, tema önizlemesi) anlamı olan rolleri kullanır. Soluk yazı her tema için 4.5:1 kontrasta ulaşacak şekilde hesaplanır; renkli roller en az 3:1, seçili satır en az 4.5:1 olur. Daha önce fzf başlıkları ve btop'un pasif yazıları 12 temanın 9'unda okunması güç renkteydi (Solarized'da arka planla aynı renk). Her temada bütün sınırlar testle denetlenir.
 
+### Düzeltildi
+- **Script'in kurduğu lazygit, btop ya da atuin kaldırılınca kullanıcının o araçlara yazdığı ayarlar da siliniyordu.** Bu araçların ayar dizini (`~/.config/lazygit`, `~/.config/btop`, `~/.config/atuin`) önbellek gibi kaydedilip bütünüyle siliniyordu. Artık ayar dosyası (`config.yml`, `btop.conf`, `config.toml`) arşive taşınır; günlük dosyası silinir; dizin yalnızca boş kalırsa silinir, kullanıcının oraya koyduğu başka dosyalar yerinde kalır. Lazygit'in ilk açılışta yazdığı boş `config.yml` gibi boş dosyalar arşive gitmez. 6.x ile yapılmış kurulumların defteri bir sonraki komutta kendiliğinden çevrilir; yeniden kurmak gerekmez.
+
 ## [6.2.2] - 2026-10-31
 
 Gerçek bir Ubuntu 24.04 GNOME masaüstünde (Oh My Zsh'i kullanıcının kendisinin kurduğu, 600'den fazla yazı tipli bir sistem) yapılan kurulum–kaldırma testinde bulunan hatalar.

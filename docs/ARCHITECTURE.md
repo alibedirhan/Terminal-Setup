@@ -39,7 +39,7 @@ bileşen <TAB> tür <TAB> arg1 [<TAB> arg2]
 | `path` | tamamen script'e ait dosya/dizin | silinir |
 | `dir` | paylaşılan dizin (`~/.local/bin` gibi) | yalnızca boşsa silinir |
 | `glob` | önbellek kalıbı (`~/.zcompdump*`) | eşleşenler silinir |
-| `userdata` | kullanımla oluşan veri (komut geçmişi, prompt ayarı) | silinmez, arşive taşınır |
+| `userdata` | kullanımla oluşan veri (komut geçmişi, prompt ayarı, aracın kendi ayar dosyası) | silinmez, arşive taşınır; boş dosya silinir |
 | `rcblock` | kullanıcı dosyasındaki işaretli blok | blok çıkarılır |
 | `rcfile` | kullanıcı dosyasının orijinal kopyası | son blok kalkınca orijinal geri konur |
 | `gitcfg` / `dconf` | ayarın önceki değeri | önceki değere dönülür ya da silinir |
@@ -47,6 +47,10 @@ bileşen <TAB> tür <TAB> arg1 [<TAB> arg2]
 | `note` | bilgi (ör. "bu bileşen kullanıcıda zaten vardı") | — |
 
 İlk satır sürüm başlığıdır (`# terminal-setup ledger v1`); biçim değişirse eski defterler taşınabilir.
+
+`userdata` bileşen başına tekildir; diğer tekil türlerde ilk kayıt kazanır. Aynı dosyada iki bileşen veri bekleyebilir (btop.conf'u btop da tema da): hangisi önce geri alınırsa arşive o taşır.
+
+**Eski kayıtların çevrilmesi:** 6.x lazygit, btop ve atuin'in ayar dizinini önbellek gibi (`glob`) kaydediyordu; kaldırmada kullanıcının o dizine yazdığı ayar da siliniyordu. Her komutun başında `ledger_upgrade` bu kayıtları bugünkü karşılıklarına çevirir: dizin (`dir`), günlük dosyası (`glob`) ve ayar dosyası (`userdata`). Kural tablosu `LEDGER_UPGRADES` içindedir. Prova modunda defter yazılmaz; kaldırma planı çevrilmiş hâli gösterir.
 
 **Yönetilen bloklar** (`lib/actions/rc.sh`): `~/.zshrc` gibi kullanıcı dosyalarına dağınık satır eklenmez. Her bileşen kendi işaretli bloğunu ekler; asıl ayarlar `~/.config/terminal-setup/` altında durur:
 
@@ -160,6 +164,7 @@ comp_bat_verify() { has_cmd batcat || has_cmd bat; }
 - `verify`, bileşen sistemde varsa 0 döner. Script kurmadan önce `verify` başarılıysa bileşen "dış kurulum" sayılır ve dokunulmaz.
 - GitHub release'inden araç için: `act_gh_binary owner/repo 'x86_64-deseni' 'aarch64-deseni' ikili`. Arşivden birden çok dosya (ör. yazı tipleri) için: `act_gh_extract owner/repo 'desen' HEDEF-DİZİN 'glob'...`.
 - Kullanıcının sonradan değiştireceği bir ayar dosyası (btop.conf, wezterm.lua) yalnızca yoksa `act_seed_file` ile oluşturulur: kullanıcı verisi sayılır, üzerine yazılmaz, kaldırırken arşive taşınır.
+- Aracın kendi yazdığı ayar dosyası (lazygit'in `config.yml`'ı gibi) `act_userdata` ile dosya olarak bildirilir, dizini `glob` ile değil. Aksi hâlde kaldırma, kullanıcının o dizine yazdığı her şeyi siler. Önbellek ve günlük dosyaları `glob` olarak kalır.
 - Aracın öğrettiği kısayollar `component_tip <ad> "Tuş ya da komut" "Ne yapar"` ile bildirilir; "Kısayollar" ekranı ve açılış ipucu yalnızca kurulu araçlarınkini gösterir.
 - Kurulum ya da kaldırmadan sonra bir şey yenilenecekse (açılış ipucu, yazı tipi seçimi) çalıştırıcıya kanca eklenir: `RUNNER_AFTER_CHANGE+=(fonksiyon)`. Çalıştırıcı üst katmanları tanımaz.
 - İstenirse `profiles/*.profile` dosyalarına eklenir.

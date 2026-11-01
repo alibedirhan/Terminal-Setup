@@ -10,6 +10,7 @@
 #   dir       paylaşılan dizin (~/.local/bin gibi); yalnızca boşsa silinir
 #   glob      kalıba uyan önbellek dosyaları (~/.zcompdump*)
 #   userdata  kullanımla oluşan veri (geçmiş, ayar); silinmez, arşive taşınır
+#             (boş bir dosya veri taşımadığı için silinir)
 # ============================================================================
 
 # Asla silinmeyecek yollar (hatalı bir kayda karşı son savunma hattı)
@@ -332,7 +333,13 @@ undo_glob() {
     return 0
 }
 
+# Boş bir dosya veri taşımaz (lazygit ilk açılışta boş config.yml yazar);
+# arşivi kalabalıklaştırmadan silinir.
 undo_userdata() {
     [[ -e "$1" ]] || return 0
+    if [[ -f "$1" && ! -L "$1" && ! -s "$1" ]]; then
+        undo_path "$1"
+        return
+    fi
     fs_archive "$1" "taşı"
 }

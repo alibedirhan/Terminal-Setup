@@ -17,8 +17,11 @@ LEDGER_HEADER="# terminal-setup ledger v1"
 # "kurulumdan önceki" değeri taşır; sonrakiler onu ezmemelidir.
 # (rcblock bu listede değildir: bir dosyada farklı kimlikli birden çok blok
 # olabilir; tekilliğini act_rc_block kendisi denetler.)
-LEDGER_UNIQUE_TYPES=(pkg path glob userdata rcfile gitcfg dconf shell)
+LEDGER_UNIQUE_TYPES=(pkg path glob rcfile gitcfg dconf shell)
 # (dir de listede değildir: aynı dizin birden çok bileşen için kaydedilebilir.)
+# userdata bileşen başına tekildir: iki bileşen aynı yerde kullanıcı verisi
+# bekleyebilir (btop.conf'u btop da tema da). Önce geri alınan arşivler,
+# sonrakinin kaydı dosya artık olmadığı için bir şey yapmaz.
 
 ledger_init() {
     is_dry_run && return 0
@@ -69,6 +72,10 @@ ledger_add() {
     if in_list "$type" "${LEDGER_UNIQUE_TYPES[@]}" && ledger_has "$type" "$a1"; then
         return 0
     fi
+    if [[ "$type" == userdata ]] && ledger_lines "$TS_CURRENT_COMPONENT" |
+        awk -F'\t' -v a="$a1" '$2 == "userdata" && $3 == a { f=1 } END { exit !f }'; then
+        return 0
+    fi
     ledger_init || return 1
     if [[ -n "$a2" ]]; then
         printf '%s\t%s\t%s\t%s\n' "$TS_CURRENT_COMPONENT" "$type" "$a1" "$a2" >> "$TS_LEDGER"
@@ -108,4 +115,48 @@ ledger_count() { ledger_lines | wc -l; }
 # Geri almak yönetici yetkisi isteyen bir kayıt (paket, giriş kabuğu) var mı?
 ledger_needs_root() {
     ledger_lines | awk -F'\t' '$2 == "pkg" || $2 == "shell" { found=1 } END { exit !found }'
+}
+
+# ----------------------------------------------------------------------------
+# Eski kayıtların bugünkü anlamına çevrilmesi
+# ----------------------------------------------------------------------------
+# 6.x bazı araçların ayar dizinini önbellek gibi (glob) kaydediyordu; kaldırmada
+# kullanıcının o dizine yazdığı ayar da siliniyordu. Böyle bir kayıt, bileşenin
+# bugün yazdığı kayıtlara çevrilir: dizin (boşsa silinir), önbellek dosyası
+# (glob) ve ayar dosyası (userdata, arşive taşınır).
+#   "eski yol ($HOME'a göre) tür:alt-yol ..."
+LEDGER_UPGRADES=(
+    ".config/lazygit userdata:config.yml"
+    ".config/btop glob:btop.log userdata:btop.conf"
+    ".config/atuin userdata:config.toml"
+)
+
+# Defter satırlarını (stdin) bugünkü kayıtlara çevir (stdout)
+ledger_upgrade_filter() {
+    awk -F'\t' -v home="$HOME" -v rules="$(printf '%s\n' "${LEDGER_UPGRADES[@]}")" '
+        BEGIN {
+            n = split(rules, r, "\n")
+            for (i = 1; i <= n; i++) if (split(r[i], f, " ") > 1) spec[home "/" f[1]] = r[i]
+        }
+        $2 == "glob" && ($3 in spec) {
+            k = split(spec[$3], f, " ")
+            print $1 "\tdir\t" $3
+            for (i = 2; i <= k; i++) { split(f[i], tc, ":"); print $1 "\t" tc[1] "\t" $3 "/" tc[2] }
+            next
+        }
+        { print }'
+}
+
+# Defteri yerinde çevir; değişecek bir şey yoksa dosyaya dokunmaz
+ledger_upgrade() {
+    is_dry_run && return 0
+    [[ -f "$TS_LEDGER" ]] || return 0
+    local tmp="$TS_LEDGER.tmp"
+    ledger_upgrade_filter < "$TS_LEDGER" > "$tmp" || { rm -f -- "$tmp"; return 1; }
+    if cmp -s "$tmp" "$TS_LEDGER"; then
+        rm -f -- "$tmp"
+        return 0
+    fi
+    log_debug "defter: eski ayar dizini kayıtları çevrildi"
+    mv -f -- "$tmp" "$TS_LEDGER"
 }

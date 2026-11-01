@@ -16,7 +16,8 @@ uninstall_show_plan() {
     local saved="$TS_DRY_RUN" ext
     ui_title "Kaldırma planı"
     TS_DRY_RUN=1
-    ledger_lines | undo_lines
+    # Provada defter çevrilmez (ledger_upgrade); plan çevrilmiş hâli gösterir
+    ledger_lines | ledger_upgrade_filter | undo_lines
     TS_DRY_RUN="$saved"
     ext=$(ledger_lines | awk -F'\t' '$2 == "note" && $3 ~ /^external:/ { sub(/^external:/, "", $3); print $3 }')
     if [[ -n "$ext" ]]; then

@@ -48,7 +48,9 @@ _btop_theme() {
 rend_btop_apply() {
     _btop_theme
     act_write_file "$BTOP_THEME_FILE" "$REPLY" || return 1
-    if [[ -e "$BTOP_CONF" ]] && ! ledger_has userdata "$BTOP_CONF"; then
+    # Var olan btop.conf'a dokunulmaz (bizim oluşturduğumuz da btop'un
+    # kendisinin ya da kullanıcının yazdığı da)
+    if [[ -e "$BTOP_CONF" ]]; then
         grep -qF "$BTOP_THEME_FILE" "$BTOP_CONF" 2>/dev/null ||
             log_info "btop ayarlarınız korunuyor; temayı btop'ta Options → color_theme → terminal-setup ile seçebilirsiniz."
         return 0
