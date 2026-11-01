@@ -74,9 +74,11 @@ assert_nothing_missing() {
 
 # Ev dizininde Türkçe harf içeren dosya var mı? Dışarıda kalanlar: durum
 # dizini (defter ve log), sahte sistemin indirdiği yazı tipleri, ikililer ve
-# klonlanan depolar (bizim yazdığımız dosyalar değil)
+# klonlanan depolar (bizim yazdığımız dosyalar değil). İkili dosyalar (-I)
+# taranmaz: git nesnelerinin sıkıştırılmış baytları rastlantıyla bir Türkçe
+# harfin baytlarını içerebilir.
 assert_files_english() {
-    if (cd "$HOME" && grep -rnE '[çğıöşüÇĞİÖŞÜ]' . --exclude-dir={.terminal-setup,fonts,bin,.oh-my-zsh}); then
+    if (cd "$HOME" && grep -rnIE '[çğıöşüÇĞİÖŞÜ]' . --exclude-dir={.terminal-setup,fonts,bin,.oh-my-zsh,.git}); then
         echo "Üretilen dosyada Türkçe metin kaldı"
         return 1
     fi
