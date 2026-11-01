@@ -243,6 +243,7 @@ Uçtan uca testte her kişiliğin ayarları gerçek eza, bat, tmux ve lazygit il
 - **Önbellek güvenliği:** Önbellekteki sayılar aritmetiğe girmeden önce denetlenir.
 - **Dil ve biçim:** İletiler kurulumda sistem dilinde `_ts_wmsg` dizisine yazılır. Biçim ve renkler `_ts_card` dizisindedir; tema yokken terminalin 16 rengi kullanılır.
 - **Genişlik:** Kart en çok 72 sütundur. Sığmayan metin `…` ile kısaltılır; 26 sütundan dar terminalde kart çizilmez.
+- **Yerel ayar:** Kart `local LC_ALL=C.UTF-8` ile çizilir. C/POSIX yerel ayarında zsh çok baytlı karakteri bayt sayar ve hizalama bozulur; zsh 5.8 ayrıca `$'\u…'` kaçışında hata verir. Bu yüzden Nerd Font ve İ/ı karakterleri UTF-8 baytlarıyla (`$'\356\202\260'`) yazılır.
 
 Yeni kişilik: `styles/` altına bir dosya; kod gerekmez. `tests/unit/styles.bats` her dosyayı ve her temanın bağlantısını denetler.
 

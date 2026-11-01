@@ -44,8 +44,13 @@ quiet _ts_welcome_refresh || exit 16
 grep -q '^disk=[0-9]' $cache/welcome || exit 16
 card=$(COLUMNS=80 _ts_welcome 2> $err)
 [[ ! -s $err && -n $card ]] || { cat $err; exit 17; }
+# Genişlik zsh'le, karakter olarak ölçülür (kapsayıcının awk'ı mawk: bayt sayar)
 if [[ ${_ts_card[border]} != none ]]; then
-    (( $(print -r -- ${card//$'\e'\[[0-9;]#m/} | awk '{ print length($0) }' | sort -u | wc -l) == 1 )) ||
-        { print -r -- $card; exit 17; }
+    () {
+        local LC_ALL=C.UTF-8 line
+        local -A w
+        for line in "${(@f)${card//$'\e'\[[0-9;]#m/}}"; do w[${#line}]=1; done
+        (( ${#w} == 1 ))
+    } || { print -r -- $card; exit 17; }
 fi
 rm -rf $repo $err

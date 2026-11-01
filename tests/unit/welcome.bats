@@ -99,6 +99,24 @@ widths() { LC_ALL=C.UTF-8 awk '{ print length($0) }' <<< "$output" | sort -u; }
     [[ "$output" == *"kaydedilmemiş iş: Proje-A"* ]]
 }
 
+@test "C/POSIX yerel ayarında da kart hatasız ve hizalı (Nerd Font ve Türkçe büyük harf)" {
+    full_cache
+    local t loc
+    for loc in C POSIX; do
+        for t in dracula catppuccin gruvbox; do
+            card_files "$t"
+            run env -u TMUX LC_ALL=$loc LANG=$loc COLUMNS=80 HOME="$HOME" XDG_CACHE_HOME="$HOME/.cache" "$ZSH" -f -c "
+                source '$BATS_TEST_TMPDIR/msg.zsh'; source '$BATS_TEST_TMPDIR/card.zsh'
+                cd ~; source '$REPO_ROOT/zsh/welcome.zsh'; _ts_welcome"
+            [ "$status" -eq 0 ]
+            [[ "$output" != *"not in range"* ]] || { echo "$loc $t: $output"; false; }
+            output=$(sed 's/\x1b\[[0-9;]*m//g' <<< "$output")
+            [ "$(widths)" = 72 ] || { echo "$loc $t:"; echo "$output"; false; }
+        done
+    done
+    [[ "$output" == *"BEKLİYOR"* ]]
+}
+
 @test "dar terminalde satırlar kısaltılır, kart taşmaz; çok darsa çizilmez" {
     full_cache
     local proj="$HOME/kod/cok-uzun-bir-proje-adi-ki-karti-tasirabilir"

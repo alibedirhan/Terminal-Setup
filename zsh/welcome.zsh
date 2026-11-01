@@ -120,7 +120,7 @@ _ts_welcome_refresh() {
 # Türkçede i/İ ve ı/I ayrı harflerdir; yerel ayar Türkçe değilse zsh bunu bilmez.
 _ts_case() {
     emulate -L zsh
-    local I=$'\u0130' i=$'\u0131'   # noktalı büyük İ, noktasız küçük ı
+    local I=$'\304\260' i=$'\304\261'   # noktalı büyük İ, noktasız küçük ı (UTF-8 baytları)
     REPLY=$2
     case $1 in
         upper) [[ ${_ts_wmsg[lang]-} == tr ]] && REPLY=${REPLY//i/$I}; REPLY=${(U)REPLY} ;;
@@ -166,6 +166,9 @@ _ts_welcome_items() {
 
 _ts_welcome() {
     emulate -L zsh
+    # Genişlikler karakterle ölçülsün ve kaçışlar her yerel ayarda çalışsın
+    # (C/POSIX yerel ayarında zsh çok baytlı karakteri bayt sayar)
+    local LC_ALL=C.UTF-8
     [[ -z ${TMUX-} && ${TS_WELCOME-} != off ]] || return 0
     local -a items
     _ts_welcome_items
@@ -227,13 +230,14 @@ _ts_welcome() {
         double) tl=╔ tr=╗ bl=╚ br=╝ h=═ v=║ ;;
         *) tl=╭ tr=╮ bl=╰ br=╯ h=─ v=│ ;;
     esac
-    # Başlık kişiliğin segment biçimiyle; tp görünen metin, tc renkli hâli
+    # Başlık kişiliğin segment biçimiyle; tp görünen metin, tc renkli hâli.
+    # Nerd Font karakterleri UTF-8 baytlarıyla yazılır (U+E0B0, U+E0B6, U+E0B4)
     local tp tc
     case ${c[seg]} in
         brackets) tp="[ $title ]"; tc="${c[title]}$tp$R" ;;
         arrows) tp="${c[sep]} $title"; tc="${c[title]}$tp$R" ;;
-        powerline) tp=" $title "$'\ue0b0'; tc="${c[tag]} $title $R${c[tagend]}"$'\ue0b0'"$R" ;;
-        pills) tp=$'\ue0b6'" $title "$'\ue0b4'; tc="${c[tagend]}"$'\ue0b6'"$R${c[tag]} $title $R${c[tagend]}"$'\ue0b4'"$R" ;;
+        powerline) tp=" $title "$'\356\202\260'; tc="${c[tag]} $title $R${c[tagend]}"$'\356\202\260'"$R" ;;
+        pills) tp=$'\356\202\266'" $title "$'\356\202\264'; tc="${c[tagend]}"$'\356\202\266'"$R${c[tag]} $title $R${c[tagend]}"$'\356\202\264'"$R" ;;
         *) tp=$title; tc="${c[title]}$title$R" ;;
     esac
     # Üst satır: köşe ─ başlık ─── tarih ─ köşe (genişlik W). Sığmazsa önce
