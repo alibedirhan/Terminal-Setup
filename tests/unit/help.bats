@@ -97,7 +97,7 @@ help_for() {
         zle() { :; }; BUFFER=tar; _ts_help"
     output=$(sed 's/\x1b\[[0-9;]*m//g' <<< "$output")
     # Geçerli UTF-8 ve en çok 40 sütun
-    ! LC_ALL=C.UTF-8 grep -axv ".*" <<< "$output"
+    ! LC_ALL=C.UTF-8 grep -axv ".*" <<< "$output" || false
     [ "$(LC_ALL=C.UTF-8 awk 'NR == 1 { print length($0) }' <<< "$output")" -le 40 ]
 }
 

@@ -22,7 +22,7 @@ real_zsh() { PATH=/usr/bin:/bin command -v zsh; }
     grep -q "source \"$PLUG/zsh-autosuggestions/zsh-autosuggestions.zsh\"" "$D/20-zsh-plugins.zsh"
     grep -q "source \"$PLUG/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh\"" "$D/98-zsh-highlight.zsh"
     grep -q "source \"$PLUG/fzf-tab/fzf-tab.plugin.zsh\"" "$D/18-fzf-tab.zsh"
-    ! grep -q 'plugins+=' "$D"/*.zsh
+    ! grep -q 'plugins+=' "$D"/*.zsh || false
     local zsh f
     zsh=$(real_zsh) || skip "gerçek zsh yok"
     for f in "$D"/*.zsh "$HOME/.config/terminal-setup/init.zsh"; do "$zsh" -n "$f" || { echo "$f"; false; }; done

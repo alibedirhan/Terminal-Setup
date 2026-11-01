@@ -26,7 +26,7 @@ setup() {
     ts tips --shell on
     grep -q "Ctrl+T — Dosya seçip komut satırına ekle" "$TIPS"
     grep -q "add-zsh-hook precmd _ts_tip" "$SNIP"
-    ! grep -q "lg — " "$TIPS"
+    ! grep -q "lg — " "$TIPS" || false
 
     ts install --components lazygit
     grep -q "lg — Git arayüzünü aç" "$TIPS"

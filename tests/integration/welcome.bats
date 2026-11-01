@@ -15,7 +15,7 @@ home_listing() {
 @test "geliştirici profili kartı kurar; biçim temadan ve kişilikten gelir" {
     grep -qx welcome "$REPO_ROOT/profiles/developer.profile"
     grep -qx welcome "$REPO_ROOT/profiles/full.profile"
-    ! grep -qx welcome "$REPO_ROOT/profiles/minimal.profile"
+    ! grep -qx welcome "$REPO_ROOT/profiles/minimal.profile" || false
     run ts install --profile developer --theme nord
     [ "$status" -eq 0 ]
     grep -q "^    morning 'Günaydın'$" "$D/96-welcome.zsh"

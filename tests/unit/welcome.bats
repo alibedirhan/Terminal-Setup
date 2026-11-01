@@ -212,7 +212,7 @@ widths() { LC_ALL=C.UTF-8 awk '{ print length($0) }' <<< "$output" | sort -u; }
     welcome_theme_zsh
     [[ "$REPLY" == *"border heavy seg powerline"* && "$REPLY" == *"marks '● ● ➜'"* ]]
     [[ "$REPLY" == *"38;2;$(theme_rgb "${ROLE[accent]}")m"* ]]
-    ! LC_ALL=C grep -q $'[\xee\xef]' <<< "$REPLY"
-    ! LC_ALL=C grep -q $'[\xee\xef]' "$REPO_ROOT/zsh/welcome.zsh"
+    ! LC_ALL=C grep -q $'[\xee\xef]' <<< "$REPLY" || false
+    ! LC_ALL=C grep -q $'[\xee\xef]' "$REPO_ROOT/zsh/welcome.zsh" || false
     "$ZSH" -n <<< "$REPLY"
 }

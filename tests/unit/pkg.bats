@@ -20,7 +20,7 @@ setup() {
 @test "önceden kurulu paket kaydedilmez ve apt çağrılmaz" {
     echo bat >> "$FAKE_ROOT/dpkg.txt"
     act_pkg bat
-    ! ledger_has pkg bat
+    ! ledger_has pkg bat || false
     [ ! -f "$FAKE_ROOT/apt.log" ]
 }
 
@@ -34,8 +34,8 @@ setup() {
     echo vim >> "$FAKE_ROOT/dpkg.txt"
     act_pkg bat
     pkg_purge_owned bat libgit2
-    ! pkg_is_installed bat
-    ! pkg_is_installed libgit2
+    ! pkg_is_installed bat || false
+    ! pkg_is_installed libgit2 || false
     pkg_is_installed vim
 }
 
@@ -45,7 +45,7 @@ setup() {
     echo "userapp: libgit2" >> "$FAKE_ROOT/deps"
     echo userapp >> "$FAKE_ROOT/dpkg.txt"
     pkg_purge_owned bat libgit2
-    ! pkg_is_installed bat
+    ! pkg_is_installed bat || false
     pkg_is_installed libgit2
     pkg_is_installed userapp
     [ "${PKG_SKIPPED[*]}" = "libgit2" ]

@@ -224,23 +224,23 @@ card_demo() {
 
 @test "onay sorusu: varsayılan, evet, hayır, geçersiz girdi" {
     ui_confirm "Soru?" e <<< ""
-    ! ui_confirm "Soru?" h <<< ""
+    ! ui_confirm "Soru?" h <<< "" || false
     ui_confirm "Soru?" h <<< "evet"
-    ! ui_confirm "Soru?" e <<< "h"
+    ! ui_confirm "Soru?" e <<< "h" || false
     ui_confirm "Soru?" h <<< $'belki\ne' > /dev/null
 }
 
 @test "yazarak onay yalnızca kelime tam yazılınca geçer" {
     ui_type_confirm "kaldır" <<< "kaldır" > /dev/null
-    ! ui_type_confirm "kaldır" <<< "kaldir" > /dev/null
+    ! ui_type_confirm "kaldır" <<< "kaldir" > /dev/null || false
     ! ui_type_confirm "kaldır" < /dev/null > /dev/null
 }
 
 @test "sürüm karşılaştırması yalnızca daha yeni sürümü kabul eder" {
     version_newer 6.1.0 6.0.0
     version_newer 6.0.10 6.0.9
-    ! version_newer 5.0.2 6.0.0
-    ! version_newer 6.0.0 6.0.0
-    ! version_newer "" 6.0.0
+    ! version_newer 5.0.2 6.0.0 || false
+    ! version_newer 6.0.0 6.0.0 || false
+    ! version_newer "" 6.0.0 || false
     ! version_newer "<html>" 6.0.0
 }
