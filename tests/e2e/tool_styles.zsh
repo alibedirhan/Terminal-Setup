@@ -6,7 +6,7 @@
 # Hata kodu hangi aracın düştüğünü söyler; araçların hata çıktısı ekrana gelir.
 # ============================================================================
 emulate -L zsh
-setopt no_unset
+setopt no_unset extended_glob
 
 local d=$HOME/.config/terminal-setup err=${TMPDIR:-/tmp}/tool-styles.$$.err repo
 path=($HOME/.local/bin $path)
@@ -34,4 +34,18 @@ repo=$(mktemp -d)
 git -C $repo init -q
 TERM=xterm-256color script -qec "timeout 5 lazygit -p $repo" /dev/null > $err 2>&1
 (( $? == 124 )) || { tr -d '\033' < $err | tail -5; exit 15; }
+# Karşılama kartı: arka plan yenilemesi gerçek apt-check, df ve git ile;
+# kart hatasız çizilir ve her satırı aynı genişlikte (kenarsız kişilik hariç)
+local cache=${XDG_CACHE_HOME:-$HOME/.cache}/terminal-setup card
+mkdir -p $cache && print -r -- $repo > $cache/projects || exit 16
+source $d/zsh.d/65-theme-welcome.zsh
+source $d/zsh.d/96-welcome.zsh
+quiet _ts_welcome_refresh || exit 16
+grep -q '^disk=[0-9]' $cache/welcome || exit 16
+card=$(COLUMNS=80 _ts_welcome 2> $err)
+[[ ! -s $err && -n $card ]] || { cat $err; exit 17; }
+if [[ ${_ts_card[border]} != none ]]; then
+    (( $(print -r -- ${card//$'\e'\[[0-9;]#m/} | awk '{ print length($0) }' | sort -u | wc -l) == 1 )) ||
+        { print -r -- $card; exit 17; }
+fi
 rm -rf $repo $err

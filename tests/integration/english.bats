@@ -14,7 +14,7 @@ setup() {
 # bir boşluk; çevirisinde de geçenler hariç) -> grep -F desen dosyası
 turkish_fragments() {
     bash -c '
-        source "$1/locale/en.sh"
+        for f in "$1"/locale/en*.sh; do source "$f"; done
         for k in "${!I18N_EN[@]}"; do
             v="${I18N_EN[$k]}"
             while IFS= read -r f; do

@@ -4,7 +4,8 @@
 # ============================================================================
 # Tema = palet (renkler) + kişilik (biçim). Kişilik; prompt simgesini ve
 # yerleşimini, segment biçimini, kenar stilini, büyük/küçük harfi, ayırıcıyı,
-# liste simgelerini, tarih biçimini, bat çerçevesini ve git simgelerini
+# liste simgelerini, tarih biçimini, bat çerçevesini, git simgelerini ve
+# karşılama kartının işaretlerini (CARD_MARKS: uyarı, hata, kaldığınız yer)
 # belirler. Bir temanın içinde her şey aynı kişiliği konuşur; temalar
 # birbirinden yalnızca renkle değil biçimle de ayrılır. Araçlar (fzf, eza,
 # bat, tmux, lazygit, btop) kişiliği kendi renderer'larında okur; kenar
@@ -18,7 +19,7 @@ declare -gA STYLE=()
 
 STYLE_DEFAULT=modern
 STYLE_REQUIRED_KEYS=(NAME DESC PROMPT_SYMBOL PROMPT_LAYOUT SEGMENTS BORDER TITLE_CASE TEXT_CASE
-    SEPARATOR ICONS DATE_FORMAT BAT_STYLE GIT_SYMBOLS)
+    SEPARATOR ICONS DATE_FORMAT BAT_STYLE GIT_SYMBOLS CARD_MARKS)
 
 # Seçenekli anahtarların izin verilen değerleri
 declare -gA STYLE_CHOICES=(
@@ -66,6 +67,13 @@ style_load() {
     local date_re='^[+][%A-Za-z0-9 .:/-]+$' part parts
     [[ "${STYLE[DATE_FORMAT]}" =~ $date_re ]] ||
         { log_err "%s: %s geçersiz (%s)" "$name" DATE_FORMAT "${STYLE[DATE_FORMAT]}"; return 1; }
+    # Kart işaretleri: uyarı hata kaldığınız-yer; zsh dizgesine yazılır
+    local unsafe='[\\"$`'"'"']'
+    read -ra parts <<< "${STYLE[CARD_MARKS]}"
+    if ((${#parts[@]} != 3)) || [[ "${STYLE[CARD_MARKS]}" =~ $unsafe ]]; then
+        log_err "%s: %s geçersiz (%s)" "$name" CARD_MARKS "${STYLE[CARD_MARKS]}"
+        return 1
+    fi
     IFS=, read -ra parts <<< "${STYLE[BAT_STYLE]}"
     ((${#parts[@]})) || { log_err "%s: %s eksik" "$name" BAT_STYLE; return 1; }
     for part in "${parts[@]}"; do

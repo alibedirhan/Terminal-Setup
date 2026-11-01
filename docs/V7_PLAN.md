@@ -19,13 +19,13 @@ Kararlar, gerçek bir Ubuntu 24.04 GNOME masaüstünde yapılan üç prototipe d
 | 3 | **Starship varsayılan prompt**: ayar dosyası palet ve kişilikten üretilir; Powerlevel10k seçenek | [#13](https://github.com/alibedirhan/Terminal-Setup/pull/13) |
 | 4 | **Oh My Zsh'siz zsh temeli**: eklentiler doğrudan yüklenir | [#14](https://github.com/alibedirhan/Terminal-Setup/pull/14) |
 | 5 | **Araçlar kişiliğe uyar**: eza, bat, fzf, btop, tmux, lazygit | [#15](https://github.com/alibedirhan/Terminal-Setup/pull/15) |
-| 6 | **Sistem dili**: bütün metinler sistemin diliyle | bu dal |
+| 6 | **Sistem dili**: bütün metinler sistemin diliyle | [#17](https://github.com/alibedirhan/Terminal-Setup/pull/17) |
 
 ### 7.1 — Günlük kullanım
 
 | # | İş |
 |---|---|
-| 7 | **Akıllı karşılama kartı**: yalnızca dikkat isteyenler; son proje ve `resume` |
+| 7 | **Akıllı karşılama kartı**: yalnızca dikkat isteyenler; son proje ve `resume` (bu dal) |
 | 8 | **Komut paleti** (Ctrl+Space): projenin betikleri, testleri, venv, git, son kullanılanlar |
 | 9 | **Alt+H yardımı**: yazılan komutun tldr sayfası, sistem dilinde |
 

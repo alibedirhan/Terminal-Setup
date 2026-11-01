@@ -96,9 +96,14 @@ setup() {
     [ ! -e "$cfg" ]
 }
 
-@test "tema uygulandıktan sonra kurulan lazygit temayı hemen alır" {
+@test "tema uygulandıktan sonra kurulan lazygit temayı hemen alır; dosyalar temaya aittir" {
     ts install --components zsh --theme dracula
     ts install --components lazygit
     grep -qx "  border: single" "$HOME/.config/terminal-setup/lazygit.yml"
     grep -q "Kişilik: vivid  Tema: Dracula" "$HOME/.config/terminal-setup/lazygit.yml"
+    # Görünümü sıfırlamak lazygit'in tema dosyalarını da geri alır; lazygit kalır
+    ts theme reset
+    [ ! -e "$HOME/.config/terminal-setup/lazygit.yml" ]
+    [ ! -e "$HOME/.config/terminal-setup/zsh.d/65-theme-lazygit.zsh" ]
+    [ -f "$HOME/.config/terminal-setup/zsh.d/60-lazygit.zsh" ]
 }
