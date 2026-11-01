@@ -6,7 +6,8 @@
 #   Görünümü sıfırla  tema ve terminal renkleri eski haline döner; araçlar kalır
 #   Tamamen kaldır    defterin tamamı geri alınır, sistem kurulum öncesine döner
 #
-# Silinmeyen tek şey arşiv klasörüdür (~/terminal-setup-kaldirilan-TARİH):
+# Silinmeyen tek şey arşiv klasörüdür (~/terminal-setup-kaldirilan-TARİH,
+# İngilizce sistemde ~/terminal-setup-removed-DATE):
 # kullanımla oluşan veriler (komut geçmişi, prompt ayarı), kurulumdan sonra
 # değiştirdiğiniz dosyaların son hali ve kaldırma raporu oraya konur.
 # ============================================================================
@@ -77,6 +78,7 @@ uninstall_all() {
 
     printf '\n'
     local report="$TS_ARCHIVE_DIR/kaldirma-raporu.txt"
+    [[ "$TS_LANG" == en ]] && report="$TS_ARCHIVE_DIR/removal-report.txt"
     verify_against_baseline | tee "$report"
     local verdict=${PIPESTATUS[0]}
     sed -i 's/\x1b\[[0-9;]*m//g' "$report"

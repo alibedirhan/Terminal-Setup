@@ -87,7 +87,7 @@ There are two levels:
 - **Reset the look:** the theme and terminal colors go back; the tools stay.
 - **Remove everything:** the plan is shown first and you type `remove` to confirm. Then the packages the tool installed are removed (a package another package still needs is skipped), downloaded tools, plugins and fonts are deleted, files such as `.zshrc`, `.gitconfig` and `.tmux.conf` return to their pre-install state, the login shell and terminal profile are restored, and the system is compared with the baseline snapshot.
 
-Only an archive folder, `~/terminal-setup-kaldirilan-DATE/`, is left behind. It contains the removal report, the log, your command history and the latest version of files you edited after installing. Delete it whenever you like.
+Only an archive folder, `~/terminal-setup-removed-DATE/`, is left behind (`~/terminal-setup-kaldirilan-TARİH/` on a Turkish system). It contains the removal report, the log, your command history, the settings you saved in the tools (lazygit, btop, atuin) and the latest version of files you edited after installing. Delete it whenever you like.
 
 ## Requirements
 

@@ -98,7 +98,7 @@ Arayüz Türkçe ve İngilizcedir. Sistem diliniz Türkçeyse Türkçe, değilse
   - giriş kabuğu ve terminal profili geri yüklenir,
   - sistem başlangıç fotoğrafıyla karşılaştırılır.
 
-Geriye yalnızca `~/terminal-setup-kaldirilan-TARİH/` arşiv klasörü kalır. İçinde kaldırma raporu, log, komut geçmişiniz ve kurulumdan sonra elle değiştirdiğiniz dosyaların son hali bulunur. İstediğiniz zaman silebilirsiniz.
+Geriye yalnızca `~/terminal-setup-kaldirilan-TARİH/` arşiv klasörü kalır (İngilizce sistemde `~/terminal-setup-removed-DATE/`). İçinde kaldırma raporu, log, komut geçmişiniz, araçlara (lazygit, btop, atuin) yazdığınız ayarlar ve kurulumdan sonra elle değiştirdiğiniz dosyaların son hali bulunur. İstediğiniz zaman silebilirsiniz.
 
 v5 ve öncesiyle kurulum yaptıysanız (defter yoksa) "Kaldır" menüsü eski kurulumu algılar ve her adımı ayrıca sorarak temizler.
 

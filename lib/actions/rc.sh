@@ -71,6 +71,8 @@ act_snapshot() {
 # Blok ekle/güncelle: act_rc_block DOSYA KİMLİK İÇERİK [top|bottom]
 act_rc_block() {
     local file="$1" id="$2" content="$3" where="${4:-bottom}" tmp
+    # Bloktaki açıklama sistem dilinde (dil değişince blok yenilenir)
+    i18n_comments '#' "$content"; content="$REPLY"
 
     if rc_has_block "$file" "$id" && [[ "$(rc_block_content "$file" "$id")" == "$content" ]]; then
         _rc_record_block "$file" "$id"
@@ -119,8 +121,8 @@ _rc_record_block() {
 #   act_zsh_snippet 60 zoxide 'eval "$(zoxide init zsh)"'
 act_zsh_snippet() {
     local order="$1" name="$2" content="$3"
-    act_write_file "$TS_CONFIG_DIR/zsh.d/$order-$name.zsh" \
-        "# $name — Terminal Setup tarafından yönetilir"$'\n'"$content"
+    _t "%s — Terminal Setup tarafından yönetilir" "$name"
+    act_write_file "$TS_CONFIG_DIR/zsh.d/$order-$name.zsh" "# $TR"$'\n'"$content"
 }
 
 # Parçalar ~/.zshrc'nin başında yüklenir. Oh My Zsh'i kullanıcının kendi

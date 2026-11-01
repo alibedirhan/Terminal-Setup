@@ -140,3 +140,10 @@ style_fzf_opts() {
     style_border_for fzf
     REPLY="--border=$REPLY --pointer='${STYLE[PROMPT_SYMBOL]}' --prompt='${STYLE[PROMPT_SYMBOL]} '"
 }
+
+# Temadan ve kişilikten üretilen ayar dosyalarının başlığı -> REPLY
+# (tema ve kişilik yüklü olmalı; açıklama satırları act_write_file'da çevrilir)
+style_file_header() {
+    _t "Kişilik: %s  Tema: %s" "${STYLE[ID]:-?}" "${THEME[NAME]:-?}"
+    REPLY="# Terminal Setup tarafından temadan ve kişilikten üretilir; elle düzenlemeyin."$'\n'"# $TR"
+}

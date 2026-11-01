@@ -110,8 +110,9 @@ starship_config() {
     [[ "$layout" == two-line ]] && fmt+='$line_break'
     fmt+='$character'
 
-    local out="# Terminal Setup tarafından temadan ve kişilikten üretilir; elle düzenlemeyin.
-# Kişilik: ${STYLE[ID]:-?}  Tema: ${THEME[NAME]:-yok}
+    local out
+    style_file_header
+    out="$REPLY
 add_newline = true"
     ((palette)) && out+=$'\n''palette = "terminal_setup"'
     _starship_toml "$fmt"; out+=$'\n'"format = \"$REPLY\""

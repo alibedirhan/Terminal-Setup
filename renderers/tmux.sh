@@ -75,8 +75,8 @@ tmux_theme_conf() {
     # DATE_FORMAT style_load'da denetlenir: yalnızca % harf rakam boşluk . : / -
     date="${STYLE[DATE_FORMAT]#+}"
     style_border_for tmux; lines="$REPLY"
-    REPLY="# Terminal Setup tarafından temadan ve kişilikten üretilir; elle düzenlemeyin.
-# Kişilik: ${STYLE[ID]:-?}  Tema: ${THEME[NAME]:-yok}
+    style_file_header
+    REPLY="$REPLY
 set -g status-style \"bg=${ROLE[bg]},fg=${ROLE[fg]}\"
 set -g status-left \"#[fg=${ROLE[accent2]},bold] #S #[default]\"
 set -g status-right \"#[fg=${ROLE[muted]}]$sep #[fg=${ROLE[fg]}]$date \"

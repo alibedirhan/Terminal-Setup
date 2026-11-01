@@ -32,14 +32,14 @@ rend_lazygit_apply() {
 
 # lazygit.yml içeriği -> REPLY (tema ve kişilik yüklü olmalı)
 lazygit_theme_yml() {
-    local icons='""'
+    local icons='""' border
     [[ "${STYLE[ICONS]}" == on ]] && icons='"3"'
-    style_border_for lazygit
-    REPLY="# Terminal Setup tarafından temadan ve kişilikten üretilir; elle düzenlemeyin.
+    style_border_for lazygit; border="$REPLY"
+    style_file_header
+    REPLY="$REPLY
 # Kendi ayarlarınız için ~/.config/lazygit/config.yml (o dosya bunun önüne geçer).
-# Kişilik: ${STYLE[ID]:-?}  Tema: ${THEME[NAME]:-yok}
 gui:
-  border: $REPLY
+  border: $border
   nerdFontsVersion: $icons
   theme:
     activeBorderColor: ['${ROLE[accent]}', bold]
