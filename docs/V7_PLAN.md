@@ -10,6 +10,8 @@ Kararlar, gerçek bir Ubuntu 24.04 GNOME masaüstünde yapılan üç prototipe d
 
 ## Kapsam
 
+7.0 ve 7.1 birlikte **7.0.0** sürümüyle yayımlandı ([#21](https://github.com/alibedirhan/Terminal-Setup/pull/21)). Yolda bulunan hatalar da düzeltildi: kaldırmada araç ayarlarının silinmesi ([#16](https://github.com/alibedirhan/Terminal-Setup/pull/16)) ve tek bileşen kaldırıldıktan sonra boş ortak dizinlerin kalması.
+
 ### 7.0 — Çekirdek
 
 | # | İş | Durum |
@@ -27,7 +29,7 @@ Kararlar, gerçek bir Ubuntu 24.04 GNOME masaüstünde yapılan üç prototipe d
 |---|---|
 | 7 | **Akıllı karşılama kartı**: yalnızca dikkat isteyenler; son proje ve `resume` ([#18](https://github.com/alibedirhan/Terminal-Setup/pull/18)) |
 | 8 | **Komut paleti** (Ctrl+Space): projenin betikleri, testleri, venv, git, son kullanılanlar ([#19](https://github.com/alibedirhan/Terminal-Setup/pull/19)) |
-| 9 | **Alt+H yardımı**: yazılan komutun tldr sayfası, sistem dilinde (bu dal) |
+| 9 | **Alt+H yardımı**: yazılan komutun tldr sayfası, sistem dilinde ([#20](https://github.com/alibedirhan/Terminal-Setup/pull/20)) |
 
 ### Sonraya kalanlar
 

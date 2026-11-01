@@ -1,13 +1,22 @@
 # Changelog
 
-## [Yayınlanmadı]
+## [7.0.0] - 2026-11-01
 
-Terminal Setup 7 başladı: [plan](docs/V7_PLAN.md).
+Terminal Setup 7: **uyumlu terminal.** Kurduğu her şey aynı tasarım dilini konuşur: tema seçildiğinde terminal, prompt, karşılama kartı ve araçlar birlikte değişir. Temalar yalnızca renkle değil kişilikleriyle de birbirinden ayrılır. Ayrıntılar: [plan](docs/V7_PLAN.md).
+
+**6.x'ten yükseltme.** Yükseltme kendiliğinden bir şey değiştirmez. Kurulu bileşenlerin dosyaları bir sonraki kurulumda ya da tema uygulamada yenilenir.
+- **Kendiliğinden düzelen:** kaldırma defteri bir sonraki komutta yeni kayıt biçimine çevrilir. Bundan sonra lazygit, btop ve atuin ayarları kaldırmada silinmez, arşive taşınır.
+- **Komutla gelen:**
+  - Yeni görünüm için `theme apply TEMA` ya da `style set KİŞİLİK`.
+  - Yeni özellikler için `install --components welcome,palette`.
+  - Alt+H için tldr'yi yeniden kurun: `remove tldr`, ardından `install --components tldr`.
+- **Prompt:** Powerlevel10k ve kendi Oh My Zsh kurulumunuz olduğu gibi kalır. Starship'e geçmek için `remove p10k`, ardından `install --components starship`.
 
 ### Değişti
 - **Oh My Zsh'siz zsh temeli.** Profiller artık Oh My Zsh kurmaz; Oh My Zsh isteğe bağlı bileşen olarak kalır. Sağladığı varsayılanlar küçük bir temel parçadan gelir: geçmiş, dizin ayarları, tamamlama (önbellekli `compinit`, menüden seçme, büyük/küçük harf duyarsız), tuşlar (↑ önek araması, Home/End/Delete, Ctrl+ok, Ctrl+X Ctrl+E), pencere başlığı ve **OSC 7**: GNOME Terminal ve Ptyxis'te yeni sekme aynı dizinde açılır (Ubuntu bunu yalnızca bash için yapıyor; Türkçe karakterli yollar doğru kodlanır). Eklentiler Oh My Zsh yoksa kendi klasörlerinden doğrudan ve doğru sırayla yüklenir; Oh My Zsh varsa onun listesine eklenir. Çıplak zsh + temel 16–31 ms'de açılıyor.
 - **Varsayılan prompt Starship.** Üç profil de Powerlevel10k yerine Starship kurar; Powerlevel10k isteğe bağlı bileşen olarak kalır (projenin kendi notuna göre bakımı çok sınırlı, yeni özellik gelmiyor). Starship'in ayarı temanın renk rollerinden ve kişiliğinden üretilir, tema ya da kişilik değişince yeniden yazılır: altı kişilik altı farklı prompt biçimi verir (sade, tek satır, dolgu etiketler, hap etiketler, köşeli parantezler, ▸ oklar). Prompt projeyi tanır: git durumu, Node sürümü, Python sanal ortamı, Rust, Go, komut süresi ve hata kodu. Mevcut kurulumlardaki Powerlevel10k'ye dokunulmaz. Menüdeki durum etiketi hangi prompt'un kurulu olduğunu gösterir; yazı tipi teşhisi Starship'i de dikkate alır.
 - Statik kontrol kaynakta ham Nerd Font karakterini reddeder; bu karakterler kaçış dizisiyle yazılır.
+- Testlerin ortasındaki `! komut` satırları (28 yer) hiçbir şeyi denetlemiyordu: bash'in `set -e`'si olumsuzlanan komutun başarısızlığını yok sayar. Hepsi `! komut || false` biçimine çevrildi.
 
 ### Eklendi
 - **Alt+H: yazdığınız komutun kısa yardımı.** Komut satırındaki komutun tldr sayfasından açıklama ve ilk dört örnek istemin üstüne yazılır; yazdığınız satır değişmez. `sudo`, `env` gibi önekler atlanır. Sayfa sistem dilinde aranır, yoksa İngilizcesi gösterilir. Ubuntu 22.04'teki tldr ve sonraki sürümlerdeki tealdeer desteklenir. tldr bileşeniyle gelir; mevcut kurulumda tldr'yi yeniden kurun (`remove tldr`, ardından `install --components tldr`).
