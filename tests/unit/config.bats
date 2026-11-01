@@ -88,6 +88,14 @@ setup() {
     [ ! -d "$HOME/bos" ]
 }
 
+@test "boş kullanıcı verisi dosyası arşive gitmez, silinir" {
+    mkdir -p "$HOME/.config/lazygit"
+    : > "$HOME/.config/lazygit/config.yml"
+    undo_userdata "$HOME/.config/lazygit/config.yml"
+    [ ! -e "$HOME/.config/lazygit/config.yml" ]
+    [ -z "$TS_ARCHIVE_DIR" ] || [ ! -e "$TS_ARCHIVE_DIR/.config/lazygit" ]
+}
+
 @test "kullanıcı verisi silinmez, arşive taşınır" {
     mkdir -p "$HOME/.local/share/zoxide"
     echo veri > "$HOME/.local/share/zoxide/db"

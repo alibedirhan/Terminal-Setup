@@ -13,7 +13,7 @@
 #   path      undo_path      rm -rf
 #   dir       undo_dir       boşsa rmdir
 #   glob      undo_glob      kalıba uyan dosyaları sil
-#   userdata  undo_userdata  arşive taşı
+#   userdata  undo_userdata  arşive taşı (boş dosyayı sil)
 #   rcblock   undo_rcblock   bloğu dosyadan çıkar
 #   rcfile    undo_rcfile    orijinali geri koy (son blok kalktığında)
 #   gitcfg    undo_gitcfg    önceki değere dön ya da sil

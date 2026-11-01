@@ -79,3 +79,48 @@ setup() {
     ledger_add shell /bin/bash
     ledger_needs_root
 }
+
+@test "kullanıcı verisi kaydı bileşen başına tekildir" {
+    TS_CURRENT_COMPONENT=btop
+    ledger_add userdata "$HOME/.config/btop/btop.conf"
+    ledger_add userdata "$HOME/.config/btop/btop.conf"
+    TS_CURRENT_COMPONENT=theme
+    ledger_add userdata "$HOME/.config/btop/btop.conf"
+    [ "$(ledger_count)" -eq 2 ]
+    [ "$(ledger_lines theme | wc -l)" -eq 1 ]
+}
+
+# Defter satırı: row bileşen tür yol
+row() { local IFS=$'\t'; printf '%s\n' "$*"; }
+
+@test "6.x'in ayar dizini kayıtları bugünkü kayıtlara çevrilir, gerisi aynen kalır" {
+    local h="$HOME"
+    mkdir -p "$TS_STATE_DIR"
+    {
+        echo "# terminal-setup ledger v1"
+        row lazygit glob "$h/.config/lazygit"; row lazygit glob "$h/.local/state/lazygit"
+        row btop pkg btop; row btop glob "$h/.config/btop"
+        row atuin glob "$h/.config/atuin"; row bat glob "$h/.cache/bat"
+    } > "$TS_LEDGER"
+    ledger_upgrade
+    [ "$(cat "$TS_LEDGER")" = "$(
+        echo "# terminal-setup ledger v1"
+        row lazygit dir "$h/.config/lazygit"; row lazygit userdata "$h/.config/lazygit/config.yml"
+        row lazygit glob "$h/.local/state/lazygit"; row btop pkg btop
+        row btop dir "$h/.config/btop"; row btop glob "$h/.config/btop/btop.log"
+        row btop userdata "$h/.config/btop/btop.conf"
+        row atuin dir "$h/.config/atuin"; row atuin userdata "$h/.config/atuin/config.toml"
+        row bat glob "$h/.cache/bat")" ]
+    # İkinci kez çalışınca dosyaya dokunulmaz
+    touch -d '2020-01-01' "$TS_LEDGER"
+    ledger_upgrade
+    [ "$(stat -c %Y "$TS_LEDGER")" = "$(date -d '2020-01-01' +%s)" ]
+}
+
+@test "provada defter çevrilmez" {
+    mkdir -p "$TS_STATE_DIR"
+    { echo "# terminal-setup ledger v1"; row lazygit glob "$HOME/.config/lazygit"; } > "$TS_LEDGER"
+    cp "$TS_LEDGER" "$BATS_TEST_TMPDIR/before"
+    TS_DRY_RUN=1 ledger_upgrade
+    cmp "$TS_LEDGER" "$BATS_TEST_TMPDIR/before"
+}

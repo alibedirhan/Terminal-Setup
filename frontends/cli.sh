@@ -82,6 +82,7 @@ cli_main() {
         version) echo "Terminal Setup $TS_VERSION"; return 0 ;;
     esac
     ts_init || return 1
+    ledger_upgrade || return 1
     is_dry_run && log_info "Prova modu: hiçbir şey değiştirilmeyecek."
 
     local cmd="${args[0]:-}"
